@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "BattleNaval_V2"
 include(":app")
+ 
