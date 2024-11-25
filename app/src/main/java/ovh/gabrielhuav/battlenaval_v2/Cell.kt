@@ -15,15 +15,17 @@ class Cell(
     var ship: Ship? = null
     var wasShot: Boolean = false
     private val paint = Paint()
-    private val borderPaint = Paint()
+    private val textPaint = Paint()
 
     init {
         paint.style = Paint.Style.FILL
         paint.color = Color.WHITE // Fondo blanco por defecto
 
-        borderPaint.style = Paint.Style.STROKE
-        borderPaint.color = Color.BLACK // Borde negro por defecto
-        borderPaint.strokeWidth = 2f
+        textPaint.apply {
+            color = Color.BLACK
+            textSize = 40f
+            textAlign = Paint.Align.CENTER
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -34,36 +36,47 @@ class Cell(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // Si la celda tiene un barco, usa su color
-        ship?.let {
-            if (!board.enemy) {
-                paint.color = it.color
-            }
-        }
-
         // Dibuja el fondo
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
 
         // Dibuja el borde
+        val borderPaint = Paint().apply {
+            style = Paint.Style.STROKE
+            color = Color.BLACK
+            strokeWidth = 2f
+        }
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), borderPaint)
+
+        // Dibuja el barco en el tablero del jugador (si no ha sido disparada)
+        if (ship != null && !wasShot && !board.enemy) {
+            paint.color = ship!!.color // Usa el color del barco
+            canvas.drawRect(5f, 5f, width.toFloat() - 5f, height.toFloat() - 5f, paint)
+            paint.color = Color.WHITE // Restaura el color original
+        }
 
         // Si fue disparada, dibuja el estado
         if (wasShot) {
-            paint.color = if (ship != null) Color.RED else Color.BLUE
-            canvas.drawCircle(width / 2f, height / 2f, width / 4f, paint)
+            val symbol = if (ship != null) "1" else "0" // Muestra 1 si hay barco, 0 si no
+            canvas.drawText(
+                symbol,
+                width / 2f,
+                height / 2f - (textPaint.descent() + textPaint.ascent()) / 2,
+                textPaint
+            )
         }
     }
 
     fun shoot(): Boolean {
         wasShot = true
-        invalidate()
+        invalidate() // Redibuja la celda
 
         return ship?.let {
             it.hit()
             if (!it.isAlive()) {
-                board.ships--
+                board.ships-- // Reduce la cantidad de barcos si este ya no está vivo
             }
-            true
-        } ?: false
+            true // Devuelve true si se le atinó a un barco
+        } ?: false // Devuelve false si no hay barco
     }
+
 }
