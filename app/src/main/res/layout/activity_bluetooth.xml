@@ -1,0 +1,61 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Contenedor para el tablero -->
+        <FrameLayout
+            android:id="@+id/boardContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#CCCCCC" />
+
+        <!-- Estado del servidor -->
+        <TextView
+            android:id="@+id/tvBluetoothStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="Estado: Desconectado"
+            android:textSize="16sp" />
+
+        <!-- Botones de Bluetooth -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnStartServer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Iniciar Servidor" />
+
+            <Button
+                android:id="@+id/btnConnectToDevice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Conectar a Dispositivo" />
+        </LinearLayout>
+
+        <!-- Botón para regresar al menú principal -->
+        <Button
+            android:id="@+id/btnBackToMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Regresar al Menú" />
+    </LinearLayout>
+</FrameLayout>
