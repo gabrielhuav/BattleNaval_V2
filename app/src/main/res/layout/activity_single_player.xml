@@ -2,38 +2,102 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/white">
 
+    <!-- ScrollView vertical -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- ScrollView horizontal dentro del vertical -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Contenedor de los tableros -->
+            <LinearLayout
+                android:id="@+id/boardContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Contenedor del tablero del jugador -->
+                <FrameLayout
+                    android:id="@+id/playerBoardFrame"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/blue_border" />
+
+                <!-- Contenedor del tablero del enemigo -->
+                <FrameLayout
+                    android:id="@+id/enemyBoardFrame"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/red_border" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+    </ScrollView>
+
+    <!-- Botones de zoom en la esquina superior derecha -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp">
+
+        <Button
+            android:id="@+id/btnZoomIn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="8dp"
+            android:text="+"
+            android:backgroundTint="@color/orange_transparent"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/btnZoomOut"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="-"
+            android:backgroundTint="@color/orange_transparent"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <!-- Controles inferiores -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <!-- Contenedor del tablero -->
-        <FrameLayout
-            android:id="@+id/boardContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#CCCCCC" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp">
 
         <!-- Botón para iniciar un nuevo juego -->
         <Button
             android:id="@+id/btnNewGame"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="Nuevo Juego" />
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Nuevo Juego"
+            android:backgroundTint="@color/teal_200"
+            android:textColor="@color/white" />
 
         <!-- Botón para regresar al menú principal -->
         <Button
             android:id="@+id/btnBackToMenu"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="Regresar al Menú" />
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Regresar al Menú"
+            android:backgroundTint="@color/teal_700"
+            android:textColor="@color/white" />
     </LinearLayout>
 </FrameLayout>

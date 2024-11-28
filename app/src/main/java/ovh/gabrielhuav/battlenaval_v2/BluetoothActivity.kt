@@ -14,30 +14,39 @@ import kotlin.random.Random
 
 class BluetoothActivity : AppCompatActivity() {
     private lateinit var bluetoothGameManager: BluetoothGameManager
-    private lateinit var boardContainer: FrameLayout
+    private lateinit var playerBoardFrame: FrameLayout
+    private lateinit var enemyBoardFrame: FrameLayout
     private lateinit var playerBoard: Board
     private lateinit var enemyBoard: Board
     private lateinit var serverStatusTextView: TextView
     private var running = false
     private var isConnected = false
-    private lateinit var boardsLayout: LinearLayout
+
+    // Límites de zoom
+    private val minZoom = 0.5f
+    private val maxZoom = 2.0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bluetooth)
 
-        boardContainer = findViewById(R.id.boardContainer)
+        playerBoardFrame = findViewById(R.id.playerBoardFrame)
+        enemyBoardFrame = findViewById(R.id.enemyBoardFrame)
         serverStatusTextView = findViewById(R.id.tvBluetoothStatus)
         val startServerButton = findViewById<Button>(R.id.btnStartServer)
         val connectButton = findViewById<Button>(R.id.btnConnectToDevice)
         val backToMenuButton = findViewById<Button>(R.id.btnBackToMenu)
+        val zoomInButton = findViewById<Button>(R.id.btnZoomIn)
+        val zoomOutButton = findViewById<Button>(R.id.btnZoomOut)
 
-        // Crear el layout que contendrá ambos tableros
-        boardsLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            visibility = View.GONE // Oculto hasta que haya conexión
+        // Configuración de botones de zoom
+        zoomInButton.setOnClickListener {
+            adjustZoom(0.1f)
         }
-        boardContainer.addView(boardsLayout)
+
+        zoomOutButton.setOnClickListener {
+            adjustZoom(-0.1f)
+        }
 
         bluetoothGameManager = BluetoothGameManager(this)
 
@@ -46,66 +55,15 @@ class BluetoothActivity : AppCompatActivity() {
             runOnUiThread {
                 val parts = message.split(",")
                 when (parts[0]) {
-                    "SHOOT" -> {
-                        val x = parts[1].toInt()
-                        val y = parts[2].toInt()
-                        val cell = playerBoard.getCell(x, y)
-                        val hit = cell.shoot()
-                        // Enviar resultado del disparo
-                        bluetoothGameManager.sendMessage("RESULT,$x,$y,$hit")
-
-                        if (playerBoard.ships == 0) {
-                            Toast.makeText(this, "¡PERDISTE!", Toast.LENGTH_LONG).show()
-                            running = false
-                        }
-                    }
-                    "RESULT" -> {
-                        val x = parts[1].toInt()
-                        val y = parts[2].toInt()
-                        val hit = parts[3].toBoolean()
-                        val cell = enemyBoard.getCell(x, y)
-                        cell.wasShot = true
-                        if (hit) {
-                            cell.ship = Ship(1, false) // Ship dummy para mostrar el hit
-                        }
-                        cell.invalidate()
-
-                        if (enemyBoard.ships == 0) {
-                            Toast.makeText(this, "¡GANASTE!", Toast.LENGTH_LONG).show()
-                            running = false
-                        }
-                    }
+                    "SHOOT" -> handleIncomingShoot(parts)
+                    "RESULT" -> handleIncomingResult(parts)
                 }
             }
         }
 
         // Listener para el estado del servidor
         bluetoothGameManager.onStateChanged = { state ->
-            runOnUiThread {
-                when (state) {
-                    BluetoothGameManager.State.LISTEN -> {
-                        serverStatusTextView.text = "Estado: Esperando Conexiones..."
-                        isConnected = false
-                        boardsLayout.visibility = View.GONE
-                    }
-                    BluetoothGameManager.State.CONNECTING -> {
-                        serverStatusTextView.text = "Estado: Conectando..."
-                        isConnected = false
-                        boardsLayout.visibility = View.GONE
-                    }
-                    BluetoothGameManager.State.CONNECTED -> {
-                        serverStatusTextView.text = "Estado: Conectado"
-                        isConnected = true
-                        startNewGame()
-                        boardsLayout.visibility = View.VISIBLE
-                    }
-                    BluetoothGameManager.State.NONE -> {
-                        serverStatusTextView.text = "Estado: Desconectado"
-                        isConnected = false
-                        boardsLayout.visibility = View.GONE
-                    }
-                }
-            }
+            runOnUiThread { updateServerStatus(state) }
         }
 
         startServerButton.setOnClickListener {
@@ -126,30 +84,22 @@ class BluetoothActivity : AppCompatActivity() {
 
     private fun startNewGame() {
         running = true
-        boardsLayout.removeAllViews()
 
-        // Crear tablero del jugador (con barcos visibles)
+        // Limpia los tableros existentes
+        playerBoardFrame.removeAllViews()
+        enemyBoardFrame.removeAllViews()
+
+        // Crear tablero del jugador
         playerBoard = Board(this, false) { }
+        playerBoardFrame.addView(playerBoard)
         placePlayerShips()
 
-        // Crear tablero enemigo (sin barcos visibles)
+        // Crear tablero del enemigo
         enemyBoard = Board(this, true) { cell ->
             if (!running || cell.wasShot || !isConnected) return@Board
-            // Enviar el disparo al otro dispositivo
             bluetoothGameManager.sendMessage("SHOOT,${cell.x},${cell.y}")
         }
-
-        // Agregar ambos tableros al layout
-        boardsLayout.apply {
-            addView(playerBoard, LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0, 1f
-            ))
-            addView(enemyBoard, LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0, 1f
-            ))
-        }
+        enemyBoardFrame.addView(enemyBoard)
     }
 
     private fun placePlayerShips() {
@@ -170,12 +120,71 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleIncomingShoot(parts: List<String>) {
+        val x = parts[1].toInt()
+        val y = parts[2].toInt()
+        val cell = playerBoard.getCell(x, y)
+        val hit = cell.shoot()
+        bluetoothGameManager.sendMessage("RESULT,$x,$y,$hit")
+
+        if (playerBoard.ships == 0) {
+            Toast.makeText(this, "¡PERDISTE!", Toast.LENGTH_LONG).show()
+            running = false
+        }
+    }
+
+    private fun handleIncomingResult(parts: List<String>) {
+        val x = parts[1].toInt()
+        val y = parts[2].toInt()
+        val hit = parts[3].toBoolean()
+        val cell = enemyBoard.getCell(x, y)
+        cell.wasShot = true
+        if (hit) {
+            cell.ship = Ship(1, false) // Ship dummy para mostrar el hit
+        }
+        cell.invalidate()
+
+        if (enemyBoard.ships == 0) {
+            Toast.makeText(this, "¡GANASTE!", Toast.LENGTH_LONG).show()
+            running = false
+        }
+    }
+
+    private fun updateServerStatus(state: BluetoothGameManager.State) {
+        when (state) {
+            BluetoothGameManager.State.LISTEN -> {
+                serverStatusTextView.text = "Estado: Esperando Conexiones..."
+                isConnected = false
+            }
+            BluetoothGameManager.State.CONNECTING -> {
+                serverStatusTextView.text = "Estado: Conectando..."
+                isConnected = false
+            }
+            BluetoothGameManager.State.CONNECTED -> {
+                serverStatusTextView.text = "Estado: Conectado"
+                isConnected = true
+                startNewGame()
+            }
+            BluetoothGameManager.State.NONE -> {
+                serverStatusTextView.text = "Estado: Desconectado"
+                isConnected = false
+            }
+        }
+    }
+
+    private fun adjustZoom(delta: Float) {
+        val newZoom = playerBoard.scaleFactor + delta
+        if (newZoom in minZoom..maxZoom) {
+            playerBoard.adjustCellSize(newZoom)
+            enemyBoard.adjustCellSize(newZoom)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CONNECT_DEVICE && resultCode == RESULT_OK) {
             val deviceAddress = data?.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS)
             if (deviceAddress != null) {
-                Toast.makeText(this, "Conectando a $deviceAddress", Toast.LENGTH_SHORT).show()
                 val device = bluetoothGameManager.getDeviceByAddress(deviceAddress)
                 if (device != null) {
                     bluetoothGameManager.connect(device)

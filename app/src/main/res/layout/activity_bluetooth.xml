@@ -2,60 +2,123 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/white">
 
+    <!-- Contenedor principal -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Contenedor para el tablero -->
-        <FrameLayout
-            android:id="@+id/boardContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#CCCCCC" />
-
         <!-- Estado del servidor -->
         <TextView
             android:id="@+id/tvBluetoothStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:gravity="center"
             android:text="Estado: Desconectado"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
 
         <!-- Botones de Bluetooth -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
 
             <Button
                 android:id="@+id/btnStartServer"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Iniciar Servidor" />
+                android:layout_weight="1"
+                android:text="Iniciar Servidor"
+                android:backgroundTint="@color/teal_200"
+                android:textColor="@color/white"
+                android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/btnConnectToDevice"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Conectar a Dispositivo" />
+                android:layout_weight="1"
+                android:text="Conectar a Dispositivo"
+                android:backgroundTint="@color/teal_700"
+                android:textColor="@color/white" />
         </LinearLayout>
 
-        <!-- Botón para regresar al menú principal -->
-        <Button
-            android:id="@+id/btnBackToMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="Regresar al Menú" />
+        <!-- Contenedor para los tableros -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Tablero del jugador -->
+                    <FrameLayout
+                        android:id="@+id/playerBoardFrame"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/blue_border" />
+
+                    <!-- Tablero del enemigo -->
+                    <FrameLayout
+                        android:id="@+id/enemyBoardFrame"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/red_border" />
+                </LinearLayout>
+            </HorizontalScrollView>
+        </ScrollView>
     </LinearLayout>
+
+    <!-- Botones de zoom en la esquina superior derecha -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp">
+
+        <Button
+            android:id="@+id/btnZoomIn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="+"
+            android:textSize="24sp"
+            android:backgroundTint="@color/orange_transparent"
+            android:textColor="@color/black"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnZoomOut"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="-"
+            android:textSize="24sp"
+            android:backgroundTint="@color/orange_transparent"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <!-- Botón para regresar al menú principal -->
+    <Button
+        android:id="@+id/btnBackToMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="16dp"
+        android:text="Regresar al Menú"
+        android:backgroundTint="@color/teal_200"
+        android:textColor="@color/white" />
 </FrameLayout>

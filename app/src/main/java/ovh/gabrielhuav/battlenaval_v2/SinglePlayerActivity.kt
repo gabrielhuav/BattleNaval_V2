@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
@@ -13,34 +12,57 @@ class SinglePlayerActivity : AppCompatActivity() {
     private var running = false
     private lateinit var enemyBoard: Board
     private lateinit var playerBoard: Board
-    private var enemyTurn = false
+    private lateinit var playerBoardFrame: FrameLayout
+    private lateinit var enemyBoardFrame: FrameLayout
+
+    // Límites de zoom
+    private val minZoom = 0.5f
+    private val maxZoom = 2.0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_player)
 
-        val boardContainer = findViewById<FrameLayout>(R.id.boardContainer)
+        playerBoardFrame = findViewById(R.id.playerBoardFrame)
+        enemyBoardFrame = findViewById(R.id.enemyBoardFrame)
+
         val newGameButton = findViewById<Button>(R.id.btnNewGame)
         val backToMenuButton = findViewById<Button>(R.id.btnBackToMenu)
+        val zoomInButton = findViewById<Button>(R.id.btnZoomIn)
+        val zoomOutButton = findViewById<Button>(R.id.btnZoomOut)
+
+        // Configuración de botones de zoom
+        zoomInButton.setOnClickListener {
+            adjustZoom(0.1f)
+        }
+
+        zoomOutButton.setOnClickListener {
+            adjustZoom(-0.1f)
+        }
 
         newGameButton.setOnClickListener {
-            startNewGame(boardContainer)
+            startNewGame()
         }
 
         backToMenuButton.setOnClickListener {
-            finish() // Cierra esta actividad y regresa al menú principal
+            finish()
         }
 
-        startNewGame(boardContainer) // Inicia el juego automáticamente
+        startNewGame()
     }
 
-    private fun startNewGame(container: FrameLayout) {
+    private fun startNewGame() {
         running = true
-        enemyTurn = false
 
-        container.removeAllViews()
+        // Limpia los tableros existentes
+        playerBoardFrame.removeAllViews()
+        enemyBoardFrame.removeAllViews()
 
-        // Crear tablero del enemigo
+        // Crea el tablero del jugador
+        playerBoard = Board(this, false) { }
+        playerBoardFrame.addView(playerBoard)
+
+        // Crea el tablero del enemigo
         enemyBoard = Board(this, true) { cell ->
             if (!running || cell.wasShot) return@Board
             val hit = cell.shoot()
@@ -51,30 +73,13 @@ class SinglePlayerActivity : AppCompatActivity() {
                 return@Board
             }
 
-            // Si el jugador hace un disparo, el enemigo responde
             enemyMove()
         }
+        enemyBoardFrame.addView(enemyBoard)
 
-        // Crear tablero del jugador
-        playerBoard = Board(this, false) { }
-
-        // Colocar barcos automáticamente
+        // Coloca los barcos
         placePlayerShips()
         placeEnemyShips()
-
-        val layout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            addView(playerBoard, LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0, 1f
-            ))
-            addView(enemyBoard, LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0, 1f
-            ))
-        }
-
-        container.addView(layout)
     }
 
     private fun placePlayerShips() {
@@ -126,6 +131,14 @@ class SinglePlayerActivity : AppCompatActivity() {
                 running = false
             }
             break
+        }
+    }
+
+    private fun adjustZoom(delta: Float) {
+        val newZoom = playerBoard.scaleFactor + delta
+        if (newZoom in minZoom..maxZoom) {
+            playerBoard.adjustCellSize(newZoom)
+            enemyBoard.adjustCellSize(newZoom)
         }
     }
 }
