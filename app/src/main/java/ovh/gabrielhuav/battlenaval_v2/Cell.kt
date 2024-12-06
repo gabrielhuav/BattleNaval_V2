@@ -14,6 +14,7 @@ class Cell(
 ) : View(context) {
     var ship: Ship? = null
     var wasShot: Boolean = false
+    var text: String? = null // Nuevo: Texto para mostrar en la celda
     private val paint = Paint()
     private val textPaint = Paint()
 
@@ -64,6 +65,16 @@ class Cell(
                 textPaint
             )
         }
+
+        // Dibuja el texto personalizado si existe
+        text?.let {
+            canvas.drawText(
+                it,
+                width / 2f,
+                height / 2f - (textPaint.descent() + textPaint.ascent()) / 2,
+                textPaint
+            )
+        }
     }
 
     fun shoot(): Boolean {
@@ -79,4 +90,11 @@ class Cell(
         } ?: false // Devuelve false si no hay barco
     }
 
+    /**
+     * Cambia el color de fondo de la celda.
+     */
+    override fun setBackgroundColor(newColor: Int) {
+        paint.color = newColor
+        invalidate() // Redibuja la celda
+    }
 }

@@ -81,6 +81,58 @@
                 </LinearLayout>
             </HorizontalScrollView>
         </ScrollView>
+
+        <!-- Panel para la ronda especial -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:background="@color/light_gray"
+            android:visibility="gone"
+            android:id="@+id/specialRoundPanel">
+
+            <!-- Coordenadas reveladas -->
+            <TextView
+                android:id="@+id/tvRevealedCoordinates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Coordenadas: -"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center" />
+
+            <!-- Campo para ingresar coordenadas -->
+            <EditText
+                android:id="@+id/etConvertedCoordinates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese coordenadas convertidas"
+                android:inputType="text"
+                android:backgroundTint="@color/teal_700"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Botón para confirmar coordenadas -->
+            <Button
+                android:id="@+id/btnConfirmCoordinates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Confirmar Conversión"
+                android:backgroundTint="@color/orange_transparent"
+                android:textColor="@color/black" />
+
+            <!-- Temporizador de 10 segundos -->
+            <TextView
+                android:id="@+id/tvDelayTimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Esperando 10 segundos..."
+                android:textSize="14sp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Botones de zoom en la esquina superior derecha -->

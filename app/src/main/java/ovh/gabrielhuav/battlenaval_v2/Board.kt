@@ -2,12 +2,11 @@ package ovh.gabrielhuav.battlenaval_v2
 
 import android.content.Context
 import android.graphics.Color
-import android.view.GestureDetector
 import android.view.Gravity
 import android.view.MotionEvent
-import android.view.ScaleGestureDetector
 import android.widget.GridLayout
 import android.widget.TextView
+import kotlin.random.Random
 
 class Board(
     context: Context,
@@ -28,15 +27,6 @@ class Board(
         private set
     private var cellSize = 100
 
-    // Detector de gestos para pellizcar
-    private val scaleGestureDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        override fun onScale(detector: ScaleGestureDetector): Boolean {
-            val scale = scaleFactor * detector.scaleFactor
-            adjustCellSize(scale.coerceIn(0.1f, 2.0f)) // Limitar el zoom entre 0.1x y 2.0x
-            return true
-        }
-    })
-
     init {
         rowCount = 8
         columnCount = 8
@@ -44,7 +34,7 @@ class Board(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        return scaleGestureDetector.onTouchEvent(event) || super.onTouchEvent(event)
+        return super.onTouchEvent(event)
     }
 
     private fun drawBoard() {
@@ -120,4 +110,14 @@ class Board(
         cellSize = (100 * scaleFactor).toInt().coerceAtLeast(20)
         drawBoard()
     }
+
+    /**
+     * Devuelve una celda aleatoria que no haya sido revelada o disparada.
+     */
+    fun getRandomUnrevealedCell(): Cell {
+        val unrevealedCells = cells.flatten().filter { !it.wasShot && it.ship == null }
+        if (unrevealedCells.isEmpty()) throw IllegalStateException("No hay celdas disponibles para revelar")
+        return unrevealedCells[Random.nextInt(unrevealedCells.size)]
+    }
+
 }
