@@ -114,10 +114,20 @@ class Board(
     /**
      * Devuelve una celda aleatoria que no haya sido revelada o disparada.
      */
-    fun getRandomUnrevealedCell(): Cell {
-        val unrevealedCells = cells.flatten().filter { !it.wasShot && it.ship == null }
-        if (unrevealedCells.isEmpty()) throw IllegalStateException("No hay celdas disponibles para revelar")
-        return unrevealedCells[Random.nextInt(unrevealedCells.size)]
+    fun getRandomShipCell(): Cell {
+        // Filtra solo las celdas que pertenecen a un barco y no han sido disparadas
+        val shipCells = cells.flatten().filter { it.ship != null && !it.wasShot }
+
+        // Asegúrate de que hay celdas disponibles, si no, lanza una excepción
+        if (shipCells.isEmpty()) {
+            throw IllegalStateException("No hay celdas disponibles de barcos para revelar. Asegúrese de que los barcos estén posicionados.")
+        }
+
+        // Selecciona una celda aleatoria de las disponibles
+        val selectedCell = shipCells[Random.nextInt(shipCells.size)]
+        println("Celda seleccionada para revelar: (${selectedCell.x}, ${selectedCell.y}) con barco ${selectedCell.ship}")
+        return selectedCell
     }
+
 
 }
