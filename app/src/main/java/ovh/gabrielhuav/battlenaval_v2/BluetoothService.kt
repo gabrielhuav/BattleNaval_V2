@@ -2,16 +2,23 @@ package ovh.gabrielhuav.battlenaval_v2
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.UUID
+import kotlin.concurrent.thread
 
-class BluetoothService {
+class BluetoothService(private val context: Context) {
     private var bluetoothSocket: BluetoothSocket? = null
     private var inputStream: InputStream? = null
     private var outputStream: OutputStream? = null
+
+    var onMessageReceived: ((String) -> Unit)? = null // Callback para recibir mensajes
 
     /**
      * Conecta al dispositivo Bluetooth proporcionado.
@@ -22,6 +29,7 @@ class BluetoothService {
             bluetoothSocket = device.createRfcommSocketToServiceRecord(uuid)
             bluetoothSocket?.connect()
             initializeStreams()
+            showToast("Conexión establecida con el dispositivo: ${device.name}")
             Log.d("BluetoothService", "Conexión establecida con el dispositivo: ${device.name}")
             return true
         } catch (e: IOException) {
@@ -35,9 +43,26 @@ class BluetoothService {
      * Inicializa el socket desde el BluetoothGameManager.
      */
     fun initializeSocket(socket: BluetoothSocket) {
-        bluetoothSocket = socket
-        initializeStreams()
-        Log.d("BluetoothService", "Socket inicializado desde el servidor.")
+        thread {
+            try {
+                bluetoothSocket = socket
+                initializeStreams()
+                val input = socket.inputStream
+                val buffer = ByteArray(1024)
+                while (true) {
+                    val bytes = input.read(buffer)
+                    val message = String(buffer, 0, bytes)
+                    runOnMainThread {
+                        showToast("Mensaje leído: $message")
+                    }
+                    onMessageReceived?.invoke(message)
+                }
+            } catch (e: IOException) {
+                runOnMainThread {
+                    showToast("Error al leer del socket: ${e.message}")
+                }
+            }
+        }
     }
 
     /**
@@ -92,5 +117,21 @@ class BluetoothService {
             Log.e("BluetoothService", "Error al inicializar los flujos del socket", e)
             close()
         }
+    }
+
+    /**
+     * Muestra un mensaje Toast en el hilo principal.
+     */
+    private fun showToast(message: String) {
+        Handler(Looper.getMainLooper()).post {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
+     * Ejecuta un bloque de código en el hilo principal.
+     */
+    private fun runOnMainThread(action: () -> Unit) {
+        Handler(Looper.getMainLooper()).post(action)
     }
 }

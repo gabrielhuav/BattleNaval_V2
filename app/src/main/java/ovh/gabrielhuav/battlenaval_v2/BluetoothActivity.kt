@@ -38,11 +38,17 @@ class BluetoothActivity : AppCompatActivity() {
         initializeViews()
         initializeBoards()
 
-        // Configuración del BluetoothGameManager
-        bluetoothGameManager = BluetoothGameManager(this, playerBoard, enemyBoard, BluetoothService()).apply {
+// Configuración del BluetoothGameManager
+        bluetoothGameManager = BluetoothGameManager(
+            this,
+            playerBoard,
+            enemyBoard,
+            BluetoothService(this) // Asegúrate de pasar `this` aquí como el contexto
+        ).apply {
             onStateChanged = { updateServerStatus(it) }
             onMessageReceived = { handleIncomingMessage(it) }
         }
+
 
         setupButtons()
     }
@@ -129,18 +135,21 @@ class BluetoothActivity : AppCompatActivity() {
         Toast.makeText(this, "Barcos colocados automáticamente en el tablero del jugador.", Toast.LENGTH_SHORT).show()
     }
 
-// Enviar barcos del servidor al cliente después de establecer la conexión
+    // Enviar barcos del servidor al cliente después de establecer la conexión
     private fun sendPlayerShipsToClient() {
         val playerShips = playerBoard.getShipCoordinates()
-        bluetoothGameManager.sendMessage("SERVER_SHIPS,${serializeShipPositions(playerShips)}")
-        Toast.makeText(this, "Barcos del servidor enviados al cliente.", Toast.LENGTH_SHORT).show()
+        val serializedShips = serializeShipPositions(playerShips)
+        Toast.makeText(this, "Enviando barcos al cliente: $serializedShips", Toast.LENGTH_SHORT).show()
+        bluetoothGameManager.sendMessage("SERVER_SHIPS,$serializedShips")
     }
+
 
     // Enviar barcos del cliente al servidor después de establecer la conexión
     private fun sendPlayerShipsToServer() {
         val playerShips = playerBoard.getShipCoordinates()
-        bluetoothGameManager.sendMessage("CLIENT_SHIPS,${serializeShipPositions(playerShips)}")
-        Toast.makeText(this, "Barcos del cliente enviados al servidor.", Toast.LENGTH_SHORT).show()
+        val serializedShips = serializeShipPositions(playerShips)
+        Toast.makeText(this, "Enviando barcos al servidor: $serializedShips", Toast.LENGTH_SHORT).show()
+        bluetoothGameManager.sendMessage("CLIENT_SHIPS,$serializedShips")
     }
 
 
@@ -151,41 +160,47 @@ class BluetoothActivity : AppCompatActivity() {
         bluetoothGameManager.saveGameState()
         Toast.makeText(this, "Barcos del jugador enviados: $playerShips", Toast.LENGTH_SHORT).show()
     }
+
     private fun handleIncomingMessage(message: String) {
+        Toast.makeText(this, "Mensaje recibido: $message", Toast.LENGTH_SHORT).show()
         when {
-            // El cliente recibe los barcos del servidor y los dibuja en su tablero enemigo
             message.startsWith("SERVER_SHIPS") -> {
+                Toast.makeText(this, "Recibiendo barcos del servidor.", Toast.LENGTH_SHORT).show()
                 val receivedShips = deserializeShipPositions(message.substring(13))
-                drawShipsOnEnemyBoard(receivedShips) // Dibujar en el tablero enemigo
+                drawShipsOnEnemyBoard(receivedShips)
             }
-            // El servidor recibe los barcos del cliente y los dibuja en su tablero enemigo
             message.startsWith("CLIENT_SHIPS") -> {
+                Toast.makeText(this, "Recibiendo barcos del cliente.", Toast.LENGTH_SHORT).show()
                 val receivedShips = deserializeShipPositions(message.substring(13))
-                drawShipsOnEnemyBoard(receivedShips) // Dibujar en el tablero enemigo
+                drawShipsOnEnemyBoard(receivedShips)
             }
-            message.startsWith("SPECIAL") -> handleSpecialRound(message.split(","))
-            message.startsWith("RESULT") -> handleIncomingResult(message.split(","))
-            message.startsWith("SHOOT") -> handleIncomingShoot(message.split(","))
             else -> {
-                Toast.makeText(this, "Mensaje desconocido recibido: $message", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Mensaje desconocido: $message", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 
     private fun drawShipsOnEnemyBoard(ships: List<Pair<String, String>>) {
+        Toast.makeText(this, "Intentando dibujar ${ships.size} barcos.", Toast.LENGTH_SHORT).show()
         enemyBoard.clearShips()
+
         ships.forEach { (row, col) ->
-            val x = col.toIntOrNull()?.minus(1) ?: return@forEach
+            val x = col.toIntOrNull()?.minus(1)
             val y = row[0] - 'A'
-            if (x in 0..6 && y in 0..6) {
-                val ship = Ship(1, false) // Ajusta el tamaño/orientación según sea necesario
-                enemyBoard.placeShip(ship, x, y)
+
+            if (x != null && x in 0..6 && y in 0..6) {
+                val ship = Ship(1, false)
+                val placed = enemyBoard.placeShip(ship, x, y)
+                Toast.makeText(this, if (placed) "Barco colocado: ($x, $y)" else "Error al colocar barco: ($x, $y)", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Coordenadas inválidas: ($row, $col)", Toast.LENGTH_SHORT).show()
             }
         }
-        enemyBoard.invalidate() // Redibuja el tablero
-        Toast.makeText(this, "Barcos del enemigo dibujados en el tablero 2.", Toast.LENGTH_SHORT).show()
-    }
 
+        enemyBoard.invalidate()
+        Toast.makeText(this, "Tablero enemigo redibujado.", Toast.LENGTH_SHORT).show()
+    }
 
 
     private fun markRevealedCell(x: Int, y: Int) {
@@ -330,15 +345,26 @@ class BluetoothActivity : AppCompatActivity() {
 
 
     private fun serializeShipPositions(ships: List<Pair<String, String>>): String {
-        return ships.joinToString(";") { "${it.first},${it.second}" }
+        val serialized = ships.joinToString(";") { "${it.first},${it.second}" }
+        Toast.makeText(this, "Serializando posiciones de barcos: $serialized", Toast.LENGTH_SHORT).show()
+        return serialized
     }
 
     private fun deserializeShipPositions(data: String): List<Pair<String, String>> {
-        return data.split(";").map {
-            val parts = it.split(",")
-            Pair(parts[0], parts[1])
+        try {
+            val deserialized = data.split(";").map {
+                val parts = it.split(",")
+                Pair(parts[0], parts[1])
+            }
+            Toast.makeText(this, "Deserializando posiciones: $deserialized", Toast.LENGTH_SHORT).show()
+            return deserialized
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error al deserializar: ${e.message}", Toast.LENGTH_SHORT).show()
+            return emptyList()
         }
     }
+
+
 
     private fun convertToBinary(coordinate: String): String {
         return coordinate.map { it.code.toString(2).padStart(8, '0') }.joinToString("")
