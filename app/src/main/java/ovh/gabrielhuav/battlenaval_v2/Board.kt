@@ -129,5 +129,22 @@ class Board(
         return selectedCell
     }
 
+    fun getShipCoordinates(): List<Pair<String, String>> {
+        val coordinates = mutableListOf<Pair<String, String>>()
+
+        for (y in cells.indices) {
+            for (x in cells[y].indices) {
+                val cell = cells[y][x]
+                if (cell.ship != null) {
+                    val letter = ('A' + y).toString() // Convierte el índice de fila a letra
+                    val number = (x + 1).toString() // Convierte el índice de columna a número
+                    coordinates.add(Pair(letter, number))
+                }
+            }
+        }
+
+        return coordinates
+    }
+
 
 }

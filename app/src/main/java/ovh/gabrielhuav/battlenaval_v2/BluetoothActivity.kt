@@ -20,12 +20,14 @@ class BluetoothActivity : AppCompatActivity() {
     private lateinit var serverStatusTextView: TextView
     private lateinit var specialRoundPanel: LinearLayout
     private lateinit var revealedCoordinatesTextView: TextView
+    private lateinit var enemyCoordinatesTextView: TextView
     private lateinit var convertedCoordinatesEditText: EditText
     private lateinit var confirmCoordinatesButton: Button
 
     private var running = false
     private var isConnected = false
     private var revealedCoordinates: Pair<String, String>? = null
+    private var enemyShips: List<Pair<String, String>> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,41 +41,36 @@ class BluetoothActivity : AppCompatActivity() {
         serverStatusTextView = findViewById(R.id.tvBluetoothStatus)
         specialRoundPanel = findViewById(R.id.specialRoundPanel)
         revealedCoordinatesTextView = findViewById(R.id.tvRevealedCoordinates)
+        enemyCoordinatesTextView = findViewById(R.id.tvEnemyCoordinates)
         convertedCoordinatesEditText = findViewById(R.id.etConvertedCoordinates)
         confirmCoordinatesButton = findViewById(R.id.btnConfirmCoordinates)
 
-        val startServerButton = findViewById<Button>(R.id.btnStartServer)
-        val connectButton = findViewById<Button>(R.id.btnConnectToDevice)
-        val backToMenuButton = findViewById<Button>(R.id.btnBackToMenu)
+        // Inicialización de tableros
+        playerBoard = Board(this, false) { }
+        playerBoardFrame.addView(playerBoard)
 
+        // Configuración del BluetoothGameManager
         bluetoothGameManager = BluetoothGameManager(this)
-
         bluetoothGameManager.onMessageReceived = { message ->
-            runOnUiThread {
-                val parts = message.split(",")
-                when (parts[0]) {
-                    "SHOOT" -> handleIncomingShoot(parts)
-                    "RESULT" -> handleIncomingResult(parts)
-                    "SPECIAL" -> handleSpecialRound(parts)
-                }
-            }
+            runOnUiThread { handleIncomingMessage(message) }
         }
-
         bluetoothGameManager.onStateChanged = { state ->
             runOnUiThread { updateServerStatus(state) }
         }
 
-        startServerButton.setOnClickListener {
+        // Configuración de botones
+        findViewById<Button>(R.id.btnStartServer).setOnClickListener {
             bluetoothGameManager.start()
+            sendPlayerShips() // Ahora playerBoard ya está inicializado
             Toast.makeText(this, "Servidor Iniciado", Toast.LENGTH_SHORT).show()
         }
 
-        connectButton.setOnClickListener {
+        findViewById<Button>(R.id.btnConnectToDevice).setOnClickListener {
             val intent = Intent(this, DeviceListActivity::class.java)
             startActivityForResult(intent, REQUEST_CONNECT_DEVICE)
         }
 
-        backToMenuButton.setOnClickListener {
+        findViewById<Button>(R.id.btnBackToMenu).setOnClickListener {
             bluetoothGameManager.stop()
             finish()
         }
@@ -82,6 +79,66 @@ class BluetoothActivity : AppCompatActivity() {
             validateSpecialRoundAnswer()
         }
     }
+    private fun handleIncomingMessage(message: String) {
+        when {
+            message.startsWith("SHIPS") -> {
+                enemyShips = deserializeShipPositions(message.substring(6))
+                println("Barcos recibidos del enemigo: $enemyShips")
+                if (enemyShips.isNotEmpty()) {
+                    Toast.makeText(this, "Barcos del enemigo recibidos.", Toast.LENGTH_SHORT).show()
+
+                    // Inicia la ronda especial una vez que se reciben los barcos
+                    startSpecialRound()
+                } else {
+                    Toast.makeText(this, "Error: No se recibieron barcos del enemigo.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            message.startsWith("SPECIAL") -> handleSpecialRound(message.split(","))
+            // Otros casos...
+        }
+    }
+
+
+
+
+    private fun startSpecialRound() {
+        try {
+            if (enemyShips.isEmpty()) {
+                throw IllegalStateException("No se han recibido las posiciones de los barcos del enemigo.")
+            }
+
+            // Selecciona un barco enemigo al azar
+            val randomEnemyShip = enemyShips.random()
+            revealedCoordinates = randomEnemyShip // Asigna las coordenadas reveladas correctamente
+
+            val binaryCoordinates = "${convertToBinary(randomEnemyShip.first)},${convertToBinary(randomEnemyShip.second)}"
+            enemyCoordinatesTextView.text = "Enemy Coordinates (binary): $binaryCoordinates"
+            revealedCoordinatesTextView.text = "Text Coordinates: ${randomEnemyShip.first}${randomEnemyShip.second}"
+
+            val x = randomEnemyShip.second.toInt() - 1
+            val y = randomEnemyShip.first[0] - 'A'
+            markRevealedCell(x, y)
+
+            // Envía las coordenadas reveladas al oponente
+            bluetoothGameManager.sendMessage("SPECIAL,${randomEnemyShip.first},${randomEnemyShip.second}")
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error al iniciar la ronda especial: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun markRevealedCell(x: Int, y: Int) {
+        try {
+            val cell = enemyBoard.getCell(x, y)
+            cell.setBackgroundColor(Color.MAGENTA) // Cambia el color de la celda seleccionada
+            cell.text = "R" // Indica que esta celda está revelada
+            cell.invalidate() // Fuerza el redibujado de la celda
+            println("Celda marcada como revelada en posición ($x, $y)") // Depuración
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error al marcar la celda revelada: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+
 
     private fun startNewGame() {
         running = true
@@ -100,8 +157,25 @@ class BluetoothActivity : AppCompatActivity() {
         enemyBoardFrame.addView(enemyBoard)
 
         placeEnemyShips()
-        startSpecialRound()
+
+        // Envía los barcos del jugador
+        sendPlayerShips()
+
+        // Si se reciben barcos, comienza la ronda especial
+        if (enemyShips.isNotEmpty()) {
+            startSpecialRound()
+        } else {
+            Toast.makeText(this, "Esperando barcos del enemigo...", Toast.LENGTH_SHORT).show()
+        }
     }
+
+    private fun sendPlayerShips() {
+        val playerShips = playerBoard.getShipCoordinates()
+        println("Enviando barcos del jugador: $playerShips") // Depuración
+        bluetoothGameManager.sendMessage("SHIPS,${serializeShipPositions(playerShips)}")
+    }
+
+
 
     private fun placePlayerShips() {
         val shipData = listOf(Pair(4, Color.GREEN), Pair(3, Color.RED), Pair(2, Color.GRAY))
@@ -129,68 +203,40 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-    private fun startSpecialRound() {
-        try {
-            // Seleccionar una celda con un barco del enemigo
-            val randomShipCell = playerBoard.getRandomShipCell() // Cambia a enemyBoard si es jugador 2 relevando
-
-            // Conversión de coordenadas
-            val horizontalChar = ('A'.code + randomShipCell.y).toChar()
-            val verticalIndex = randomShipCell.x + 1
-
-            val horizontalBinary = horizontalChar.code.toString(2).padStart(8, '0')
-            val verticalBinary = verticalIndex.toString(2).padStart(3, '0')
-
-            // Guardar coordenadas
-            revealedCoordinates = Pair(horizontalBinary, verticalBinary)
-            val correctAnswer = "$horizontalChar$verticalIndex"
-
-            // Mostrar las coordenadas al otro jugador
-            revealedCoordinatesTextView.text =
-                "Coordenadas: $horizontalBinary,$verticalBinary\nRespuesta para el enemigo: $correctAnswer"
-            specialRoundPanel.visibility = View.VISIBLE
-            convertedCoordinatesEditText.visibility = View.VISIBLE
-            confirmCoordinatesButton.visibility = View.VISIBLE
-
-            // Marcar la celda seleccionada en el tablero del jugador
-            markRevealedCell(randomShipCell.x, randomShipCell.y)
-        } catch (e: Exception) {
-            Toast.makeText(this, "Error al iniciar la ronda especial: ${e.message}", Toast.LENGTH_LONG).show()
-        }
-    }
-
-
-
     private fun validateSpecialRoundAnswer() {
-        val input = convertedCoordinatesEditText.text.toString().trim() // Respuesta del jugador 2
-        val horizontalChar = revealedCoordinates!!.first.toInt(2).toChar() // Decodifica ASCII
-        val verticalIndex = revealedCoordinates!!.second.toInt(2) // Decodifica Binario
-        val correctAnswer = "$horizontalChar$verticalIndex"
+        if (revealedCoordinates == null) {
+            Toast.makeText(this, "Error: No se han revelado coordenadas para validar.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val input = convertedCoordinatesEditText.text.toString().trim()
+        val correctAnswer = "${revealedCoordinates!!.first}${revealedCoordinates!!.second}"
 
         if (input == correctAnswer) {
             Toast.makeText(this, "¡Respuesta Correcta!", Toast.LENGTH_SHORT).show()
-            bluetoothGameManager.sendMessage("SPECIAL,$correctAnswer")
+            bluetoothGameManager.sendMessage("SPECIAL_RESULT,true")
         } else {
-            Toast.makeText(
-                this,
-                "Respuesta Incorrecta. Coordenadas correctas: $correctAnswer",
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(this, "Respuesta Incorrecta. Coordenadas correctas: $correctAnswer", Toast.LENGTH_LONG).show()
+            bluetoothGameManager.sendMessage("SPECIAL_RESULT,false")
         }
+
+        // Ocultar los elementos de la UI de la ronda especial
+        specialRoundPanel.visibility = View.GONE
+        convertedCoordinatesEditText.visibility = View.GONE
+        confirmCoordinatesButton.visibility = View.GONE
     }
 
-    private fun markRevealedCell(x: Int, y: Int) {
-        try {
-            val cell = playerBoard.getCell(x, y) // Marcar celda en el tablero del jugador que revela
-            if (cell.ship != null) {
-                cell.setBackgroundColor(Color.MAGENTA)
-                cell.text = "X"
-                cell.invalidate()
+    private fun handleSpecialRoundResult(parts: List<String>) {
+        val isCorrect = parts[1].toBoolean()
+
+        runOnUiThread {
+            if (isCorrect) {
+                Toast.makeText(this, "Opponent solved the special round correctly!", Toast.LENGTH_SHORT).show()
+                // Optionally, add a reward or bonus
             } else {
-                println("Error: La celda marcada no pertenece a un barco.")
+                Toast.makeText(this, "Opponent failed the special round!", Toast.LENGTH_SHORT).show()
+                // Optionally, add a penalty
             }
-        } catch (e: Exception) {
-            println("Error al marcar la celda revelada: ${e.message}")
         }
     }
 
@@ -225,7 +271,21 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     private fun handleSpecialRound(parts: List<String>) {
-        Toast.makeText(this, "Ronda Especial: ${parts.joinToString(",")}", Toast.LENGTH_SHORT).show()
+        if (parts.size >= 3) {
+            val revealedRow = parts[1]
+            val revealedColumn = parts[2]
+
+            // Mark the revealed cell for the current player
+            val x = revealedColumn.toInt() - 1
+            val y = revealedRow[0] - 'A'
+
+            runOnUiThread {
+                markRevealedCell(x, y)
+
+                // Optional: Show a toast with the revealed coordinates
+                Toast.makeText(this, "Special Round: Revealed $revealedRow$revealedColumn", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun updateServerStatus(state: BluetoothGameManager.State) {
@@ -281,5 +341,24 @@ class BluetoothActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_CONNECT_DEVICE = 1
+    }
+
+    // Serialización y conversión
+    private fun serializeShipPositions(ships: List<Pair<String, String>>): String {
+        return ships.joinToString(";") { "${it.first},${it.second}" }
+    }
+
+    private fun deserializeShipPositions(data: String): List<Pair<String, String>> {
+        return data.split(";").map {
+            val parts = it.split(",")
+            Pair(parts[0], parts[1]) // Asegúrate de que estas coordenadas sean válidas
+        }
+    }
+
+
+    private fun convertToBinary(coordinate: String): String {
+        return coordinate.map { char ->
+            char.code.toString(2).padStart(8, '0')
+        }.joinToString("")
     }
 }

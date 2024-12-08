@@ -4,136 +4,160 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <!-- Contenedor principal -->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
-        <!-- Estado del servidor -->
-        <TextView
-            android:id="@+id/tvBluetoothStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Estado: Desconectado"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Botones de Bluetooth -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="16dp">
-
-            <Button
-                android:id="@+id/btnStartServer"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Iniciar Servidor"
-                android:backgroundTint="@color/teal_200"
-                android:textColor="@color/white"
-                android:layout_marginEnd="8dp" />
-
-            <Button
-                android:id="@+id/btnConnectToDevice"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Conectar a Dispositivo"
-                android:backgroundTint="@color/teal_700"
-                android:textColor="@color/white" />
-        </LinearLayout>
-
-        <!-- Contenedor para los tableros -->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- Tablero del jugador -->
-                    <FrameLayout
-                        android:id="@+id/playerBoardFrame"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:background="@drawable/blue_border" />
-
-                    <!-- Tablero del enemigo -->
-                    <FrameLayout
-                        android:id="@+id/enemyBoardFrame"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/red_border" />
-                </LinearLayout>
-            </HorizontalScrollView>
-        </ScrollView>
-
-        <!-- Panel para la ronda especial -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp"
-            android:background="@color/light_gray"
-            android:visibility="gone"
-            android:id="@+id/specialRoundPanel">
+            android:padding="16dp">
 
-            <!-- Coordenadas reveladas -->
+            <!-- Estado del servidor -->
             <TextView
-                android:id="@+id/tvRevealedCoordinates"
+                android:id="@+id/tvBluetoothStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Coordenadas: -"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center" />
-
-            <!-- Campo para ingresar coordenadas -->
-            <EditText
-                android:id="@+id/etConvertedCoordinates"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Ingrese coordenadas convertidas"
-                android:inputType="text"
-                android:backgroundTint="@color/teal_700"
-                android:textColor="@color/black"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Botón para confirmar coordenadas -->
-            <Button
-                android:id="@+id/btnConfirmCoordinates"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Confirmar Conversión"
-                android:backgroundTint="@color/orange_transparent"
-                android:textColor="@color/black" />
-
-            <!-- Temporizador de 10 segundos -->
-            <TextView
-                android:id="@+id/tvDelayTimer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Esperando 10 segundos..."
-                android:textSize="14sp"
                 android:gravity="center"
-                android:visibility="gone"
-                android:layout_marginTop="8dp" />
+                android:text="Estado: Desconectado"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Botones de Bluetooth -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="16dp">
+
+                <Button
+                    android:id="@+id/btnStartServer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Iniciar Servidor"
+                    android:backgroundTint="@color/teal_200"
+                    android:textColor="@color/white"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btnConnectToDevice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Conectar a Dispositivo"
+                    android:backgroundTint="@color/teal_700"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <!-- Contenedor para los tableros -->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <!-- Tablero del jugador -->
+                        <FrameLayout
+                            android:id="@+id/playerBoardFrame"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:background="@drawable/blue_border" />
+
+                        <!-- Tablero del enemigo -->
+                        <FrameLayout
+                            android:id="@+id/enemyBoardFrame"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/red_border" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </ScrollView>
+
+            <!-- Panel para la ronda especial -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:background="@color/light_gray"
+                android:id="@+id/specialRoundPanel">
+
+                <!-- Coordenadas del enemigo -->
+                <TextView
+                    android:id="@+id/tvEnemyCoordinates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Coordenadas del enemigo: -"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Respuesta del enemigo -->
+                <TextView
+                    android:id="@+id/tvEnemyResponse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Respuesta (coordenadas convertidas del enemigo): -"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Campo para ingresar coordenadas -->
+                <EditText
+                    android:id="@+id/etConvertedCoordinates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ingrese coordenadas convertidas"
+                    android:inputType="text"
+                    android:backgroundTint="@color/teal_700"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Botón para confirmar coordenadas -->
+                <Button
+                    android:id="@+id/btnConfirmCoordinates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Confirmar Conversión"
+                    android:backgroundTint="@color/orange_transparent"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Coordenadas reveladas -->
+                <TextView
+                    android:id="@+id/tvRevealedCoordinates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Coordenadas: -"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center" />
+
+                <!-- Temporizador de 10 segundos -->
+                <TextView
+                    android:id="@+id/tvDelayTimer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Esperando 10 segundos..."
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
     <!-- Botones de zoom en la esquina superior derecha -->
     <LinearLayout

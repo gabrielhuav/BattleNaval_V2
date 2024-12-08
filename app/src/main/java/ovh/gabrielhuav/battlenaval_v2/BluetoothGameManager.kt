@@ -35,7 +35,7 @@ class BluetoothGameManager(private val context: Context) {
     fun getDeviceByAddress(address: String): BluetoothDevice? {
         return bluetoothAdapter?.bondedDevices?.find { it.address == address }
     }
-    
+
     private var connectThread: ConnectThread? = null
     private var acceptThread: AcceptThread? = null
     private var connectedThread: ConnectedThread? = null
@@ -85,9 +85,8 @@ class BluetoothGameManager(private val context: Context) {
         if (acceptThread == null) {
             acceptThread = AcceptThread()
             acceptThread?.start()
-            setState(State.LISTEN) // Cambia el estado a LISTEN aquí
+            setState(State.LISTEN)
             Toast.makeText(context, "Servidor esperando conexiones", Toast.LENGTH_SHORT).show()
-
         }
     }
 
@@ -102,14 +101,12 @@ class BluetoothGameManager(private val context: Context) {
             cancelConnectThread()
         }
 
-        // Cancelar cualquier descubrimiento en curso
         if (bluetoothAdapter?.isDiscovering == true) {
             bluetoothAdapter?.cancelDiscovery()
         }
 
         connectThread = ConnectThread(device)
         connectThread?.start()
-
         setState(State.CONNECTING)
     }
 
@@ -136,6 +133,22 @@ class BluetoothGameManager(private val context: Context) {
     open fun sendMove(x: Int, y: Int) {
         val message = "$x,$y"
         write(message.toByteArray())
+    }
+
+    fun sendShips(ships: List<Pair<String, String>>) {
+        val serializedShips = ships.joinToString(";") { "${it.first},${it.second}" }
+        sendMessage("SHIPS,$serializedShips")
+    }
+
+    fun handleIncomingShips(message: String): List<Pair<String, String>> {
+        return if (message.startsWith("SHIPS")) {
+            message.substring(6).split(";").map {
+                val parts = it.split(",")
+                parts[0] to parts[1]
+            }
+        } else {
+            emptyList()
+        }
     }
 
     private fun write(out: ByteArray) {
