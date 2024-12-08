@@ -23,6 +23,7 @@ class BluetoothGameManager(private val context: Context) {
         private const val APP_NAME = "BattleNavalGame"
         private val MY_UUID: UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66")
 
+        // Message types
         const val MESSAGE_STATE_CHANGE = 1
         const val MESSAGE_READ = 2
         const val MESSAGE_WRITE = 3
@@ -31,11 +32,6 @@ class BluetoothGameManager(private val context: Context) {
     }
 
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-
-    fun getDeviceByAddress(address: String): BluetoothDevice? {
-        return bluetoothAdapter?.bondedDevices?.find { it.address == address }
-    }
-
     private var connectThread: ConnectThread? = null
     private var acceptThread: AcceptThread? = null
     private var connectedThread: ConnectedThread? = null
@@ -52,12 +48,15 @@ class BluetoothGameManager(private val context: Context) {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 MESSAGE_STATE_CHANGE -> {
-                    // Maneja los cambios de estado
+                    onStateChanged?.invoke(state)
                 }
                 MESSAGE_READ -> {
                     val readBuf = msg.obj as ByteArray
                     val readMessage = String(readBuf, 0, msg.arg1)
                     onMessageReceived?.invoke(readMessage)
+                }
+                MESSAGE_WRITE -> {
+                    // Optional: Handle write acknowledgments
                 }
             }
         }
@@ -76,6 +75,7 @@ class BluetoothGameManager(private val context: Context) {
     @Synchronized
     fun start() {
         if (!checkBluetoothPermission()) {
+            Toast.makeText(context, "Permission not granted for Bluetooth", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -90,10 +90,10 @@ class BluetoothGameManager(private val context: Context) {
         }
     }
 
-
     @Synchronized
     fun connect(device: BluetoothDevice) {
         if (!checkBluetoothPermission()) {
+            Toast.makeText(context, "Permission not granted for Bluetooth", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -123,47 +123,26 @@ class BluetoothGameManager(private val context: Context) {
     }
 
     @Synchronized
-    open fun stop() {
+    fun stop() {
         cancelConnectThread()
         cancelConnectedThread()
         cancelAcceptThread()
         setState(State.NONE)
     }
 
-    open fun sendMove(x: Int, y: Int) {
-        val message = "$x,$y"
-        write(message.toByteArray())
-    }
-
-    fun sendShips(ships: List<Pair<String, String>>) {
-        val serializedShips = ships.joinToString(";") { "${it.first},${it.second}" }
-        sendMessage("SHIPS,$serializedShips")
-    }
-
-    fun handleIncomingShips(message: String): List<Pair<String, String>> {
-        return if (message.startsWith("SHIPS")) {
-            message.substring(6).split(";").map {
-                val parts = it.split(",")
-                parts[0] to parts[1]
-            }
-        } else {
-            emptyList()
-        }
-    }
-
     private fun write(out: ByteArray) {
-        val r: ConnectedThread
+        val thread: ConnectedThread
         synchronized(this) {
             if (state != State.CONNECTED) return
-            r = connectedThread!!
+            thread = connectedThread!!
         }
-        r.write(out)
+        thread.write(out)
     }
 
     @Synchronized
     private fun setState(newState: State) {
         state = newState
-        onStateChanged?.invoke(newState)
+        onStateChanged?.invoke(state)
     }
 
     private inner class AcceptThread : Thread() {
@@ -180,13 +159,7 @@ class BluetoothGameManager(private val context: Context) {
         }
 
         override fun run() {
-            name = "AcceptThread"
             var socket: BluetoothSocket?
-
-            if (!checkBluetoothPermission()) {
-                return
-            }
-
             while (this@BluetoothGameManager.state != BluetoothGameManager.State.CONNECTED) {
                 socket = try {
                     serverSocket?.accept()
@@ -194,15 +167,13 @@ class BluetoothGameManager(private val context: Context) {
                     break
                 }
 
-                if (socket != null) {
+                socket?.let {
                     synchronized(this@BluetoothGameManager) {
                         when (this@BluetoothGameManager.state) {
-                            BluetoothGameManager.State.LISTEN,
-                            BluetoothGameManager.State.CONNECTING -> connected(socket)
-                            BluetoothGameManager.State.NONE,
-                            BluetoothGameManager.State.CONNECTED -> {
+                            BluetoothGameManager.State.LISTEN, BluetoothGameManager.State.CONNECTING -> connected(it)
+                            BluetoothGameManager.State.NONE, BluetoothGameManager.State.CONNECTED -> {
                                 try {
-                                    socket.close()
+                                    it.close()
                                 } catch (e: IOException) {
                                     e.printStackTrace()
                                 }
@@ -212,6 +183,7 @@ class BluetoothGameManager(private val context: Context) {
                 }
             }
         }
+
 
         fun cancel() {
             try {
@@ -236,10 +208,7 @@ class BluetoothGameManager(private val context: Context) {
         }
 
         override fun run() {
-            name = "ConnectThread"
-            if (checkBluetoothPermission()) {
-                bluetoothAdapter?.cancelDiscovery()
-            } else {
+            if (!checkBluetoothPermission()) {
                 return
             }
 
@@ -259,9 +228,7 @@ class BluetoothGameManager(private val context: Context) {
                 connectThread = null
             }
 
-            if (socket != null) {
-                connected(socket!!)
-            }
+            socket?.let { connected(it) }
         }
 
         fun cancel() {
@@ -352,4 +319,13 @@ class BluetoothGameManager(private val context: Context) {
     fun sendMessage(message: String) {
         write(message.toByteArray())
     }
+
+    fun getDeviceByAddress(address: String): BluetoothDevice? {
+        if (!checkBluetoothPermission()) {
+            Toast.makeText(context, "No se tienen permisos para acceder a Bluetooth.", Toast.LENGTH_SHORT).show()
+            return null
+        }
+        return bluetoothAdapter?.bondedDevices?.find { it.address == address }
+    }
+
 }
