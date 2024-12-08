@@ -2,12 +2,13 @@ package ovh.gabrielhuav.battlenaval_v2
 
 import android.content.Context
 import android.graphics.Color
-import android.view.GestureDetector
+import android.view.DragEvent
 import android.view.Gravity
 import android.view.MotionEvent
-import android.view.ScaleGestureDetector
+import android.view.View
 import android.widget.GridLayout
 import android.widget.TextView
+import kotlin.random.Random
 
 class Board(
     context: Context,
@@ -20,6 +21,7 @@ class Board(
         Array(7) { x ->
             Cell(context, x, y, this).apply {
                 setOnClickListener { onCellClick(this) }
+                setOnLongClickListener { startDrag(it); true }
             }
         }
     }
@@ -28,23 +30,16 @@ class Board(
         private set
     private var cellSize = 100
 
-    // Detector de gestos para pellizcar
-    private val scaleGestureDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        override fun onScale(detector: ScaleGestureDetector): Boolean {
-            val scale = scaleFactor * detector.scaleFactor
-            adjustCellSize(scale.coerceIn(0.1f, 2.0f)) // Limitar el zoom entre 0.1x y 2.0x
-            return true
-        }
-    })
-
     init {
         rowCount = 8
         columnCount = 8
         drawBoard()
+
+        setOnDragListener { _, event -> handleDrag(event) }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        return scaleGestureDetector.onTouchEvent(event) || super.onTouchEvent(event)
+        return super.onTouchEvent(event)
     }
 
     private fun drawBoard() {
@@ -88,8 +83,90 @@ class Board(
         }
     }
 
+    private fun startDrag(view: View) {
+        val cell = view as? Cell ?: return
+        val dragData = "${cell.x},${cell.y}"
+        val dragShadow = View.DragShadowBuilder(view)
+
+        view.startDragAndDrop(
+            null,
+            dragShadow,
+            dragData,
+            0
+        )
+    }
+
+    private fun handleDrag(event: DragEvent): Boolean {
+        when (event.action) {
+            DragEvent.ACTION_DRAG_STARTED -> return true
+            DragEvent.ACTION_DRAG_ENTERED -> return true
+            DragEvent.ACTION_DRAG_LOCATION -> return true
+            DragEvent.ACTION_DROP -> {
+                val dropX = event.x.toInt() / cellSize
+                val dropY = event.y.toInt() / cellSize
+
+                if (dropX in 0..6 && dropY in 0..6) {
+                    val draggedData = event.localState as String
+                    val (draggedX, draggedY) = draggedData.split(",").map { it.toInt() }
+                    val draggedCell = cells[draggedY][draggedX]
+                    val targetCell = cells[dropY][dropX]
+
+                    moveShip(draggedCell, targetCell)
+                }
+                return true
+            }
+            DragEvent.ACTION_DRAG_ENDED -> return true
+            else -> return false
+        }
+    }
+
+    private fun moveShip(draggedCell: Cell, targetCell: Cell) {
+        val ship = draggedCell.ship ?: return
+        val length = ship.size
+
+        // Check bounds and conflicts
+        val startX = targetCell.x
+        val startY = targetCell.y
+
+        if (ship.vertical) {
+            for (i in startY until startY + length) {
+                if (i >= 7 || cells[i][startX].ship != null) return
+            }
+        } else {
+            for (i in startX until startX + length) {
+                if (i >= 7 || cells[startY][i].ship != null) return
+            }
+        }
+
+        // Remove from original position
+        if (ship.vertical) {
+            for (i in draggedCell.y until draggedCell.y + length) {
+                cells[i][draggedCell.x].ship = null
+                cells[i][draggedCell.x].invalidate()
+            }
+        } else {
+            for (i in draggedCell.x until draggedCell.x + length) {
+                cells[draggedCell.y][i].ship = null
+                cells[draggedCell.y][i].invalidate()
+            }
+        }
+
+        // Place at new position
+        if (ship.vertical) {
+            for (i in startY until startY + length) {
+                cells[i][startX].ship = ship
+                cells[i][startX].invalidate()
+            }
+        } else {
+            for (i in startX until startX + length) {
+                cells[startY][i].ship = ship
+                cells[startY][i].invalidate()
+            }
+        }
+    }
+
     fun placeShip(ship: Ship, x: Int, y: Int): Boolean {
-        val length = ship.type
+        val length = ship.size
         if (ship.vertical) {
             for (i in y until y + length) {
                 if (i >= 7 || cells[i][x].ship != null) return false
@@ -119,5 +196,13 @@ class Board(
         scaleFactor = newScaleFactor
         cellSize = (100 * scaleFactor).toInt().coerceAtLeast(20)
         drawBoard()
+    }
+
+    fun getRandomShipCell(): Cell {
+        val shipCells = cells.flatten().filter { it.ship != null && !it.wasShot }
+        if (shipCells.isEmpty()) {
+            throw IllegalStateException("No hay celdas disponibles de barcos para revelar.")
+        }
+        return shipCells.random()
     }
 }

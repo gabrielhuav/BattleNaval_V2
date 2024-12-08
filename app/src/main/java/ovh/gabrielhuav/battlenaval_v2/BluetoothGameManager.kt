@@ -9,7 +9,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Handler
 import android.os.Looper
-import android.os.Message
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import java.io.IOException
@@ -19,52 +19,30 @@ import java.util.*
 
 class BluetoothGameManager(private val context: Context) {
 
-    companion object {
-        private const val APP_NAME = "BattleNavalGame"
-        private val MY_UUID: UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66")
-
-        const val MESSAGE_STATE_CHANGE = 1
-        const val MESSAGE_READ = 2
-        const val MESSAGE_WRITE = 3
-        const val MESSAGE_DEVICE_NAME = 4
-        const val MESSAGE_TOAST = 5
-    }
-
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-
-    fun getDeviceByAddress(address: String): BluetoothDevice? {
-        return bluetoothAdapter?.bondedDevices?.find { it.address == address }
-    }
-    
     private var connectThread: ConnectThread? = null
     private var acceptThread: AcceptThread? = null
     private var connectedThread: ConnectedThread? = null
-    private var state: State = State.NONE
+    private var currentState: BluetoothState = BluetoothState.NONE
+    private var isStopping = false
 
-    enum class State {
+    enum class BluetoothState {
         NONE,
-        LISTEN,
+        LISTENING,
         CONNECTING,
         CONNECTED
     }
 
-    private val handler = object : Handler(Looper.getMainLooper()) {
-        override fun handleMessage(msg: Message) {
-            when (msg.what) {
-                MESSAGE_STATE_CHANGE -> {
-                    // Maneja los cambios de estado
-                }
-                MESSAGE_READ -> {
-                    val readBuf = msg.obj as ByteArray
-                    val readMessage = String(readBuf, 0, msg.arg1)
-                    onMessageReceived?.invoke(readMessage)
-                }
-            }
-        }
+    companion object {
+        private const val APP_NAME = "BattleNavalGame"
+        private val MY_UUID: UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66")
+        private const val TAG = "BluetoothGameManager"
     }
 
     var onMessageReceived: ((String) -> Unit)? = null
-    var onStateChanged: ((State) -> Unit)? = null
+    var onStateChanged: ((BluetoothState) -> Unit)? = null
+
+    private val handler = Handler(Looper.getMainLooper())
 
     private fun checkBluetoothPermission(): Boolean {
         return ActivityCompat.checkSelfPermission(
@@ -73,44 +51,42 @@ class BluetoothGameManager(private val context: Context) {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+    private fun ensureBluetoothPermission(): Boolean {
+        if (!checkBluetoothPermission()) {
+            showToast("Permisos de Bluetooth no concedidos.")
+            return false
+        }
+        return true
+    }
+
     @Synchronized
     fun start() {
-        if (!checkBluetoothPermission()) {
-            return
-        }
+        if (!ensureBluetoothPermission()) return
 
+        isStopping = false
         cancelConnectThread()
         cancelConnectedThread()
 
         if (acceptThread == null) {
             acceptThread = AcceptThread()
             acceptThread?.start()
-            setState(State.LISTEN) // Cambia el estado a LISTEN aquí
-            Toast.makeText(context, "Servidor esperando conexiones", Toast.LENGTH_SHORT).show()
-
+            updateState(BluetoothState.LISTENING)
+            showToast("Servidor esperando conexiones")
         }
     }
 
-
     @Synchronized
     fun connect(device: BluetoothDevice) {
-        if (!checkBluetoothPermission()) {
-            return
-        }
+        if (!ensureBluetoothPermission()) return
 
-        if (state == State.CONNECTING) {
-            cancelConnectThread()
-        }
-
-        // Cancelar cualquier descubrimiento en curso
-        if (bluetoothAdapter?.isDiscovering == true) {
-            bluetoothAdapter?.cancelDiscovery()
-        }
+        cancelConnectThread()
+        cancelConnectedThread()
+        cancelAcceptThread()
 
         connectThread = ConnectThread(device)
         connectThread?.start()
 
-        setState(State.CONNECTING)
+        updateState(BluetoothState.CONNECTING)
     }
 
     @Synchronized
@@ -122,80 +98,56 @@ class BluetoothGameManager(private val context: Context) {
         connectedThread = ConnectedThread(socket)
         connectedThread?.start()
 
-        setState(State.CONNECTED)
+        updateState(BluetoothState.CONNECTED)
+        showToast("Dispositivo conectado")
     }
 
     @Synchronized
-    open fun stop() {
+    fun stop() {
+        isStopping = true
         cancelConnectThread()
         cancelConnectedThread()
         cancelAcceptThread()
-        setState(State.NONE)
+        updateState(BluetoothState.NONE)
     }
 
-    open fun sendMove(x: Int, y: Int) {
-        val message = "$x,$y"
-        write(message.toByteArray())
-    }
-
-    private fun write(out: ByteArray) {
-        val r: ConnectedThread
-        synchronized(this) {
-            if (state != State.CONNECTED) return
-            r = connectedThread!!
+    fun sendMessage(message: String) {
+        if (currentState == BluetoothState.CONNECTED) {
+            connectedThread?.write(message.toByteArray())
+        } else {
+            Log.w(TAG, "No se puede enviar el mensaje, no hay conexión activa.")
         }
-        r.write(out)
     }
 
-    @Synchronized
-    private fun setState(newState: State) {
-        state = newState
+
+    private fun updateState(newState: BluetoothState) {
+        currentState = newState
         onStateChanged?.invoke(newState)
     }
 
     private inner class AcceptThread : Thread() {
-        private var serverSocket: BluetoothServerSocket? = null
-
-        init {
-            if (checkBluetoothPermission()) {
-                try {
-                    serverSocket = bluetoothAdapter?.listenUsingRfcommWithServiceRecord(APP_NAME, MY_UUID)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
+        private val serverSocket: BluetoothServerSocket? = try {
+            bluetoothAdapter?.listenUsingRfcommWithServiceRecord(APP_NAME, MY_UUID)
+        } catch (e: IOException) {
+            Log.e(TAG, "Error al crear el socket del servidor", e)
+            null
         }
 
         override fun run() {
-            name = "AcceptThread"
-            var socket: BluetoothSocket?
-
-            if (!checkBluetoothPermission()) {
-                return
-            }
-
-            while (this@BluetoothGameManager.state != BluetoothGameManager.State.CONNECTED) {
-                socket = try {
-                    serverSocket?.accept()
-                } catch (e: IOException) {
-                    break
-                }
-
-                if (socket != null) {
-                    synchronized(this@BluetoothGameManager) {
-                        when (this@BluetoothGameManager.state) {
-                            BluetoothGameManager.State.LISTEN,
-                            BluetoothGameManager.State.CONNECTING -> connected(socket)
-                            BluetoothGameManager.State.NONE,
-                            BluetoothGameManager.State.CONNECTED -> {
-                                try {
-                                    socket.close()
-                                } catch (e: IOException) {
-                                    e.printStackTrace()
-                                }
+            while (currentState != BluetoothState.CONNECTED) {
+                try {
+                    val socket = serverSocket?.accept()
+                    socket?.let {
+                        synchronized(this@BluetoothGameManager) {
+                            when (currentState) {
+                                BluetoothState.LISTENING, BluetoothState.CONNECTING -> connected(it)
+                                BluetoothState.NONE, BluetoothState.CONNECTED -> it.close()
                             }
                         }
                     }
+                } catch (e: IOException) {
+                    Log.e(TAG, "Error aceptando conexión", e)
+                    break
                 }
             }
         }
@@ -204,91 +156,59 @@ class BluetoothGameManager(private val context: Context) {
             try {
                 serverSocket?.close()
             } catch (e: IOException) {
-                e.printStackTrace()
+                Log.e(TAG, "Error cerrando el socket del servidor", e)
             }
         }
     }
 
     private inner class ConnectThread(private val device: BluetoothDevice) : Thread() {
-        private var socket: BluetoothSocket? = null
-
-        init {
-            if (checkBluetoothPermission()) {
-                try {
-                    socket = device.createRfcommSocketToServiceRecord(MY_UUID)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
+        private val socket: BluetoothSocket? = try {
+            device.createRfcommSocketToServiceRecord(MY_UUID)
+        } catch (e: IOException) {
+            Log.e(TAG, "Error al crear el socket del cliente", e)
+            null
         }
 
         override fun run() {
-            name = "ConnectThread"
-            if (checkBluetoothPermission()) {
-                bluetoothAdapter?.cancelDiscovery()
-            } else {
-                return
-            }
-
+            bluetoothAdapter?.cancelDiscovery()
             try {
                 socket?.connect()
-            } catch (e: IOException) {
-                try {
-                    socket?.close()
-                } catch (e2: IOException) {
-                    e2.printStackTrace()
-                }
-                connectionFailed()
-                return
-            }
-
-            synchronized(this@BluetoothGameManager) {
-                connectThread = null
-            }
-
-            if (socket != null) {
                 connected(socket!!)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error conectando al dispositivo: ${e.message}")
+                closeSocket()
+                connectionFailed()
+            }
+        }
+
+        private fun closeSocket() {
+            try {
+                socket?.close()
+            } catch (e: IOException) {
+                Log.e(TAG, "Error cerrando el socket del cliente", e)
             }
         }
 
         fun cancel() {
-            try {
-                socket?.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+            closeSocket()
         }
     }
 
     private inner class ConnectedThread(private val socket: BluetoothSocket) : Thread() {
-        private val inputStream: InputStream?
-        private val outputStream: OutputStream?
-
-        init {
-            var tmpIn: InputStream? = null
-            var tmpOut: OutputStream? = null
-
-            try {
-                tmpIn = socket.inputStream
-                tmpOut = socket.outputStream
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-            inputStream = tmpIn
-            outputStream = tmpOut
-        }
+        private val inputStream: InputStream = socket.inputStream
+        private val outputStream: OutputStream = socket.outputStream
 
         override fun run() {
             val buffer = ByteArray(1024)
-            var bytes: Int
-
-            while (true) {
+            while (!isInterrupted) {
                 try {
-                    bytes = inputStream?.read(buffer) ?: -1
-                    if (bytes == -1) break
-                    handler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget()
+                    val bytes = inputStream.read(buffer)
+                    if (bytes > 0) {
+                        val message = String(buffer, 0, bytes)
+                        handler.post { onMessageReceived?.invoke(message) }
+                    }
                 } catch (e: IOException) {
+                    Log.e(TAG, "Conexión perdida en el hilo de lectura", e)
                     connectionLost()
                     break
                 }
@@ -297,19 +217,45 @@ class BluetoothGameManager(private val context: Context) {
 
         fun write(buffer: ByteArray) {
             try {
-                outputStream?.write(buffer)
-                handler.obtainMessage(MESSAGE_WRITE, -1, -1, buffer).sendToTarget()
+                outputStream.write(buffer)
             } catch (e: IOException) {
-                e.printStackTrace()
+                Log.e(TAG, "Error escribiendo datos", e)
+                connectionLost()
             }
         }
 
         fun cancel() {
             try {
+                inputStream.close()
+                outputStream.close()
                 socket.close()
             } catch (e: IOException) {
-                e.printStackTrace()
+                Log.e(TAG, "Error cerrando el socket", e)
             }
+        }
+    }
+
+    private fun connectionLost() {
+        if (!isStopping) {
+            Log.e(TAG, "Conexión perdida")
+            updateState(BluetoothState.LISTENING)
+            handler.postDelayed({ start() }, 2000) // Intentar reconectar tras 2 segundos
+        }
+    }
+
+    private fun connectionFailed() {
+        if (!isStopping) {
+            Log.e(TAG, "Conexión fallida")
+            updateState(BluetoothState.LISTENING)
+            handler.postDelayed({ start() }, 3000) // Intentar reconectar tras 3 segundos
+        }
+    }
+
+    fun getDeviceByAddress(address: String): BluetoothDevice? {
+        return if (ensureBluetoothPermission()) {
+            bluetoothAdapter?.bondedDevices?.find { it.address == address }
+        } else {
+            null
         }
     }
 
@@ -328,15 +274,9 @@ class BluetoothGameManager(private val context: Context) {
         acceptThread = null
     }
 
-    private fun connectionFailed() {
-        setState(State.LISTEN)
-    }
-
-    private fun connectionLost() {
-        setState(State.LISTEN)
-    }
-
-    fun sendMessage(message: String) {
-        write(message.toByteArray())
+    private fun showToast(message: String) {
+        handler.post {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
     }
 }
