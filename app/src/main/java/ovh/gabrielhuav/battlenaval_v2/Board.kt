@@ -15,7 +15,7 @@ class Board(
 ) : GridLayout(context) {
 
     var ships = 3
-    private val cells = Array(7) { y ->
+    val cells = Array(7) { y ->
         Array(7) { x ->
             Cell(context, x, y, this).apply {
                 setOnClickListener { onCellClick(this) }
@@ -146,5 +146,38 @@ class Board(
         return coordinates
     }
 
+    fun clearShips() {
+        for (y in cells.indices) {
+            for (x in cells[y].indices) {
+                val cell = cells[y][x]
+                cell.ship = null
+                cell.invalidate() // Fuerza el redibujado de la celda
+            }
+        }
+        ships = 0 // Reinicia el contador de barcos
+    }
+
+    fun findShipStartCoordinates(ship: Ship): Pair<Int, Int> {
+        for (y in cells.indices) {
+            for (x in cells[y].indices) {
+                val cell = cells[y][x]
+                if (cell.ship == ship) {
+                    // Verifica si el barco está orientado verticalmente
+                    if (ship.vertical) {
+                        // Verifica que sea la primera celda del barco (arriba hacia abajo)
+                        if (y == 0 || cells[y - 1][x].ship != ship) {
+                            return Pair(x, y)
+                        }
+                    } else {
+                        // Verifica que sea la primera celda del barco (izquierda a derecha)
+                        if (x == 0 || cells[y][x - 1].ship != ship) {
+                            return Pair(x, y)
+                        }
+                    }
+                }
+            }
+        }
+        throw IllegalStateException("No se pudo encontrar el barco en el tablero.")
+    }
 
 }
