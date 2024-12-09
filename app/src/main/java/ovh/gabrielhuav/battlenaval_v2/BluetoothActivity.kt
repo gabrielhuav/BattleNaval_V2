@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,14 +20,12 @@ class BluetoothActivity : AppCompatActivity() {
     private lateinit var enemyBoard: Board
     private lateinit var serverStatusTextView: TextView
     private lateinit var revealedCoordinatesTextView: TextView
-    private lateinit var delayTimerTextView: TextView
     private lateinit var etCoordinateInput: EditText
     private lateinit var btnConfirmCoordinate: Button
 
     private var shipsPlaced = false
     private var isConnected = false
     private var opponentShips: List<Pair<Int, Int>> = emptyList()
-    private var lastOpponentMessage: String? = null
     private var revealedCoordinates: MutableList<Pair<Int, Int>> = mutableListOf()
     private var currentRevealedCoordinate: Pair<Int, Int>? = null
 
@@ -67,7 +64,6 @@ class BluetoothActivity : AppCompatActivity() {
         enemyBoardFrame = findViewById(R.id.enemyBoardFrame)
         serverStatusTextView = findViewById(R.id.tvBluetoothStatus)
         revealedCoordinatesTextView = findViewById(R.id.tvRevealedCoordinates)
-        delayTimerTextView = findViewById(R.id.tvDelayTimer)
         etCoordinateInput = findViewById(R.id.etConvertedCoordinates)
         btnConfirmCoordinate = findViewById(R.id.btnConfirmCoordinates)
     }
@@ -99,14 +95,6 @@ class BluetoothActivity : AppCompatActivity() {
             finish()
         }
 
-        findViewById<Button>(R.id.btnRevealNextCoordante).setOnClickListener {
-            if (currentRevealedCoordinate == null) {
-                revealNextCoordinate()
-            } else {
-                Toast.makeText(this, "Debe adivinar la coordenada actual antes de avanzar.", Toast.LENGTH_SHORT).show()
-            }
-        }
-
         btnConfirmCoordinate.setOnClickListener {
             validateCoordinate()
         }
@@ -134,24 +122,42 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-    private fun revealNextCoordinate() {
-        if (!isConnected || opponentShips.isEmpty()) {
-            Toast.makeText(this, "Conexión no establecida o no hay barcos del oponente.", Toast.LENGTH_SHORT).show()
-            return
-        }
+    private fun sendPlayerShipsToOpponent() {
+        sendPlayerShipsToServer()
+    }
 
-        // Buscar la siguiente coordenada que no haya sido revelada
-        val nextCoordinate = opponentShips.find { it !in revealedCoordinates }
-        if (nextCoordinate != null) {
-            // Actualizar la coordenada actual revelada
-            currentRevealedCoordinate = nextCoordinate
-            revealedCoordinates.add(nextCoordinate)
+    private fun handleIncomingMessage(message: String) {
+        when {
+            message.startsWith("SHIPS") -> {
+                val shipsData = message.substringAfter(",")
+                opponentShips = deserializeShipPositions(shipsData)
+            }
+            message.startsWith("SHOOT") -> {
+                val shootData = message.substringAfter(",")
+                val (x, y) = deserializeShot(shootData)
 
-            // Dibujar la celda en verde oscuro para apuntar
-            drawCoordinateOnBoard(enemyBoard, nextCoordinate, Color.parseColor("#006400")) // Verde oscuro
-            revealedCoordinatesTextView.text = "Coordenada revelada: ${coordinateToString(nextCoordinate)}"
-        } else {
-            Toast.makeText(this, "Todas las coordenadas ya han sido reveladas.", Toast.LENGTH_SHORT).show()
+                // Verificar si hay un barco en la celda impactada
+                if (playerBoard.isShipAt(x, y)) {
+                    // Enviar un mensaje de impacto visual al oponente
+                    bluetoothGameManager.sendMessage("ENEMY_HIT,$x,$y")
+                    drawImpactOnPlayerBoard(x, y, Color.BLACK)
+                    Toast.makeText(this, "¡El enemigo impactó en tus barcos!", Toast.LENGTH_SHORT).show()
+                } else {
+                    bluetoothGameManager.sendMessage("MISS,$x,$y")
+                    Toast.makeText(this, "¡El enemigo falló!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            message.startsWith("ENEMY_HIT") -> {
+                val hitData = message.substringAfter(",")
+                val (x, y) = deserializeShot(hitData)
+
+                // Cambiar el color de la celda impactada a rojo en el tablero del enemigo
+                drawImpactOnEnemyBoard(x, y, Color.RED)
+                Toast.makeText(this, "¡Impactaste en un barco enemigo!", Toast.LENGTH_SHORT).show()
+            }
+            message.startsWith("MISS") -> {
+                Toast.makeText(this, "Fallaste el disparo.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -160,13 +166,9 @@ class BluetoothActivity : AppCompatActivity() {
         if (currentRevealedCoordinate != null) {
             val coordinateString = coordinateToString(currentRevealedCoordinate!!)
             if (userInput.equals(coordinateString, ignoreCase = true)) {
-                Toast.makeText(this, "¡Correcto! Coordenada impactada.", Toast.LENGTH_SHORT).show()
-
-                // Cambiar el color a rojo para indicar un impacto confirmado
                 drawCoordinateOnBoard(enemyBoard, currentRevealedCoordinate!!, Color.RED)
                 etCoordinateInput.text.clear()
                 currentRevealedCoordinate = null
-                delayTimerTextView.visibility = android.view.View.GONE
             } else {
                 Toast.makeText(this, "Incorrecto. Intenta nuevamente.", Toast.LENGTH_SHORT).show()
             }
@@ -174,7 +176,12 @@ class BluetoothActivity : AppCompatActivity() {
             Toast.makeText(this, "No hay coordenada revelada actualmente.", Toast.LENGTH_SHORT).show()
         }
     }
-
+    private fun coordinateToString(coordinate: Pair<Int, Int>): String {
+        val (x, y) = coordinate
+        val column = x + 1 // Convertimos la columna de índice a un valor 1-based
+        val row = ('A' + y) // Convertimos la fila a una letra (A, B, C...)
+        return "$row$column" // Concatenamos la fila y columna en formato texto
+    }
 
     private fun drawCoordinateOnBoard(board: Board, coordinate: Pair<Int, Int>, color: Int) {
         val (x, y) = coordinate
@@ -184,18 +191,21 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleIncomingMessage(message: String) {
-        if (message.startsWith("SHIPS")) {
-            val shipsData = message.substringAfter(",")
-            opponentShips = deserializeShipPositions(shipsData)
-        }
+    private fun drawImpactOnPlayerBoard(x: Int, y: Int, color: Int) {
+        val cell = playerBoard.getCell(x, y)
+        cell.setBackgroundColor(color)
+        cell.invalidate()
     }
 
-    private fun coordinateToString(coordinate: Pair<Int, Int>): String {
-        val (x, y) = coordinate
-        val column = x + 1
-        val row = ('A' + y)
-        return "$row$column"
+    private fun drawImpactOnEnemyBoard(x: Int, y: Int, color: Int) {
+        val cell = enemyBoard.getCell(x, y)
+        cell.setBackgroundColor(color)
+        cell.invalidate()
+    }
+
+    private fun deserializeShot(data: String): Pair<Int, Int> {
+        val parts = data.split(",")
+        return Pair(parts[0].toIntOrNull() ?: -1, parts[1].toIntOrNull() ?: -1)
     }
 
     private fun deserializeShipPositions(data: String): List<Pair<Int, Int>> {
@@ -224,10 +234,6 @@ class BluetoothActivity : AppCompatActivity() {
     private fun sendPlayerShipsToServer() {
         val playerShips = playerBoard.getShipCoordinates()
         bluetoothGameManager.sendMessage("SHIPS,${serializeShipCoordinates(playerShips)}")
-    }
-
-    private fun sendPlayerShipsToOpponent() {
-        sendPlayerShipsToServer()
     }
 
     private fun serializeShipCoordinates(ships: List<Pair<String, String>>): String {

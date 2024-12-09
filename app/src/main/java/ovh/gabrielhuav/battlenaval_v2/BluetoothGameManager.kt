@@ -231,7 +231,7 @@ class BluetoothGameManager(
             board.getCell(x, y).shoot()
         }
     }
-    
+
     @Synchronized
     private fun setState(newState: State) {
         state = newState

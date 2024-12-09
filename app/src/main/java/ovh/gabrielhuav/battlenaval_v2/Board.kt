@@ -142,12 +142,8 @@ class Board(
     /**
      * Método para forzar el redibujado del tablero y todas sus celdas.
      */
-    fun redrawBoard() {
-        for (y in cells.indices) {
-            for (x in cells[y].indices) {
-                cells[y][x].invalidate() // Fuerza el redibujado de cada celda
-            }
-        }
-        invalidate() // Fuerza el redibujado del contenedor del tablero
+    fun isShipAt(x: Int, y: Int): Boolean {
+        return cells[y][x].ship != null
     }
+
 }
