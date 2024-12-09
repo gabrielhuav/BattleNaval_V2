@@ -4,9 +4,11 @@ import android.Manifest
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -19,11 +21,14 @@ class BluetoothActivity : AppCompatActivity() {
     private lateinit var playerBoard: Board
     private lateinit var enemyBoard: Board
     private lateinit var serverStatusTextView: TextView
+    private lateinit var revealedCoordinatesTextView: TextView
+    private lateinit var delayTimerTextView: TextView
 
     private var shipsPlaced = false
     private var isConnected = false
     private var opponentShips: List<Pair<Int, Int>> = emptyList()
-    private var lastOpponentMessage: String? = null // Variable para guardar el último mensaje recibido
+    private var lastOpponentMessage: String? = null
+    private var revealedCoordinates: MutableList<Pair<Int, Int>> = mutableListOf()
 
     private lateinit var devicePickerLauncher: ActivityResultLauncher<Intent>
 
@@ -42,15 +47,14 @@ class BluetoothActivity : AppCompatActivity() {
                 val deviceAddress = result.data?.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS)
                 deviceAddress?.let {
                     bluetoothGameManager.connect(it)
+                    sendPlayerShipsToServer()
                 }
             }
         }
 
         bluetoothGameManager = BluetoothGameManager(this, playerBoard, enemyBoard, BluetoothService(this)).apply {
             onStateChanged = { state -> updateServerStatus(state) }
-            onMessageReceived = { message ->
-                handleIncomingMessage(message)
-            }
+            onMessageReceived = { message -> handleIncomingMessage(message) }
         }
 
         setupButtons()
@@ -60,6 +64,8 @@ class BluetoothActivity : AppCompatActivity() {
         playerBoardFrame = findViewById(R.id.playerBoardFrame)
         enemyBoardFrame = findViewById(R.id.enemyBoardFrame)
         serverStatusTextView = findViewById(R.id.tvBluetoothStatus)
+        revealedCoordinatesTextView = findViewById(R.id.tvRevealedCoordinates)
+        delayTimerTextView = findViewById(R.id.tvDelayTimer)
     }
 
     private fun initializeBoards() {
@@ -89,9 +95,8 @@ class BluetoothActivity : AppCompatActivity() {
             finish()
         }
 
-        findViewById<Button>(R.id.btnZoomIn).setOnClickListener {
-            sendPlayerShipsToOpponent() // Reenvía los barcos al oponente
-            drawOpponentShipsOnEnemyBoard() // Dibuja los barcos del oponente con el último mensaje recibido
+        findViewById<Button>(R.id.btnRevealNextCoordante).setOnClickListener {
+            revealNextCoordinate()
         }
     }
 
@@ -105,7 +110,7 @@ class BluetoothActivity : AppCompatActivity() {
                     isConnected = true
                     if (!shipsPlaced) {
                         placePlayerShips()
-                        sendPlayerShipsToOpponent() // Envía los barcos al oponente
+                        sendPlayerShipsToOpponent()
                         shipsPlaced = true
                     }
                 }
@@ -117,11 +122,99 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendPlayerShipsToOpponent() {
-        val playerShips = playerBoard.getShipCoordinates()
-        bluetoothGameManager.sendMessage("SHIPS,${serializeNumericShipPositions(playerShips)}")
+    private fun revealNextCoordinate() {
+        if (!isConnected || opponentShips.isEmpty()) {
+            Toast.makeText(this, "Conexión no establecida o no hay barcos del oponente.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val nextCoordinate = opponentShips.find { it !in revealedCoordinates }
+        if (nextCoordinate != null) {
+            revealedCoordinates.add(nextCoordinate)
+            drawCoordinateOnBoard(enemyBoard, nextCoordinate, Color.RED)
+            revealedCoordinatesTextView.text = "Coordenadas reveladas: ${coordinateToString(nextCoordinate)}"
+        } else {
+            Toast.makeText(this, "Todas las coordenadas ya han sido reveladas.", Toast.LENGTH_SHORT).show()
+        }
+
+        startDelayTimer()
     }
 
+    private fun drawCoordinateOnBoard(board: Board, coordinate: Pair<Int, Int>, color: Int) {
+        val (x, y) = coordinate
+        board.getCell(x, y).apply {
+            setBackgroundColor(color)
+            invalidate()
+        }
+    }
+
+    private fun startDelayTimer() {
+        delayTimerTextView.visibility = android.view.View.VISIBLE
+        object : CountDownTimer(10000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                delayTimerTextView.text = "Siguiente turno en ${millisUntilFinished / 1000} segundos..."
+            }
+
+            override fun onFinish() {
+                delayTimerTextView.visibility = android.view.View.GONE
+            }
+        }.start()
+    }
+
+    private fun handleIncomingMessage(message: String) {
+        if (message.startsWith("SHIPS")) {
+            val shipsData = message.substringAfter(",")
+            opponentShips = deserializeShipPositions(shipsData)
+        }
+    }
+
+    private fun coordinateToString(coordinate: Pair<Int, Int>): String {
+        val (x, y) = coordinate
+        val column = x + 1
+        val row = ('A' + y)
+        return "$row$column"
+    }
+
+    private fun deserializeShipPositions(data: String): List<Pair<Int, Int>> {
+        return data.split(";").mapNotNull {
+            val parts = it.split(",")
+            if (parts.size == 2) {
+                val x = parts[0].toIntOrNull()
+                val y = parts[1].toIntOrNull()
+                if (x != null && y != null) Pair(x, y) else null
+            } else null
+        }
+    }
+
+    private fun placePlayerShips() {
+        val shipData = listOf(Pair(4, Color.GREEN), Pair(3, Color.RED), Pair(2, Color.GRAY))
+        for ((size, color) in shipData) {
+            while (true) {
+                val x = Random.nextInt(0, 7)
+                val y = Random.nextInt(0, 7)
+                val vertical = Random.nextBoolean()
+                if (playerBoard.placeShip(Ship(size, vertical, color), x, y)) break
+            }
+        }
+    }
+
+    private fun sendPlayerShipsToServer() {
+        val playerShips = playerBoard.getShipCoordinates()
+        bluetoothGameManager.sendMessage("SHIPS,${serializeShipCoordinates(playerShips)}")
+    }
+
+    private fun sendPlayerShipsToOpponent() {
+        sendPlayerShipsToServer()
+    }
+
+    private fun serializeShipCoordinates(ships: List<Pair<String, String>>): String {
+        return ships.joinToString(";") {
+            val (row, col) = it
+            val x = col.toInt() - 1
+            val y = row[0] - 'A'
+            "$x,$y"
+        }
+    }
     private fun checkBluetoothPermissions() {
         val permissions = arrayOf(
             Manifest.permission.BLUETOOTH,
@@ -133,106 +226,6 @@ class BluetoothActivity : AppCompatActivity() {
         }
         if (missingPermissions.isNotEmpty()) {
             ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), 1)
-        }
-    }
-
-    private fun handleIncomingMessage(message: String) {
-        runOnUiThread {
-            Toast.makeText(this, "Mensaje recibido: $message", Toast.LENGTH_SHORT).show()
-        }
-
-        when {
-            message.startsWith("SHIPS") -> {
-                val shipsData = message.substringAfter(",")
-                val receivedShips = deserializeShipPositions(shipsData)
-
-                if (receivedShips.isNotEmpty()) {
-                    opponentShips = receivedShips
-                    lastOpponentMessage = message // Guarda el mensaje recibido
-                    runOnUiThread {
-                        Toast.makeText(this, "Barcos del oponente recibidos: $receivedShips", Toast.LENGTH_SHORT).show()
-                    }
-                    // Envía confirmación de recepción
-                    bluetoothGameManager.sendMessage("RECEIVED")
-                } else {
-                    runOnUiThread {
-                        Toast.makeText(this, "Error: Datos de barcos vacíos o inválidos.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            message == "RECEIVED" -> {
-                runOnUiThread {
-                    Toast.makeText(this, "El oponente confirmó la recepción de los barcos.", Toast.LENGTH_SHORT).show()
-                }
-            }
-            else -> {
-                runOnUiThread {
-                    Toast.makeText(this, "Mensaje desconocido recibido: $message", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    private fun drawOpponentShipsOnEnemyBoard() {
-        if (opponentShips.isEmpty() && lastOpponentMessage != null) {
-            opponentShips = deserializeShipPositions(lastOpponentMessage!!.substringAfter(","))
-        }
-
-        if (opponentShips.isEmpty()) {
-            Toast.makeText(this, "No hay barcos del oponente para dibujar.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        runOnUiThread {
-            enemyBoard.clearShips()
-
-            opponentShips.forEach { (x, y) ->
-                try {
-                    if (x in 0..6 && y in 0..6) {
-                        val ship = Ship(1, false, Color.RED)
-                        enemyBoard.placeShip(ship, x, y)
-                    } else {
-                        Toast.makeText(this, "Coordenadas fuera de rango: ($x, $y)", Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(this, "Error al procesar coordenadas: ($x, $y)", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            enemyBoard.redrawBoard()
-            Toast.makeText(this, "Barcos del oponente dibujados en el tablero 2.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun placePlayerShips() {
-        val shipData = listOf(Pair(4, Color.GREEN), Pair(3, Color.BLUE), Pair(2, Color.YELLOW))
-        for ((size, color) in shipData) {
-            while (true) {
-                val x = Random.nextInt(0, 7)
-                val y = Random.nextInt(0, 7)
-                val vertical = Random.nextBoolean()
-                if (playerBoard.placeShip(Ship(size, vertical, color), x, y)) break
-            }
-        }
-    }
-
-    private fun serializeNumericShipPositions(ships: List<Pair<String, String>>): String {
-        return ships.joinToString(";") {
-            val (row, col) = it
-            val x = col.toInt() - 1
-            val y = row[0] - 'A'
-            "$x,$y"
-        }
-    }
-
-    private fun deserializeShipPositions(data: String): List<Pair<Int, Int>> {
-        return data.split(";").mapNotNull {
-            val parts = it.split(",")
-            if (parts.size == 2) {
-                val x = parts[0].toIntOrNull()
-                val y = parts[1].toIntOrNull()
-                if (x != null && y != null && x in 0..6 && y in 0..6) Pair(x, y) else null
-            } else null
         }
     }
 }
