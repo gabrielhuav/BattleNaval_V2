@@ -5,7 +5,7 @@ import android.graphics.Color
 class Ship(
     val type: Int, // Tamaño del barco
     val vertical: Boolean,
-    val color: Int = Color.TRANSPARENT // Por defecto, los barcos enemigos son transparentes
+    val color: Int = Color.MAGENTA // Por defecto, los barcos enemigos son transparentes
 ) {
     private var health: Int = type
 

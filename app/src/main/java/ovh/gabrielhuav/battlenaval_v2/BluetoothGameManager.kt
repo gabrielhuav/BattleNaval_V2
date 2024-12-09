@@ -56,6 +56,12 @@ class BluetoothGameManager(
     // Callback para dibujar barcos después de cargar el estado
     var onShipsRestored: (() -> Unit)? = null
 
+    init {
+        bluetoothService.onMessageReceived = { message ->
+            onMessageReceived?.invoke(message) // Pasa el mensaje al nivel superior
+        }
+    }
+
     fun start() {
         if (bluetoothAdapter == null) {
             Log.e("BluetoothGameManager", "Bluetooth no está disponible en este dispositivo.")

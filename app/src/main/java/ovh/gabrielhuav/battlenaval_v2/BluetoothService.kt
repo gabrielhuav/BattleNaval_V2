@@ -55,7 +55,7 @@ class BluetoothService(private val context: Context) {
                     runOnMainThread {
                         showToast("Mensaje leído: $message")
                     }
-                    onMessageReceived?.invoke(message)
+                    onMessageReceived?.invoke(message) // Propaga el mensaje
                 }
             } catch (e: IOException) {
                 runOnMainThread {
@@ -64,6 +64,8 @@ class BluetoothService(private val context: Context) {
             }
         }
     }
+
+
 
     /**
      * Escribe datos a través del socket Bluetooth.

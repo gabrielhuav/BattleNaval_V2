@@ -22,6 +22,8 @@ class BluetoothActivity : AppCompatActivity() {
 
     private var shipsPlaced = false
     private var isConnected = false
+    private var opponentShips: List<Pair<Int, Int>> = emptyList()
+    private var lastOpponentMessage: String? = null // Variable para guardar el último mensaje recibido
 
     private lateinit var devicePickerLauncher: ActivityResultLauncher<Intent>
 
@@ -47,8 +49,11 @@ class BluetoothActivity : AppCompatActivity() {
 
         bluetoothGameManager = BluetoothGameManager(this, playerBoard, enemyBoard, BluetoothService(this)).apply {
             onStateChanged = { state -> updateServerStatus(state) }
-            onMessageReceived = { message -> handleIncomingMessage(message) }
+            onMessageReceived = { message ->
+                handleIncomingMessage(message)
+            }
         }
+
 
         setupButtons()
     }
@@ -87,40 +92,7 @@ class BluetoothActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnZoomIn).setOnClickListener {
-            copyShipsToEnemyBoard()
-        }
-    }
-
-    private fun copyShipsToEnemyBoard() {
-        runOnUiThread {
-            val playerShips = playerBoard.getShipCoordinates()
-
-            // Limpia el tablero enemigo antes de copiar los barcos
-            enemyBoard.clearShips()
-
-            playerShips.forEach { (row, col) ->
-                try {
-                    val y = row[0] - 'A' // Convertir fila (A, B, ...) a índice.
-                    val x = col.toInt() - 1 // Convertir columna (1, 2, ...) a índice.
-
-                    if (x in 0..6 && y in 0..6) {
-                        val ship = Ship(1, false, Color.BLUE) // Color distintivo.
-                        val placed = enemyBoard.placeShip(ship, x, y)
-                        if (!placed) {
-                            Toast.makeText(this, "No se pudo colocar barco en posición ($row, $col)", Toast.LENGTH_SHORT).show()
-                        } else {
-                            enemyBoard.getCell(x, y).invalidate() // Redibuja la celda después de colocar el barco
-                        }
-                    } else {
-                        Toast.makeText(this, "Coordenadas fuera de rango: ($row, $col)", Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(this, "Error al colocar barco en ($row, $col): ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            enemyBoard.invalidate() // Fuerza el redibujado completo del tablero enemigo
-            Toast.makeText(this, "Barcos copiados al tablero 2.", Toast.LENGTH_SHORT).show()
+            drawOpponentShipsOnEnemyBoard() // Dibuja los barcos del oponente con el último mensaje recibido
         }
     }
 
@@ -161,35 +133,61 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     private fun handleIncomingMessage(message: String) {
+        runOnUiThread {
+            Toast.makeText(this, "Mensaje recibido: $message", Toast.LENGTH_SHORT).show()
+        }
+
         if (message.startsWith("SHIPS")) {
             val shipsData = message.substringAfter(",")
             val receivedShips = deserializeShipPositions(shipsData)
 
             if (receivedShips.isNotEmpty()) {
-                drawShipsOnEnemyBoard(receivedShips)
+                opponentShips = receivedShips
+                lastOpponentMessage = message // Guarda el mensaje recibido
+                runOnUiThread {
+                    Toast.makeText(this, "Barcos del oponente recibidos: $receivedShips", Toast.LENGTH_SHORT).show()
+                }
             } else {
-                Toast.makeText(this, "No se recibieron barcos válidos.", Toast.LENGTH_SHORT).show()
+                runOnUiThread {
+                    Toast.makeText(this, "Error: Datos de barcos vacíos o inválidos.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            runOnUiThread {
+                Toast.makeText(this, "Mensaje desconocido recibido: $message", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun drawShipsOnEnemyBoard(ships: List<Pair<Int, Int>>) {
+
+    private fun drawOpponentShipsOnEnemyBoard() {
+        if (opponentShips.isEmpty() && lastOpponentMessage != null) {
+            opponentShips = deserializeShipPositions(lastOpponentMessage!!.substringAfter(","))
+        }
+
+        if (opponentShips.isEmpty()) {
+            Toast.makeText(this, "No hay barcos del oponente para dibujar.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         runOnUiThread {
             enemyBoard.clearShips()
 
-            ships.forEach { (x, y) ->
+            opponentShips.forEach { (x, y) ->
                 try {
                     if (x in 0..6 && y in 0..6) {
-                        val ship = Ship(1, false, Color.BLUE)
+                        val ship = Ship(1, false, Color.RED)
                         enemyBoard.placeShip(ship, x, y)
+                    } else {
+                        Toast.makeText(this, "Coordenadas fuera de rango: ($x, $y)", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Error al colocar barco en ($x, $y): ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error al procesar coordenadas: ($x, $y)", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            enemyBoard.invalidate()
-            Toast.makeText(this, "Tablero enemigo actualizado.", Toast.LENGTH_SHORT).show()
+            enemyBoard.redrawBoard()
+            Toast.makeText(this, "Barcos del oponente dibujados en el tablero 2.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -217,7 +215,9 @@ class BluetoothActivity : AppCompatActivity() {
 
     private fun serializeNumericShipPositions(ships: List<Pair<String, String>>): String {
         return ships.joinToString(";") {
-            val (x, y) = convertToNumericCoordinates(it.first, it.second)
+            val (row, col) = it
+            val x = col.toInt() - 1
+            val y = row[0] - 'A'
             "$x,$y"
         }
     }
@@ -226,16 +226,10 @@ class BluetoothActivity : AppCompatActivity() {
         return data.split(";").mapNotNull {
             val parts = it.split(",")
             if (parts.size == 2) {
-                val y = parts[0][0] - 'A'
-                val x = parts[1].toIntOrNull()?.minus(1) ?: -1
-                if (x in 0..6 && y in 0..6) Pair(x, y) else null
+                val x = parts[0].toIntOrNull()
+                val y = parts[1].toIntOrNull()
+                if (x != null && y != null && x in 0..6 && y in 0..6) Pair(x, y) else null
             } else null
         }
-    }
-
-    private fun convertToNumericCoordinates(row: String, col: String): Pair<Int, Int> {
-        val y = row[0] - 'A'
-        val x = col.toInt() - 1
-        return Pair(x, y)
     }
 }
