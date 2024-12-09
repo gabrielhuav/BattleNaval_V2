@@ -94,25 +94,15 @@
                 android:background="@color/light_gray"
                 android:id="@+id/specialRoundPanel">
 
-                <!-- Coordenadas del enemigo -->
+                <!-- Coordenadas reveladas -->
                 <TextView
-                    android:id="@+id/tvEnemyCoordinates"
+                    android:id="@+id/tvRevealedCoordinates"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Coordenadas del enemigo: -"
+                    android:text="Coordenadas: -"
                     android:textSize="16sp"
-                    android:gravity="center"
-                    android:layout_marginBottom="8dp" />
-
-                <!-- Respuesta del enemigo -->
-                <TextView
-                    android:id="@+id/tvEnemyResponse"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Respuesta (coordenadas convertidas del enemigo): -"
-                    android:textSize="16sp"
-                    android:gravity="center"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center" />
 
                 <!-- Campo para ingresar coordenadas -->
                 <EditText
@@ -134,16 +124,6 @@
                     android:backgroundTint="@color/orange_transparent"
                     android:textColor="@color/black"
                     android:layout_marginBottom="8dp" />
-
-                <!-- Coordenadas reveladas -->
-                <TextView
-                    android:id="@+id/tvRevealedCoordinates"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Coordenadas: -"
-                    android:textSize="16sp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center" />
 
                 <!-- Temporizador de 10 segundos -->
                 <TextView
