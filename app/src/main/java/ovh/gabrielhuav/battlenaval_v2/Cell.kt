@@ -48,12 +48,13 @@ class Cell(
         }
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), borderPaint)
 
-        // Dibuja el barco en el tablero del jugador (si no ha sido disparada)
-        if (ship != null && !wasShot && !board.enemy) {
+        // Dibuja el barco en el tablero (jugador o enemigo)
+        if (ship != null && !wasShot) {
             paint.color = ship!!.color // Usa el color del barco
             canvas.drawRect(5f, 5f, width.toFloat() - 5f, height.toFloat() - 5f, paint)
             paint.color = Color.WHITE // Restaura el color original
         }
+
 
         // Si fue disparada, dibuja el estado
         if (wasShot) {

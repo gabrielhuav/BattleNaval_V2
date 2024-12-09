@@ -7,7 +7,6 @@ import android.view.MotionEvent
 import android.widget.GridLayout
 import android.widget.TextView
 import kotlin.random.Random
-
 class Board(
     context: Context,
     val enemy: Boolean = false,
@@ -92,16 +91,17 @@ class Board(
         if (ship.vertical) {
             for (i in y until y + length) {
                 cells[i][x].ship = ship
-                cells[i][x].invalidate()
+                cells[i][x].invalidate() // Fuerza redibujado de la celda
             }
         } else {
             for (i in x until x + length) {
                 cells[y][i].ship = ship
-                cells[y][i].invalidate()
+                cells[y][i].invalidate() // Fuerza redibujado de la celda
             }
         }
         return true
     }
+
 
     fun getCell(x: Int, y: Int): Cell = cells[y][x]
 
@@ -109,24 +109,6 @@ class Board(
         scaleFactor = newScaleFactor
         cellSize = (100 * scaleFactor).toInt().coerceAtLeast(20)
         drawBoard()
-    }
-
-    /**
-     * Devuelve una celda aleatoria que no haya sido revelada o disparada.
-     */
-    fun getRandomShipCell(): Cell {
-        // Filtra solo las celdas que pertenecen a un barco y no han sido disparadas
-        val shipCells = cells.flatten().filter { it.ship != null && !it.wasShot }
-
-        // Asegúrate de que hay celdas disponibles, si no, lanza una excepción
-        if (shipCells.isEmpty()) {
-            throw IllegalStateException("No hay celdas disponibles de barcos para revelar. Asegúrese de que los barcos estén posicionados.")
-        }
-
-        // Selecciona una celda aleatoria de las disponibles
-        val selectedCell = shipCells[Random.nextInt(shipCells.size)]
-        println("Celda seleccionada para revelar: (${selectedCell.x}, ${selectedCell.y}) con barco ${selectedCell.ship}")
-        return selectedCell
     }
 
     fun getShipCoordinates(): List<Pair<String, String>> {
@@ -157,27 +139,15 @@ class Board(
         ships = 0 // Reinicia el contador de barcos
     }
 
-    fun findShipStartCoordinates(ship: Ship): Pair<Int, Int> {
+    /**
+     * Método para forzar el redibujado del tablero y todas sus celdas.
+     */
+    fun redrawBoard() {
         for (y in cells.indices) {
             for (x in cells[y].indices) {
-                val cell = cells[y][x]
-                if (cell.ship == ship) {
-                    // Verifica si el barco está orientado verticalmente
-                    if (ship.vertical) {
-                        // Verifica que sea la primera celda del barco (arriba hacia abajo)
-                        if (y == 0 || cells[y - 1][x].ship != ship) {
-                            return Pair(x, y)
-                        }
-                    } else {
-                        // Verifica que sea la primera celda del barco (izquierda a derecha)
-                        if (x == 0 || cells[y][x - 1].ship != ship) {
-                            return Pair(x, y)
-                        }
-                    }
-                }
+                cells[y][x].invalidate() // Fuerza el redibujado de cada celda
             }
         }
-        throw IllegalStateException("No se pudo encontrar el barco en el tablero.")
+        invalidate() // Fuerza el redibujado del contenedor del tablero
     }
-
 }

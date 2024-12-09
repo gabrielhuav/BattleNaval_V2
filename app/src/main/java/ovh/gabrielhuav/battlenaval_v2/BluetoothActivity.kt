@@ -85,6 +85,43 @@ class BluetoothActivity : AppCompatActivity() {
             bluetoothGameManager.stop()
             finish()
         }
+
+        findViewById<Button>(R.id.btnZoomIn).setOnClickListener {
+            copyShipsToEnemyBoard()
+        }
+    }
+
+    private fun copyShipsToEnemyBoard() {
+        runOnUiThread {
+            val playerShips = playerBoard.getShipCoordinates()
+
+            // Limpia el tablero enemigo antes de copiar los barcos
+            enemyBoard.clearShips()
+
+            playerShips.forEach { (row, col) ->
+                try {
+                    val y = row[0] - 'A' // Convertir fila (A, B, ...) a índice.
+                    val x = col.toInt() - 1 // Convertir columna (1, 2, ...) a índice.
+
+                    if (x in 0..6 && y in 0..6) {
+                        val ship = Ship(1, false, Color.BLUE) // Color distintivo.
+                        val placed = enemyBoard.placeShip(ship, x, y)
+                        if (!placed) {
+                            Toast.makeText(this, "No se pudo colocar barco en posición ($row, $col)", Toast.LENGTH_SHORT).show()
+                        } else {
+                            enemyBoard.getCell(x, y).invalidate() // Redibuja la celda después de colocar el barco
+                        }
+                    } else {
+                        Toast.makeText(this, "Coordenadas fuera de rango: ($row, $col)", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Error al colocar barco en ($row, $col): ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            enemyBoard.invalidate() // Fuerza el redibujado completo del tablero enemigo
+            Toast.makeText(this, "Barcos copiados al tablero 2.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun updateServerStatus(state: BluetoothGameManager.State) {
@@ -124,17 +161,9 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     private fun handleIncomingMessage(message: String) {
-        runOnUiThread {
-            Toast.makeText(this, "Mensaje recibido: $message", Toast.LENGTH_SHORT).show()
-        }
-
         if (message.startsWith("SHIPS")) {
             val shipsData = message.substringAfter(",")
             val receivedShips = deserializeShipPositions(shipsData)
-
-            runOnUiThread {
-                Toast.makeText(this, "Coordenadas deserializadas: $receivedShips", Toast.LENGTH_SHORT).show()
-            }
 
             if (receivedShips.isNotEmpty()) {
                 drawShipsOnEnemyBoard(receivedShips)
@@ -144,6 +173,25 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
+    private fun drawShipsOnEnemyBoard(ships: List<Pair<Int, Int>>) {
+        runOnUiThread {
+            enemyBoard.clearShips()
+
+            ships.forEach { (x, y) ->
+                try {
+                    if (x in 0..6 && y in 0..6) {
+                        val ship = Ship(1, false, Color.BLUE)
+                        enemyBoard.placeShip(ship, x, y)
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Error al colocar barco en ($x, $y): ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            enemyBoard.invalidate()
+            Toast.makeText(this, "Tablero enemigo actualizado.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun placePlayerShips() {
         val shipData = listOf(Pair(4, Color.GREEN), Pair(3, Color.BLUE), Pair(2, Color.YELLOW))
@@ -167,70 +215,6 @@ class BluetoothActivity : AppCompatActivity() {
         bluetoothGameManager.sendMessage("SHIPS,${serializeNumericShipPositions(playerShips)}")
     }
 
-    private fun drawShipsOnEnemyBoard(ships: List<Pair<Int, Int>>) {
-        runOnUiThread {
-            Toast.makeText(this, "Dibujando barcos en el tablero enemigo...", Toast.LENGTH_SHORT).show()
-            enemyBoard.clearShips() // Limpia el tablero enemigo antes de dibujar
-
-            ships.forEach { (x, y) ->
-                try {
-                    if (x in 0..6 && y in 0..6) { // Validación de rango
-                        // Crear un barco marcador con tamaño 1 y un color distintivo
-                        val ship = Ship(1, false, Color.BLUE)
-                        val placed = enemyBoard.placeShip(ship, x, y)
-
-                        if (placed) {
-                            Toast.makeText(
-                                this,
-                                "Barco del enemigo colocado en posición ($x, $y).",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            Toast.makeText(
-                                this,
-                                "No se pudo colocar barco en posición ocupada ($x, $y).",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "Coordenadas inválidas recibidas: ($x, $y).",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        this,
-                        "Error al procesar coordenadas: ($x, $y). Detalle: ${e.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
-            enemyBoard.invalidate() // Forzar redibujado del tablero enemigo
-            Toast.makeText(this, "Tablero enemigo actualizado.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun findShipCoordinates(ships: List<Pair<Int, Int>>, size: Int): List<Pair<Int, Int>> {
-        // Buscar coordenadas que formen un barco del tamaño especificado
-        val horizontalShip = ships.groupBy { it.second }
-            .filter { it.value.size == size && it.value.map { it.first }.distinct().size == size }
-            .values.firstOrNull()
-
-        val verticalShip = ships.groupBy { it.first }
-            .filter { it.value.size == size && it.value.map { it.second }.distinct().size == size }
-            .values.firstOrNull()
-
-        return horizontalShip ?: verticalShip ?: emptyList()
-    }
-
-    private fun isShipVertical(shipCoordinates: List<Pair<Int, Int>>): Boolean {
-        // Si todas las coordenadas x son iguales, el barco es vertical
-        return shipCoordinates.map { it.first }.distinct().size == 1
-    }
-
     private fun serializeNumericShipPositions(ships: List<Pair<String, String>>): String {
         return ships.joinToString(";") {
             val (x, y) = convertToNumericCoordinates(it.first, it.second)
@@ -242,17 +226,16 @@ class BluetoothActivity : AppCompatActivity() {
         return data.split(";").mapNotNull {
             val parts = it.split(",")
             if (parts.size == 2) {
-                val y = parts[0][0] - 'A' // Convertir fila a índice numérico.
-                val x = parts[1].toIntOrNull()?.minus(1) ?: -1 // Convertir columna a índice numérico.
+                val y = parts[0][0] - 'A'
+                val x = parts[1].toIntOrNull()?.minus(1) ?: -1
                 if (x in 0..6 && y in 0..6) Pair(x, y) else null
             } else null
         }
     }
 
     private fun convertToNumericCoordinates(row: String, col: String): Pair<Int, Int> {
-        val y = row[0] - 'A' // Convertir la fila (A, B, C...) a índice numérico.
-        val x = col.toInt() - 1 // Convertir la columna (1, 2, 3...) a índice numérico.
+        val y = row[0] - 'A'
+        val x = col.toInt() - 1
         return Pair(x, y)
     }
-
 }
