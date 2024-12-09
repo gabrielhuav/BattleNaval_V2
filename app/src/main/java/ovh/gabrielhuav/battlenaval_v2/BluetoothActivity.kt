@@ -8,7 +8,6 @@ import android.os.CountDownTimer
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -23,12 +22,15 @@ class BluetoothActivity : AppCompatActivity() {
     private lateinit var serverStatusTextView: TextView
     private lateinit var revealedCoordinatesTextView: TextView
     private lateinit var delayTimerTextView: TextView
+    private lateinit var etCoordinateInput: EditText
+    private lateinit var btnConfirmCoordinate: Button
 
     private var shipsPlaced = false
     private var isConnected = false
     private var opponentShips: List<Pair<Int, Int>> = emptyList()
     private var lastOpponentMessage: String? = null
     private var revealedCoordinates: MutableList<Pair<Int, Int>> = mutableListOf()
+    private var currentRevealedCoordinate: Pair<Int, Int>? = null
 
     private lateinit var devicePickerLauncher: ActivityResultLauncher<Intent>
 
@@ -66,6 +68,8 @@ class BluetoothActivity : AppCompatActivity() {
         serverStatusTextView = findViewById(R.id.tvBluetoothStatus)
         revealedCoordinatesTextView = findViewById(R.id.tvRevealedCoordinates)
         delayTimerTextView = findViewById(R.id.tvDelayTimer)
+        etCoordinateInput = findViewById(R.id.etConvertedCoordinates)
+        btnConfirmCoordinate = findViewById(R.id.btnConfirmCoordinates)
     }
 
     private fun initializeBoards() {
@@ -96,7 +100,15 @@ class BluetoothActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnRevealNextCoordante).setOnClickListener {
-            revealNextCoordinate()
+            if (currentRevealedCoordinate == null) {
+                revealNextCoordinate()
+            } else {
+                Toast.makeText(this, "Debe adivinar la coordenada actual antes de avanzar.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnConfirmCoordinate.setOnClickListener {
+            validateCoordinate()
         }
     }
 
@@ -128,17 +140,41 @@ class BluetoothActivity : AppCompatActivity() {
             return
         }
 
+        // Buscar la siguiente coordenada que no haya sido revelada
         val nextCoordinate = opponentShips.find { it !in revealedCoordinates }
         if (nextCoordinate != null) {
+            // Actualizar la coordenada actual revelada
+            currentRevealedCoordinate = nextCoordinate
             revealedCoordinates.add(nextCoordinate)
-            drawCoordinateOnBoard(enemyBoard, nextCoordinate, Color.RED)
-            revealedCoordinatesTextView.text = "Coordenadas reveladas: ${coordinateToString(nextCoordinate)}"
+
+            // Dibujar la celda en verde oscuro para apuntar
+            drawCoordinateOnBoard(enemyBoard, nextCoordinate, Color.parseColor("#006400")) // Verde oscuro
+            revealedCoordinatesTextView.text = "Coordenada revelada: ${coordinateToString(nextCoordinate)}"
         } else {
             Toast.makeText(this, "Todas las coordenadas ya han sido reveladas.", Toast.LENGTH_SHORT).show()
         }
-
-        startDelayTimer()
     }
+
+    private fun validateCoordinate() {
+        val userInput = etCoordinateInput.text.toString().trim()
+        if (currentRevealedCoordinate != null) {
+            val coordinateString = coordinateToString(currentRevealedCoordinate!!)
+            if (userInput.equals(coordinateString, ignoreCase = true)) {
+                Toast.makeText(this, "¡Correcto! Coordenada impactada.", Toast.LENGTH_SHORT).show()
+
+                // Cambiar el color a rojo para indicar un impacto confirmado
+                drawCoordinateOnBoard(enemyBoard, currentRevealedCoordinate!!, Color.RED)
+                etCoordinateInput.text.clear()
+                currentRevealedCoordinate = null
+                delayTimerTextView.visibility = android.view.View.GONE
+            } else {
+                Toast.makeText(this, "Incorrecto. Intenta nuevamente.", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this, "No hay coordenada revelada actualmente.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     private fun drawCoordinateOnBoard(board: Board, coordinate: Pair<Int, Int>, color: Int) {
         val (x, y) = coordinate
@@ -146,19 +182,6 @@ class BluetoothActivity : AppCompatActivity() {
             setBackgroundColor(color)
             invalidate()
         }
-    }
-
-    private fun startDelayTimer() {
-        delayTimerTextView.visibility = android.view.View.VISIBLE
-        object : CountDownTimer(10000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                delayTimerTextView.text = "Siguiente turno en ${millisUntilFinished / 1000} segundos..."
-            }
-
-            override fun onFinish() {
-                delayTimerTextView.visibility = android.view.View.GONE
-            }
-        }.start()
     }
 
     private fun handleIncomingMessage(message: String) {
@@ -215,6 +238,7 @@ class BluetoothActivity : AppCompatActivity() {
             "$x,$y"
         }
     }
+
     private fun checkBluetoothPermissions() {
         val permissions = arrayOf(
             Manifest.permission.BLUETOOTH,
