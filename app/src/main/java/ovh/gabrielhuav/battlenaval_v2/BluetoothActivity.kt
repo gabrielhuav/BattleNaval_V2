@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -30,28 +32,37 @@ class BluetoothActivity : AppCompatActivity() {
     private var revealedCoordinates: Pair<String, String>? = null
     private var enemyShips: List<Pair<String, String>> = emptyList()
 
+    private lateinit var devicePickerLauncher: ActivityResultLauncher<Intent>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bluetooth)
 
         checkBluetoothPermissions()
-        initializeViews()
-        initializeBoards()
+        initializeViews() // Initialize views
+        initializeBoards() // Initialize boards
 
-// Configuración del BluetoothGameManager
-        bluetoothGameManager = BluetoothGameManager(
-            this,
-            playerBoard,
-            enemyBoard,
-            BluetoothService(this) // Asegúrate de pasar `this` aquí como el contexto
-        ).apply {
-            onStateChanged = { updateServerStatus(it) }
-            onMessageReceived = { handleIncomingMessage(it) }
+        // Initialize the ActivityResultLauncher
+        devicePickerLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val deviceAddress = result.data?.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS)
+                deviceAddress?.let {
+                    bluetoothGameManager.connect(it) // Connect to the selected device
+                    sendPlayerShipsToServer() // Send player ships to the server
+                }
+            }
         }
 
+        bluetoothGameManager = BluetoothGameManager(this, playerBoard, enemyBoard, BluetoothService(this)).apply {
+            onStateChanged = { state -> updateServerStatus(state) }
+            onMessageReceived = { message -> handleIncomingMessage(message) }
+        }
 
-        setupButtons()
+        setupButtons() // Set up the buttons
     }
+
 
     private fun initializeViews() {
         playerBoardFrame = findViewById(R.id.playerBoardFrame)
@@ -65,9 +76,11 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     private fun initializeBoards() {
+        // Inicializar el tablero del jugador
         playerBoard = Board(this, false) { }
         playerBoardFrame.addView(playerBoard)
 
+        // Inicializar el tablero enemigo
         enemyBoard = Board(this, true) { cell ->
             if (!running || cell.wasShot || bluetoothGameManager.getState() != BluetoothGameManager.State.CONNECTED) return@Board
             bluetoothGameManager.sendMessage("SHOOT,${cell.x},${cell.y}")
@@ -76,34 +89,15 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     private fun setupButtons() {
-// En el método para iniciar el servidor (jugador 1)
         findViewById<Button>(R.id.btnStartServer).setOnClickListener {
-            bluetoothGameManager.start() // Inicia el servidor
+            bluetoothGameManager.start()
             Toast.makeText(this, "Servidor iniciado.", Toast.LENGTH_SHORT).show()
         }
 
-
-// En el método para conectarse como cliente (jugador 2)
         findViewById<Button>(R.id.btnConnectToDevice).setOnClickListener {
             val intent = Intent(this, DeviceListActivity::class.java)
-            startActivityForResult(intent, REQUEST_CONNECT_DEVICE)
+            devicePickerLauncher.launch(intent)
         }
-
-
-        // Después de establecer la conexión en el cliente (jugador 2)
-        fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            super.onActivityResult(requestCode, resultCode, data)
-            if (requestCode == REQUEST_CONNECT_DEVICE && resultCode == RESULT_OK) {
-                val deviceAddress = data?.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS)
-                deviceAddress?.let {
-                    bluetoothGameManager.connect(it) // Conecta al servidor
-                    placePlayerShips() // Coloca barcos en el tablero del cliente
-                    sendPlayerShipsToServer() // Envía barcos al servidor
-                }
-            }
-        }
-
-
 
         findViewById<Button>(R.id.btnBackToMenu).setOnClickListener {
             bluetoothGameManager.stop()
@@ -114,6 +108,49 @@ class BluetoothActivity : AppCompatActivity() {
             validateSpecialRoundAnswer()
         }
     }
+
+    private fun updateServerStatus(state: BluetoothGameManager.State) {
+        runOnUiThread {
+            when (state) {
+                BluetoothGameManager.State.LISTEN -> serverStatusTextView.text = "Estado: Esperando Conexiones..."
+                BluetoothGameManager.State.CONNECTING -> serverStatusTextView.text = "Estado: Conectando..."
+                BluetoothGameManager.State.CONNECTED -> {
+                    serverStatusTextView.text = "Estado: Conectado"
+                    isConnected = true
+                    if (!shipsPlaced) {
+                        placePlayerShips()
+                        sendPlayerShipsToClient()
+                        shipsPlaced = true
+                    }
+                    bluetoothGameManager.loadGameState()
+                }
+                BluetoothGameManager.State.NONE -> {
+                    serverStatusTextView.text = "Estado: Desconectado"
+                    shipsPlaced = false
+                }
+            }
+        }
+    }
+
+    private fun checkBluetoothPermissions() {
+        val permissions = arrayOf(
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.BLUETOOTH_CONNECT
+        )
+        val missingPermissions = permissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != android.content.pm.PackageManager.PERMISSION_GRANTED
+        }
+        if (missingPermissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), 1)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bluetoothGameManager.stop()
+    }
+
     // Método para enviar barcos del cliente al servidor
     private fun sendPlayer2Ships() {
         val playerShips = playerBoard.getShipCoordinates()
@@ -136,65 +173,55 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     // Enviar barcos del servidor al cliente después de establecer la conexión
-    private fun sendPlayerShipsToClient() {
-        val playerShips = playerBoard.getShipCoordinates()
-        val serializedShips = serializeShipPositions(playerShips)
-        Toast.makeText(this, "Enviando barcos al cliente: $serializedShips", Toast.LENGTH_SHORT).show()
-        bluetoothGameManager.sendMessage("SERVER_SHIPS,$serializedShips")
-    }
-
-
-    // Enviar barcos del cliente al servidor después de establecer la conexión
     private fun sendPlayerShipsToServer() {
         val playerShips = playerBoard.getShipCoordinates()
         val serializedShips = serializeShipPositions(playerShips)
-        Toast.makeText(this, "Enviando barcos al servidor: $serializedShips", Toast.LENGTH_SHORT).show()
-        bluetoothGameManager.sendMessage("CLIENT_SHIPS,$serializedShips")
+        bluetoothGameManager.sendMessage("SHIPS,$serializedShips")
+        Toast.makeText(this, "Barcos enviados al servidor: $serializedShips", Toast.LENGTH_SHORT).show()
     }
 
-
-
-    private fun sendPlayerShips() {
+    private fun sendPlayerShipsToClient() {
         val playerShips = playerBoard.getShipCoordinates()
-        bluetoothGameManager.sendMessage("PLAYER2_SHIPS,${serializeShipPositions(playerShips)}")
-        bluetoothGameManager.saveGameState()
-        Toast.makeText(this, "Barcos del jugador enviados: $playerShips", Toast.LENGTH_SHORT).show()
+        val serializedShips = serializeShipPositions(playerShips)
+        bluetoothGameManager.sendMessage("SHIPS,$serializedShips")
+        Toast.makeText(this, "Barcos enviados al cliente: $serializedShips", Toast.LENGTH_SHORT).show()
     }
 
     private fun handleIncomingMessage(message: String) {
         Toast.makeText(this, "Mensaje recibido: $message", Toast.LENGTH_SHORT).show()
-        when {
-            message.startsWith("SERVER_SHIPS") -> {
-                Toast.makeText(this, "Recibiendo barcos del servidor.", Toast.LENGTH_SHORT).show()
-                val receivedShips = deserializeShipPositions(message.substring(13))
+
+        if (message.startsWith("SHIPS")) {
+            val shipsData = message.substringAfter(",")
+            val receivedShips = deserializeShipPositions(shipsData)
+
+            if (receivedShips.isNotEmpty()) {
+                Toast.makeText(this, "Barcos del enemigo recibidos: $receivedShips", Toast.LENGTH_SHORT).show()
                 drawShipsOnEnemyBoard(receivedShips)
+            } else {
+                Toast.makeText(this, "Error: No se recibieron barcos válidos.", Toast.LENGTH_SHORT).show()
             }
-            message.startsWith("CLIENT_SHIPS") -> {
-                Toast.makeText(this, "Recibiendo barcos del cliente.", Toast.LENGTH_SHORT).show()
-                val receivedShips = deserializeShipPositions(message.substring(13))
-                drawShipsOnEnemyBoard(receivedShips)
-            }
-            else -> {
-                Toast.makeText(this, "Mensaje desconocido: $message", Toast.LENGTH_SHORT).show()
-            }
+        } else {
+            Toast.makeText(this, "Mensaje desconocido: $message", Toast.LENGTH_SHORT).show()
         }
     }
 
-
     private fun drawShipsOnEnemyBoard(ships: List<Pair<String, String>>) {
-        Toast.makeText(this, "Intentando dibujar ${ships.size} barcos.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Dibujando barcos en el tablero enemigo.", Toast.LENGTH_SHORT).show()
         enemyBoard.clearShips()
 
         ships.forEach { (row, col) ->
             val x = col.toIntOrNull()?.minus(1)
             val y = row[0] - 'A'
 
-            if (x != null && x in 0..6 && y in 0..6) {
-                val ship = Ship(1, false)
-                val placed = enemyBoard.placeShip(ship, x, y)
-                Toast.makeText(this, if (placed) "Barco colocado: ($x, $y)" else "Error al colocar barco: ($x, $y)", Toast.LENGTH_SHORT).show()
+            if (x != null && x in 0..7 && y in 0..7) {
+                val ship = Ship(1, false) // Aquí puedes ajustar el tamaño y orientación del barco
+                if (enemyBoard.placeShip(ship, x, y)) {
+                    Toast.makeText(this, "Barco colocado en posición ($x, $y).", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Error al colocar barco en posición ($x, $y).", Toast.LENGTH_SHORT).show()
+                }
             } else {
-                Toast.makeText(this, "Coordenadas inválidas: ($row, $col)", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Coordenadas inválidas: ($row, $col).", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -284,50 +311,6 @@ class BluetoothActivity : AppCompatActivity() {
         specialRoundPanel.visibility = View.GONE
     }
 
-    private fun updateServerStatus(state: BluetoothGameManager.State) {
-        runOnUiThread {
-            when (state) {
-                BluetoothGameManager.State.LISTEN -> serverStatusTextView.text = "Estado: Esperando Conexiones..."
-                BluetoothGameManager.State.CONNECTING -> serverStatusTextView.text = "Estado: Conectando..."
-                BluetoothGameManager.State.CONNECTED -> {
-                    serverStatusTextView.text = "Estado: Conectado"
-                    isConnected = true
-                    if (!shipsPlaced) {
-                        placePlayerShips() // Coloca los barcos en el tablero propio
-                        sendPlayerShipsToClient() // Envía los barcos al cliente
-                        shipsPlaced = true
-                    }
-                    bluetoothGameManager.loadGameState() // Cargar el estado del juego si está disponible
-                }
-                BluetoothGameManager.State.NONE -> {
-                    serverStatusTextView.text = "Estado: Desconectado"
-                    shipsPlaced = false // Reinicia el flag al desconectar
-                }
-            }
-        }
-    }
-
-
-
-    private fun checkBluetoothPermissions() {
-        val permissions = arrayOf(
-            Manifest.permission.BLUETOOTH,
-            Manifest.permission.BLUETOOTH_ADMIN,
-            Manifest.permission.BLUETOOTH_CONNECT
-        )
-        val missingPermissions = permissions.filter {
-            ContextCompat.checkSelfPermission(this, it) != android.content.pm.PackageManager.PERMISSION_GRANTED
-        }
-        if (missingPermissions.isNotEmpty()) {
-            ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), 1)
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        bluetoothGameManager.stop()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CONNECT_DEVICE && resultCode == RESULT_OK) {
@@ -345,26 +328,15 @@ class BluetoothActivity : AppCompatActivity() {
 
 
     private fun serializeShipPositions(ships: List<Pair<String, String>>): String {
-        val serialized = ships.joinToString(";") { "${it.first},${it.second}" }
-        Toast.makeText(this, "Serializando posiciones de barcos: $serialized", Toast.LENGTH_SHORT).show()
-        return serialized
+        return ships.joinToString(";") { "${it.first},${it.second}" }
     }
 
     private fun deserializeShipPositions(data: String): List<Pair<String, String>> {
-        try {
-            val deserialized = data.split(";").map {
-                val parts = it.split(",")
-                Pair(parts[0], parts[1])
-            }
-            Toast.makeText(this, "Deserializando posiciones: $deserialized", Toast.LENGTH_SHORT).show()
-            return deserialized
-        } catch (e: Exception) {
-            Toast.makeText(this, "Error al deserializar: ${e.message}", Toast.LENGTH_SHORT).show()
-            return emptyList()
+        return data.split(";").mapNotNull {
+            val parts = it.split(",")
+            if (parts.size == 2) Pair(parts[0], parts[1]) else null
         }
     }
-
-
 
     private fun convertToBinary(coordinate: String): String {
         return coordinate.map { it.code.toString(2).padStart(8, '0') }.joinToString("")

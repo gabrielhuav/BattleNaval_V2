@@ -213,12 +213,13 @@ class BluetoothGameManager(
             board.getCell(x, y).shoot()
         }
     }
-
+    
+    @Synchronized
     private fun setState(newState: State) {
         state = newState
         onStateChanged?.invoke(state)
-        Log.d("BluetoothGameManager", "Estado cambiado a: $state")
     }
+
 
     fun getState(): State {
         return state
