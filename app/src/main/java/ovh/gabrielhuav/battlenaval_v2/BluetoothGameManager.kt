@@ -84,6 +84,7 @@ class BluetoothGameManager(
                     bluetoothService.initializeSocket(it)
                     setState(State.CONNECTED)
                     Log.d("BluetoothGameManager", "Cliente conectado.")
+                    bluetoothService.write("SHIPS,${serializeNumericShipPositions(playerBoard.getShipCoordinates())}".toByteArray())
                 }
             } catch (e: IOException) {
                 Log.e("BluetoothGameManager", "Error al iniciar el servidor Bluetooth", e)
@@ -113,6 +114,8 @@ class BluetoothGameManager(
                 bluetoothService.initializeSocket(socket)
                 setState(State.CONNECTED)
                 Log.d("BluetoothGameManager", "Conectado al dispositivo: $deviceAddress")
+                bluetoothService.write("SHIPS,${serializeNumericShipPositions(playerBoard.getShipCoordinates())}".toByteArray())
+
             } catch (e: IOException) {
                 Log.e("BluetoothGameManager", "Error al conectar al dispositivo: $deviceAddress", e)
                 setState(State.NONE)
@@ -122,6 +125,15 @@ class BluetoothGameManager(
                     Log.e("BluetoothGameManager", "Error al cerrar el socket después de fallar la conexión", closeException)
                 }
             }
+        }
+    }
+    
+    private fun serializeNumericShipPositions(ships: List<Pair<String, String>>): String {
+        return ships.joinToString(";") {
+            val (row, col) = it
+            val x = col.toInt() - 1 // Columna en índice numérico
+            val y = row[0] - 'A'   // Fila en índice numérico
+            "$x,$y" // Formato "x,y"
         }
     }
 

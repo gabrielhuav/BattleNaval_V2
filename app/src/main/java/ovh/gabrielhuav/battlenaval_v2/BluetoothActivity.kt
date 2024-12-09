@@ -106,7 +106,7 @@ class BluetoothActivity : AppCompatActivity() {
                     isConnected = true
                     if (!shipsPlaced) {
                         placePlayerShips()
-                        sendPlayerShipsToClient()
+                        sendPlayerShipsToOpponent() // Envía los barcos al oponente
                         shipsPlaced = true
                     }
                 }
@@ -116,6 +116,11 @@ class BluetoothActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun sendPlayerShipsToOpponent() {
+        val playerShips = playerBoard.getShipCoordinates()
+        bluetoothGameManager.sendMessage("SHIPS,${serializeNumericShipPositions(playerShips)}")
     }
 
     private fun checkBluetoothPermissions() {
@@ -137,27 +142,38 @@ class BluetoothActivity : AppCompatActivity() {
             Toast.makeText(this, "Mensaje recibido: $message", Toast.LENGTH_SHORT).show()
         }
 
-        if (message.startsWith("SHIPS")) {
-            val shipsData = message.substringAfter(",")
-            val receivedShips = deserializeShipPositions(shipsData)
+        when {
+            message.startsWith("SHIPS") -> {
+                val shipsData = message.substringAfter(",")
+                val receivedShips = deserializeShipPositions(shipsData)
 
-            if (receivedShips.isNotEmpty()) {
-                opponentShips = receivedShips
-                lastOpponentMessage = message // Guarda el mensaje recibido
-                runOnUiThread {
-                    Toast.makeText(this, "Barcos del oponente recibidos: $receivedShips", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                runOnUiThread {
-                    Toast.makeText(this, "Error: Datos de barcos vacíos o inválidos.", Toast.LENGTH_SHORT).show()
+                if (receivedShips.isNotEmpty()) {
+                    opponentShips = receivedShips
+                    lastOpponentMessage = message // Guarda el mensaje recibido
+                    runOnUiThread {
+                        Toast.makeText(this, "Barcos del oponente recibidos: $receivedShips", Toast.LENGTH_SHORT).show()
+                    }
+                    // Envía confirmación de recepción
+                    bluetoothGameManager.sendMessage("RECEIVED")
+                } else {
+                    runOnUiThread {
+                        Toast.makeText(this, "Error: Datos de barcos vacíos o inválidos.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
-        } else {
-            runOnUiThread {
-                Toast.makeText(this, "Mensaje desconocido recibido: $message", Toast.LENGTH_SHORT).show()
+            message == "RECEIVED" -> {
+                runOnUiThread {
+                    Toast.makeText(this, "El oponente confirmó la recepción de los barcos.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            else -> {
+                runOnUiThread {
+                    Toast.makeText(this, "Mensaje desconocido recibido: $message", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
+
 
 
     private fun drawOpponentShipsOnEnemyBoard() {
