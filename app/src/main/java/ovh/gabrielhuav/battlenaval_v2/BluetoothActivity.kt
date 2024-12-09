@@ -158,7 +158,8 @@ class BluetoothActivity : AppCompatActivity() {
     private fun validateCoordinate() {
         val userInput = etCoordinateInput.text.toString().trim()
         if (currentRevealedCoordinate != null) {
-            val coordinateString = coordinateToString(currentRevealedCoordinate!!)
+            // Convertir la coordenada revelada a binario ASCII
+            val coordinateString = coordinateToBinaryASCII(currentRevealedCoordinate!!)
             if (userInput.equals(coordinateString, ignoreCase = true)) {
                 Toast.makeText(this, "¡Correcto! Coordenada impactada.", Toast.LENGTH_SHORT).show()
 
@@ -168,11 +169,28 @@ class BluetoothActivity : AppCompatActivity() {
                 currentRevealedCoordinate = null
                 delayTimerTextView.visibility = android.view.View.GONE
             } else {
-                Toast.makeText(this, "Incorrecto. Intenta nuevamente.", Toast.LENGTH_SHORT).show()
+                // Mostrar la respuesta correcta en formato binario
+                Toast.makeText(
+                    this,
+                    "Incorrecto. La respuesta correcta era: $coordinateString",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         } else {
             Toast.makeText(this, "No hay coordenada revelada actualmente.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun coordinateToBinaryASCII(coordinate: Pair<Int, Int>): String {
+        val (x, y) = coordinate
+        val letter = ('A' + y).toString() // Convertir índice de fila a letra
+        val number = (x + 1).toString() // Convertir índice de columna a número
+
+        // Convertir a binario ASCII
+        val letterBinary = letter[0].code.toString(2).padStart(8, '0')
+        val numberBinary = number[0].code.toString(2).padStart(8, '0')
+
+        return "$letterBinary,$numberBinary"
     }
 
 
