@@ -42,7 +42,6 @@ class BluetoothActivity : AppCompatActivity() {
                 val deviceAddress = result.data?.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS)
                 deviceAddress?.let {
                     bluetoothGameManager.connect(it)
-                    sendPlayerShipsToServer()
                 }
             }
         }
@@ -53,7 +52,6 @@ class BluetoothActivity : AppCompatActivity() {
                 handleIncomingMessage(message)
             }
         }
-
 
         setupButtons()
     }
@@ -92,6 +90,7 @@ class BluetoothActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnZoomIn).setOnClickListener {
+            sendPlayerShipsToOpponent() // Reenvía los barcos al oponente
             drawOpponentShipsOnEnemyBoard() // Dibuja los barcos del oponente con el último mensaje recibido
         }
     }
@@ -174,8 +173,6 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-
-
     private fun drawOpponentShipsOnEnemyBoard() {
         if (opponentShips.isEmpty() && lastOpponentMessage != null) {
             opponentShips = deserializeShipPositions(lastOpponentMessage!!.substringAfter(","))
@@ -217,16 +214,6 @@ class BluetoothActivity : AppCompatActivity() {
                 if (playerBoard.placeShip(Ship(size, vertical, color), x, y)) break
             }
         }
-    }
-
-    private fun sendPlayerShipsToServer() {
-        val playerShips = playerBoard.getShipCoordinates()
-        bluetoothGameManager.sendMessage("SHIPS,${serializeNumericShipPositions(playerShips)}")
-    }
-
-    private fun sendPlayerShipsToClient() {
-        val playerShips = playerBoard.getShipCoordinates()
-        bluetoothGameManager.sendMessage("SHIPS,${serializeNumericShipPositions(playerShips)}")
     }
 
     private fun serializeNumericShipPositions(ships: List<Pair<String, String>>): String {

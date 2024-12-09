@@ -127,7 +127,7 @@ class BluetoothGameManager(
             }
         }
     }
-    
+
     private fun serializeNumericShipPositions(ships: List<Pair<String, String>>): String {
         return ships.joinToString(";") {
             val (row, col) = it
