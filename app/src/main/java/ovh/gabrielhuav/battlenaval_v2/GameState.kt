@@ -4,7 +4,11 @@ data class GameState(
     val playerShips: List<ShipData>,
     val enemyShips: List<ShipData>,
     val revealedCoordinates: List<Pair<Int, Int>>,
-    val currentRevealedCoordinate: Pair<Int, Int>?
+    val currentRevealedCoordinate: Pair<Int, Int>?,
+    val serverCorrectAnswers: Int,
+    val serverIncorrectAnswers: Int,
+    val clientCorrectAnswers: Int,
+    val clientIncorrectAnswers: Int
 )
 
 data class ShipData(

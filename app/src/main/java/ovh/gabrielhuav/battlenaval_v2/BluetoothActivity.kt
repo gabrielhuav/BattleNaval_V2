@@ -29,6 +29,12 @@ class BluetoothActivity : AppCompatActivity() {
     private lateinit var btnConfirmCoordinate: Button
     private lateinit var btnSaveGame: Button
 
+    // Variables para las respuestas correctas e incorrectas
+    private var serverCorrectAnswers = 0
+    private var serverIncorrectAnswers = 0
+    private var clientCorrectAnswers = 0
+    private var clientIncorrectAnswers = 0
+
     private var shipsPlaced = false
     private var isConnected = false
     private var opponentShips: List<Pair<Int, Int>> = emptyList()
@@ -125,12 +131,16 @@ class BluetoothActivity : AppCompatActivity() {
 
     // Método para guardar el estado del juego
     private fun saveGameState() {
-        // Construir el estado del juego
+        // Construir el estado del juego con las puntuaciones de ambos jugadores
         val gameState = GameState(
             playerShips = getShipData(playerBoard),
             enemyShips = getShipData(enemyBoard),
             revealedCoordinates = revealedCoordinates,
-            currentRevealedCoordinate = currentRevealedCoordinate
+            currentRevealedCoordinate = currentRevealedCoordinate,
+            serverCorrectAnswers = serverCorrectAnswers,
+            serverIncorrectAnswers = serverIncorrectAnswers,
+            clientCorrectAnswers = clientCorrectAnswers,
+            clientIncorrectAnswers = clientIncorrectAnswers
         )
 
         // Serializar a JSON
@@ -144,7 +154,7 @@ class BluetoothActivity : AppCompatActivity() {
         println("Estado del juego guardado: $json")
     }
 
-    // Método para mostrar el estado guardado en un AlertDialog
+    // Mostrar el estado guardado actualizado
     private fun displaySavedGameState() {
         val file = File(filesDir, "game_state.json")
         if (!file.exists()) {
@@ -162,6 +172,11 @@ class BluetoothActivity : AppCompatActivity() {
             .create()
 
         dialog.show()
+    }
+
+    // Método auxiliar para determinar si el jugador actual es el servidor
+    private fun isServer(): Boolean {
+        return isConnected && bluetoothGameManager.getState() == BluetoothGameManager.State.CONNECTED
     }
 
     private fun updateServerStatus(state: BluetoothGameManager.State) {
@@ -207,27 +222,83 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
+    // Validación con actualización de contadores y retraso
+// Llamar a este método cuando termine la partida
+    private fun endGame() {
+        val message = """
+        Respuestas Correctas:
+        - Jugador 1 (Servidor): $serverCorrectAnswers
+        - Jugador 2 (Cliente): $clientCorrectAnswers
+        
+        Respuestas Incorrectas:
+        - Jugador 1 (Servidor): $serverIncorrectAnswers
+        - Jugador 2 (Cliente): $clientIncorrectAnswers
+    """.trimIndent()
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Fin de la Partida")
+            .setMessage(message)
+            .setPositiveButton("Cerrar") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        dialog.show()
+    }
+
+    // Llamar este método cuando se cumplan las condiciones de victoria
+    private fun checkGameOver() {
+        // Aquí puedes definir las condiciones para determinar si la partida ha terminado.
+        // Ejemplo: Si ya no quedan barcos del oponente en el tablero.
+        val serverShipsRemaining = playerBoard.getShipCoordinates().size
+        val clientShipsRemaining = enemyBoard.getShipCoordinates().size
+
+        if (serverShipsRemaining == 0 || clientShipsRemaining == 0) {
+            endGame() // Mostrar el resultado de la partida
+        }
+    }
+
+    // Modificar métodos relevantes para verificar el final de la partida
     private fun validateCoordinate() {
         val userInput = etCoordinateInput.text.toString().trim()
         if (currentRevealedCoordinate != null) {
-            // Convertir la coordenada revelada a binario ASCII
             val coordinateString = coordinateToBinaryASCII(currentRevealedCoordinate!!)
             if (userInput.equals(coordinateString, ignoreCase = true)) {
+                if (isServer()) {
+                    serverCorrectAnswers++
+                } else {
+                    clientCorrectAnswers++
+                }
                 Toast.makeText(this, "¡Correcto! Coordenada impactada.", Toast.LENGTH_SHORT).show()
 
-                // Cambiar el color a rojo para indicar un impacto confirmado
                 drawCoordinateOnBoard(enemyBoard, currentRevealedCoordinate!!, Color.RED)
                 etCoordinateInput.text.clear()
                 currentRevealedCoordinate = null
-                delayTimerTextView.visibility = android.view.View.GONE
             } else {
-                // Mostrar la respuesta correcta en formato binario
+                if (isServer()) {
+                    serverIncorrectAnswers++
+                } else {
+                    clientIncorrectAnswers++
+                }
                 Toast.makeText(
                     this,
                     "Incorrecto. La respuesta correcta era: $coordinateString",
                     Toast.LENGTH_SHORT
                 ).show()
             }
+
+            btnConfirmCoordinate.isEnabled = false
+            object : CountDownTimer(10000, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    delayTimerTextView.text = "Espere: ${millisUntilFinished / 1000} s"
+                }
+
+                override fun onFinish() {
+                    btnConfirmCoordinate.isEnabled = true
+                    delayTimerTextView.text = ""
+                    checkGameOver() // Verificar si la partida ha terminado después de cada validación
+                }
+            }.start()
         } else {
             Toast.makeText(this, "No hay coordenada revelada actualmente.", Toast.LENGTH_SHORT).show()
         }
