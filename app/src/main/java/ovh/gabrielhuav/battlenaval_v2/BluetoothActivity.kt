@@ -8,9 +8,12 @@ import android.os.CountDownTimer
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
+import java.io.File
 import kotlin.random.Random
 
 class BluetoothActivity : AppCompatActivity() {
@@ -24,6 +27,7 @@ class BluetoothActivity : AppCompatActivity() {
     private lateinit var delayTimerTextView: TextView
     private lateinit var etCoordinateInput: EditText
     private lateinit var btnConfirmCoordinate: Button
+    private lateinit var btnSaveGame: Button
 
     private var shipsPlaced = false
     private var isConnected = false
@@ -70,6 +74,7 @@ class BluetoothActivity : AppCompatActivity() {
         delayTimerTextView = findViewById(R.id.tvDelayTimer)
         etCoordinateInput = findViewById(R.id.etConvertedCoordinates)
         btnConfirmCoordinate = findViewById(R.id.btnConfirmCoordinates)
+        btnSaveGame = findViewById(R.id.btnSaveGame)
     }
 
     private fun initializeBoards() {
@@ -110,6 +115,53 @@ class BluetoothActivity : AppCompatActivity() {
         btnConfirmCoordinate.setOnClickListener {
             validateCoordinate()
         }
+
+        btnSaveGame.setOnClickListener {
+            saveGameState()
+            displaySavedGameState()
+            Toast.makeText(this, "Estado de la partida guardado.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Método para guardar el estado del juego
+    private fun saveGameState() {
+        // Construir el estado del juego
+        val gameState = GameState(
+            playerShips = getShipData(playerBoard),
+            enemyShips = getShipData(enemyBoard),
+            revealedCoordinates = revealedCoordinates,
+            currentRevealedCoordinate = currentRevealedCoordinate
+        )
+
+        // Serializar a JSON
+        val json = Gson().toJson(gameState)
+
+        // Guardar en un archivo interno
+        val file = File(filesDir, "game_state.json")
+        file.writeText(json)
+
+        // Confirmación en los logs
+        println("Estado del juego guardado: $json")
+    }
+
+    // Método para mostrar el estado guardado en un AlertDialog
+    private fun displaySavedGameState() {
+        val file = File(filesDir, "game_state.json")
+        if (!file.exists()) {
+            Toast.makeText(this, "No hay un estado guardado para mostrar.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val json = file.readText() // Leer contenido del archivo
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Estado Guardado")
+            .setMessage(json)
+            .setPositiveButton("Cerrar") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        dialog.show()
     }
 
     private fun updateServerStatus(state: BluetoothGameManager.State) {
