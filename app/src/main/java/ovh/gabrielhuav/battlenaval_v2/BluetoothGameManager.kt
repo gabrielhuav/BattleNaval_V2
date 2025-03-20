@@ -32,10 +32,6 @@ class BluetoothGameManager(private val context: Context) {
 
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
-    fun getDeviceByAddress(address: String): BluetoothDevice? {
-        return bluetoothAdapter?.bondedDevices?.find { it.address == address }
-    }
-    
     private var connectThread: ConnectThread? = null
     private var acceptThread: AcceptThread? = null
     private var connectedThread: ConnectedThread? = null
@@ -107,10 +103,13 @@ class BluetoothGameManager(private val context: Context) {
             bluetoothAdapter?.cancelDiscovery()
         }
 
-        connectThread = ConnectThread(device)
-        connectThread?.start()
-
-        setState(State.CONNECTING)
+        try {
+            connectThread = ConnectThread(device)
+            connectThread?.start()
+            setState(State.CONNECTING)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     @Synchronized

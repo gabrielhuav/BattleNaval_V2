@@ -14,6 +14,7 @@ class Cell(
 ) : View(context) {
     var ship: Ship? = null
     var wasShot: Boolean = false
+    var text: String? = null // Nuevo: Texto para mostrar en la celda
     private val paint = Paint()
     private val textPaint = Paint()
 
@@ -47,18 +48,29 @@ class Cell(
         }
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), borderPaint)
 
-        // Dibuja el barco en el tablero del jugador (si no ha sido disparada)
-        if (ship != null && !wasShot && !board.enemy) {
+        // Dibuja el barco en el tablero (jugador o enemigo)
+        if (ship != null && !wasShot) {
             paint.color = ship!!.color // Usa el color del barco
             canvas.drawRect(5f, 5f, width.toFloat() - 5f, height.toFloat() - 5f, paint)
             paint.color = Color.WHITE // Restaura el color original
         }
+
 
         // Si fue disparada, dibuja el estado
         if (wasShot) {
             val symbol = if (ship != null) "1" else "0" // Muestra 1 si hay barco, 0 si no
             canvas.drawText(
                 symbol,
+                width / 2f,
+                height / 2f - (textPaint.descent() + textPaint.ascent()) / 2,
+                textPaint
+            )
+        }
+
+        // Dibuja el texto personalizado si existe
+        text?.let {
+            canvas.drawText(
+                it,
                 width / 2f,
                 height / 2f - (textPaint.descent() + textPaint.ascent()) / 2,
                 textPaint
@@ -79,4 +91,11 @@ class Cell(
         } ?: false // Devuelve false si no hay barco
     }
 
+    /**
+     * Cambia el color de fondo de la celda.
+     */
+    override fun setBackgroundColor(newColor: Int) {
+        paint.color = newColor
+        invalidate() // Redibuja la celda
+    }
 }

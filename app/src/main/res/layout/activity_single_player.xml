@@ -67,6 +67,15 @@
             android:backgroundTint="@color/orange_transparent"
             android:textColor="@color/black"
             android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/btnDialog"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="D"
+            android:backgroundTint="@color/orange_transparent"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
     </LinearLayout>
 
     <!-- Controles inferiores -->

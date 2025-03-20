@@ -2,10 +2,8 @@ package ovh.gabrielhuav.battlenaval_v2
 
 import android.content.Context
 import android.graphics.Color
-import android.view.GestureDetector
 import android.view.Gravity
 import android.view.MotionEvent
-import android.view.ScaleGestureDetector
 import android.widget.GridLayout
 import android.widget.TextView
 
@@ -16,7 +14,7 @@ class Board(
 ) : GridLayout(context) {
 
     var ships = 3
-    private val cells = Array(7) { y ->
+    val cells = Array(7) { y ->
         Array(7) { x ->
             Cell(context, x, y, this).apply {
                 setOnClickListener { onCellClick(this) }
@@ -28,14 +26,7 @@ class Board(
         private set
     private var cellSize = 100
 
-    // Detector de gestos para pellizcar
-    private val scaleGestureDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        override fun onScale(detector: ScaleGestureDetector): Boolean {
-            val scale = scaleFactor * detector.scaleFactor
-            adjustCellSize(scale.coerceIn(0.1f, 2.0f)) // Limitar el zoom entre 0.1x y 2.0x
-            return true
-        }
-    })
+    private var rowLabels = List(7) { y -> ('A' + y).toString() } // Etiquetas por defecto
 
     init {
         rowCount = 8
@@ -44,7 +35,7 @@ class Board(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        return scaleGestureDetector.onTouchEvent(event) || super.onTouchEvent(event)
+        return super.onTouchEvent(event)
     }
 
     private fun drawBoard() {
@@ -71,8 +62,9 @@ class Board(
 
         // Encabezados de filas y celdas
         for (y in 0 until 7) {
+            // Encabezados de fila
             addView(TextView(context).apply {
-                text = ('A' + y).toString()
+                text = rowLabels[y]
                 gravity = Gravity.CENTER
                 setBackgroundColor(Color.YELLOW)
                 setTextColor(Color.BLACK)
@@ -80,6 +72,7 @@ class Board(
                 textSize = (cellSize * 0.2f).coerceAtLeast(12f)
             })
 
+            // Celdas
             for (x in 0 until 7) {
                 val cell = cells[y][x]
                 cell.layoutParams = LayoutParams(cellSize, cellSize)
@@ -102,12 +95,12 @@ class Board(
         if (ship.vertical) {
             for (i in y until y + length) {
                 cells[i][x].ship = ship
-                cells[i][x].invalidate()
+                cells[i][x].invalidate() // Fuerza redibujado de la celda
             }
         } else {
             for (i in x until x + length) {
                 cells[y][i].ship = ship
-                cells[y][i].invalidate()
+                cells[y][i].invalidate() // Fuerza redibujado de la celda
             }
         }
         return true
@@ -119,5 +112,57 @@ class Board(
         scaleFactor = newScaleFactor
         cellSize = (100 * scaleFactor).toInt().coerceAtLeast(20)
         drawBoard()
+    }
+
+    fun getShipCoordinates(): List<Pair<String, String>> {
+        val coordinates = mutableListOf<Pair<String, String>>()
+
+        for (y in cells.indices) {
+            for (x in cells[y].indices) {
+                val cell = cells[y][x]
+                if (cell.ship != null) {
+                    val letter = ('A' + y).toString() // Convierte el índice de fila a letra
+                    val number = (x + 1).toString() // Convierte el índice de columna a número
+                    coordinates.add(Pair(letter, number))
+                }
+            }
+        }
+
+        return coordinates
+    }
+
+    fun clearShips() {
+        for (y in cells.indices) {
+            for (x in cells[y].indices) {
+                val cell = cells[y][x]
+                cell.ship = null
+                cell.invalidate() // Fuerza el redibujado de la celda
+            }
+        }
+        ships = 0 // Reinicia el contador de barcos
+    }
+
+    /**
+     * Actualiza las etiquetas de las filas del tablero.
+     */
+    fun setRowLabels(newLabels: List<String>) {
+        if (newLabels.size == 7) {
+            rowLabels = newLabels
+            drawBoard() // Redibuja el tablero con las nuevas etiquetas
+        } else {
+            throw IllegalArgumentException("Se requieren exactamente 7 etiquetas para las filas.")
+        }
+    }
+
+    /**
+     * Método para forzar el redibujado del tablero y todas sus celdas.
+     */
+    fun redrawBoard() {
+        for (y in cells.indices) {
+            for (x in cells[y].indices) {
+                cells[y][x].invalidate() // Fuerza el redibujado de cada celda
+            }
+        }
+        invalidate() // Fuerza el redibujado del contenedor del tablero
     }
 }
