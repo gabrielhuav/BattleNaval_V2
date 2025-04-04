@@ -1,4 +1,4 @@
-package ovh.gabrielhuav.battlenaval_v2
+package ovh.gabrielhuav.battlenaval_v2.battlenavalbinario
 
 import android.graphics.Color
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import ovh.gabrielhuav.battlenaval_v2.R
 import kotlin.random.Random
 
 class SinglePlayerActivity : AppCompatActivity() {

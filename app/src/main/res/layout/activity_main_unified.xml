@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- Imagen de fondo -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/wallpaper_ipn" />
+
+    <!-- Título de la aplicación -->
+    <TextView
+        android:id="@+id/tvAppTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Battle Naval &amp; Sistema Binario"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="#80000000"
+        android:padding="16dp" />
+
+    <!-- Contenedor principal de botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#80000000"
+        android:padding="16dp">
+
+        <!-- Sección Battle Naval -->
+        <Button
+            android:id="@+id/btnBattleNaval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Battle Naval"
+            android:backgroundTint="@color/teal_700"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"
+            android:padding="16dp" />
+
+        <!-- Botones ocultos de Battle Naval (se mostrarán/ocultarán) -->
+        <Button
+            android:id="@+id/btnSinglePlayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Un Jugador"
+            android:backgroundTint="@color/teal_200"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btnBluetooth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Multijugador Bluetooth"
+            android:backgroundTint="@color/teal_200"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Sección Educativa -->
+        <Button
+            android:id="@+id/btnEducational"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aprende Sistema Binario"
+            android:backgroundTint="@color/purple_500"
+            android:textColor="@color/white"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Sección Configuración -->
+        <Button
+            android:id="@+id/btnChangeTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cambiar Tema"
+            android:backgroundTint="@color/gray"
+            android:textColor="@color/white"
+            android:padding="16dp" />
+    </LinearLayout>
+
+    <!-- Pie de página -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="8dp"
+        android:text="Battle Naval &amp; Sistema Binario v1.0"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:background="#80000000" />
+
+</RelativeLayout>

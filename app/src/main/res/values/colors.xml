@@ -1,36 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Colores principales -->
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
+    <!-- Colores básicos -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
     <color name="dark_gray">#2C2C2C</color>
     <color name="light_gray">#F5F5F5</color>
-    <color name="white_transparent">#B3FFFFFF</color> <!-- Blanco semi-transparente -->
+    <color name="gray">#9E9E9E</color>
 
-    <!-- Colores temáticos -->
+    <!-- Colores con transparencia -->
+    <color name="white_transparent">#B3FFFFFF</color>
+    <color name="background_overlay">#4DFF0000</color>
+    <color name="background_overlay_dark">#4D000000</color>
+
+    <!-- Tonos de rojo -->
     <color name="dark_red">#D32F2F</color>
     <color name="light_red">#F44336</color>
     <color name="hover_red">#B71C1C</color>
 
+    <!-- Tonos de azul -->
     <color name="dark_blue">#283593</color>
     <color name="light_blue">#64B5F6</color>
     <color name="hover_blue">#1565C0</color>
 
     <!-- Tonos de morado -->
+    <color name="purple_200">#BB86FC</color>
     <color name="purple_500">#6200EE</color>
     <color name="purple_700">#3700B3</color>
-    <color name="purple_200">#BB86FC</color>
 
-    <!-- Tonos adicionales -->
+    <!-- Tonos de verde/turquesa -->
     <color name="teal_200">#03DAC5</color>
     <color name="teal_700">#018786</color>
+
+    <!-- Otros colores básicos -->
     <color name="yellow">#FFEB3B</color>
     <color name="orange">#FF9800</color>
-    <color name="gray">#9E9E9E</color>
+    <color name="orange_transparent">#88FF9800</color>
 
-    <!-- Colores para superposiciones y transparencias -->
-    <color name="background_overlay">#4DFF0000</color> <!-- Rojo transparente -->
-    <color name="background_overlay_dark">#4D000000</color> <!-- Negro transparente -->
-    <color name="orange_transparent">#88FF9800</color> <!-- Naranja con transparencia -->
+    <!-- Tema UNAM (Guinda) -->
+    <color name="unam_primary">#862633</color>
+    <color name="unam_primary_dark">#621B26</color>
+    <color name="unam_accent">#FCD116</color>
+    <color name="unam_background">#FFF5F7</color>
+    <color name="unam_surface">#FFFFFF</color>
+    <color name="unam_text">#1F1F1F</color>
 
+    <!-- Tema IPN (ESCOM) -->
+    <color name="ipn_primary">#6F1E51</color>
+    <color name="ipn_primary_dark">#4E1536</color>
+    <color name="ipn_accent">#FFFFFF</color>
+    <color name="ipn_background">#F5F9FF</color>
+    <color name="ipn_surface">#FFFFFF</color>
+    <color name="ipn_text">#1F1F1F</color>
+
+    <!-- Aliases para compatibilidad con el código existente -->
+    <color name="guinda_primary">@color/unam_primary</color>
+    <color name="guinda_secondary">@color/unam_primary_dark</color>
+    <color name="guinda_accent">@color/unam_accent</color>
+    <color name="guinda_background">@color/unam_background</color>
+    <color name="guinda_surface">@color/unam_surface</color>
+    <color name="guinda_text">@color/unam_text</color>
+
+    <color name="escom_primary">@color/ipn_primary</color>
+    <color name="escom_secondary">@color/ipn_primary_dark</color>
+    <color name="escom_accent">@color/ipn_accent</color>
+    <color name="escom_background">@color/ipn_background</color>
+    <color name="escom_surface">@color/ipn_surface</color>
+    <color name="escom_text">@color/ipn_text</color>
 </resources>

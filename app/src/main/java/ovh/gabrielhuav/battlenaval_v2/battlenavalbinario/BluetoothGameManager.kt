@@ -1,4 +1,4 @@
-package ovh.gabrielhuav.battlenaval_v2
+package ovh.gabrielhuav.battlenaval_v2.battlenavalbinario
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter

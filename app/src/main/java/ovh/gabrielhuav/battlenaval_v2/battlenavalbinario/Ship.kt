@@ -1,4 +1,4 @@
-package ovh.gabrielhuav.battlenaval_v2
+package ovh.gabrielhuav.battlenaval_v2.battlenavalbinario
 
 import android.graphics.Color
 

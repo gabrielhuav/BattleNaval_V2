@@ -1,3 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BattleNaval_V2</string>
+    <!-- Nombre general de la aplicación -->
+    <string name="app_name">BattleNaval Binario</string>
+
+    <!-- Sección Battle Naval -->
+    <string name="battle_naval_title">Battle Naval</string>
+    <string name="single_player">Un Jugador</string>
+    <string name="multiplayer_bluetooth">Multijugador Bluetooth</string>
+    <string name="back_to_menu">Regresar al Menú</string>
+    <string name="new_game">Nuevo Juego</string>
+    <string name="server_status">Estado: %1$s</string>
+    <string name="server_waiting">Esperando Conexiones</string>
+    <string name="server_connecting">Conectando...</string>
+    <string name="server_connected">Conectado</string>
+    <string name="server_disconnected">Desconectado</string>
+    <string name="start_server">Iniciar Servidor</string>
+    <string name="connect_to_device">Conectar a Dispositivo</string>
+    <string name="scan_devices">Buscar Dispositivos</string>
+    <string name="shooting_at">Disparando en %1$s</string>
+    <string name="zoom_in">+</string>
+    <string name="zoom_out">-</string>
+
+    <!-- Mensajes de batalla naval -->
+    <string name="hit_message">¡Buen disparo! Has acertado un barco</string>
+    <string name="miss_message">Disparo al agua</string>
+    <string name="victory_message">¡GANASTE! Todos los barcos enemigos han sido hundidos</string>
+    <string name="defeat_message">¡PERDISTE!</string>
+    <string name="enemy_hit_message">El enemigo te ha golpeado un barco</string>
+
+    <!-- Desafío de conversión binaria -->
+    <string name="binary_challenge_title">¡Desafío de Conversión Binaria!</string>
+    <string name="binary_revealed_coordinate">Coordenada binaria revelada</string>
+    <string name="vertical_binary">Vertical (ASCII): %1$s (%2$s) - Letras de A a G</string>
+    <string name="horizontal_binary">Horizontal (Decimal): %1$s (%2$s) - Números del 1 al 7</string>
+    <string name="conversion_instructions">Convierte estos valores para poder disparar en esta ubicación.</string>
+    <string name="vertical_hint">Coordenada horizontal (A-G)</string>
+    <string name="horizontal_hint">Coordenada vertical (1-7)</string>
+    <string name="verify">Verificar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="complete_fields">Por favor, completa ambos campos</string>
+    <string name="horizontal_error">La coordenada horizontal debe ser una letra entre A y G</string>
+    <string name="vertical_error">La coordenada vertical debe ser un número entre 1 y 7</string>
+    <string name="correct_conversion">¡Conversión correcta! Disparando en la ubicación revelada.</string>
+    <string name="incorrect_conversion">Conversión incorrecta. Disparando en la coordenada ingresada.</string>
+    <string name="out_of_range">Coordenada fuera de rango. Inténtalo nuevamente.</string>
+    <string name="new_binary_revealed">¡Nueva coordenada binaria revelada!</string>
+    <string name="all_ships_found">¡Has descubierto todos los barcos enemigos!</string>
+
+    <!-- Sección Sistema Binario -->
+    <string name="binary_system_title">Sistema Binario</string>
+    <string name="learn">Aprender</string>
+    <string name="games">Juegos</string>
+    <string name="change_theme">Cambiar Tema</string>
+    <string name="binary_system_description">Aprende sobre el sistema binario y diviértete con juegos interactivos</string>
+
+    <!-- Menús de navegación -->
+    <string name="nav_introduction">Introducción</string>
+    <string name="nav_concepts">Conceptos</string>
+    <string name="nav_conversions">Conversiones</string>
+    <string name="nav_visualization">Visualización</string>
+    <string name="nav_switches">Interruptores</string>
+    <string name="nav_practice">Práctica</string>
+    <string name="nav_challenges">Desafíos</string>
+
+    <!-- Títulos de secciones -->
+    <string name="learning_title">Aprendizaje</string>
+    <string name="games_challenges_title">Juegos y Desafíos</string>
+    <string name="introduction_title">Introducción al Sistema Binario</string>
+    <string name="binary_basics_title">Conceptos Básicos del Sistema Binario</string>
+    <string name="conversion_title">Conversión entre Decimal y Binario</string>
+    <string name="visualization_title">Visualización Interactiva de Binario</string>
+    <string name="switches_game_title">Juego de Interruptores Binarios</string>
+    <string name="practice_title">Práctica de Conversión</string>
+    <string name="challenges_title">Desafíos Binarios</string>
+
+    <!-- Botones y acciones comunes -->
+    <string name="submit">Enviar</string>
+    <string name="reset">Reiniciar</string>
+    <string name="next">Siguiente</string>
+    <string name="check">Comprobar</string>
+    <string name="start_challenge">Iniciar Desafío</string>
+    <string name="restart_challenge">Reiniciar Desafío</string>
+
+    <!-- Temas de la aplicación -->
+    <string name="select_theme">Seleccionar Tema</string>
+    <string name="theme_guinda">Tema UNAM (Guinda)</string>
+    <string name="theme_escom">Tema IPN (ESCOM)</string>
+
+    <!-- Pantalla principal unificada -->
+    <string name="app_title">Battle Naval &amp; Sistema Binario</string>
+    <string name="battle_naval_option">Battle Naval</string>
+    <string name="learn_binary_option">Aprende Sistema Binario</string>
+    <string name="app_footer">Battle Naval &amp; Sistema Binario v1.0</string>
 </resources>

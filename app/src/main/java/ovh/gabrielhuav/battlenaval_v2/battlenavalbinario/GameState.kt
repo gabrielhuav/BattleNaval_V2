@@ -1,4 +1,4 @@
-package ovh.gabrielhuav.battlenaval_v2
+package ovh.gabrielhuav.battlenaval_v2.battlenavalbinario
 
 data class GameState(
     val playerShips: List<ShipData>,

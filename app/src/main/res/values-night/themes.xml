@@ -1,7 +1,35 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.BattleNaval_V2" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Night/Dark mode themes -->
+    <style name="Theme.BattleNaval_V2.Guinda.Night" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/unam_primary</item>
+        <item name="colorPrimaryVariant">@color/unam_primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/unam_accent</item>
+        <item name="colorSecondaryVariant">@color/unam_primary_dark</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:colorBackground">#121212</item>
+        <item name="colorSurface">#1E1E1E</item>
+        <item name="colorOnSurface">#E1E1E1</item>
+        <item name="colorOnBackground">#E1E1E1</item>
+        <item name="android:statusBarColor">@color/black</item>
     </style>
+
+    <style name="Theme.BattleNaval_V2.Escom.Night" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/ipn_primary</item>
+        <item name="colorPrimaryVariant">@color/ipn_primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/ipn_accent</item>
+        <item name="colorSecondaryVariant">@color/ipn_primary_dark</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:colorBackground">#121212</item>
+        <item name="colorSurface">#1E1E1E</item>
+        <item name="colorOnSurface">#E1E1E1</item>
+        <item name="colorOnBackground">#E1E1E1</item>
+        <item name="android:statusBarColor">@color/black</item>
+    </style>
+
+    <!-- Compatibilidad con themes anteriores -->
+    <style name="Theme_Exam1_Guinda" parent="Theme.BattleNaval_V2.Guinda" />
+    <style name="Theme_Exam1_Escom" parent="Theme.BattleNaval_V2.Escom" />
 </resources>

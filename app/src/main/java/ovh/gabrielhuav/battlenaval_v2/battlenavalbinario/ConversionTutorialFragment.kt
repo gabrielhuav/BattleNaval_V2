@@ -1,4 +1,4 @@
-package ovh.gabrielhuav.battlenaval_v2
+package ovh.gabrielhuav.battlenaval_v2.battlenavalbinario
 
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import ovh.gabrielhuav.battlenaval_v2.R
 import kotlin.random.Random
 
 class ConversionTutorialFragment : DialogFragment() {

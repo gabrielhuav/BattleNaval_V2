@@ -1,4 +1,4 @@
-package ovh.gabrielhuav.battlenaval_v2
+package ovh.gabrielhuav.battlenaval_v2.battlenavalbinario
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.gson.Gson
+import ovh.gabrielhuav.battlenaval_v2.R
 import kotlin.random.Random
 
 class BluetoothActivity : AppCompatActivity() {
