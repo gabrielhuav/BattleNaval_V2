@@ -92,4 +92,24 @@
     <string name="battle_naval_option">Battle Naval</string>
     <string name="learn_binary_option">Aprende Sistema Binario</string>
     <string name="app_footer">Battle Naval &amp; Sistema Binario v1.0</string>
+    <!-- Menú principal y navegación -->
+
+    <string name="settings">Configuración</string>
+
+    <!-- Juegos y actividades -->
+    <string name="battle_naval_games">Batalla Naval</string>
+    <string name="binary_games">Juegos Binarios</string>
+    <string name="binary_switches">Interruptores</string>
+    <string name="binary_practice">Práctica</string>
+    <string name="binary_challenges">Desafíos</string>
+
+    <!-- Descripciones de secciones de juegos -->
+    <string name="battle_naval_description">Juega al clásico juego de Batalla Naval con un desafío adicional: ¡convierte coordenadas binarias!</string>
+    <string name="binary_switches_description">Experimenta con interruptores binarios para crear diferentes números</string>
+    <string name="binary_practice_description">Practica la conversión entre decimal y binario con ejercicios de dificultad progresiva</string>
+    <string name="binary_challenges_description">Pon a prueba tus habilidades con desafíos contrarreloj de conversión binaria</string>
+
+    <!-- Instructivos -->
+    <string name="battle_naval_instructions">Selecciona el modo de juego:</string>
+    <string name="binary_games_instructions">Selecciona el mini-juego que deseas jugar:</string>
 </resources>

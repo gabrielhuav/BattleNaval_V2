@@ -4,72 +4,105 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import ovh.gabrielhuav.battlenaval_v2.sistemabinario.EducationalActivity
 import ovh.gabrielhuav.battlenaval_v2.battlenavalbinario.BluetoothActivity
 import ovh.gabrielhuav.battlenaval_v2.battlenavalbinario.SinglePlayerActivity
+import ovh.gabrielhuav.battlenaval_v2.sistemabinario.GamesActivity
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var btnLearn: Button
+    private lateinit var btnGames: Button
+    private lateinit var btnSettings: Button
+
+    // Botones de juegos (se mostrarán/ocultarán)
+    private lateinit var layoutGamesSubMenu: LinearLayout
     private lateinit var btnBattleNaval: Button
-    private lateinit var btnSinglePlayer: Button
-    private lateinit var btnBluetooth: Button
-    private lateinit var btnEducational: Button
-    private lateinit var btnChangeTheme: Button
+    private lateinit var btnBattleNavalSinglePlayer: Button
+    private lateinit var btnBattleNavalBluetooth: Button
+    private lateinit var btnBinaryGames: Button
+
+    // Layout para opciones de Batalla Naval (se mostrará/ocultará)
+    private lateinit var layoutBattleNavalOptions: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Aplicar tema antes de inflar la vista
-        ThemeManager.applyTheme(this)
+        val themeId = ThemeManager.getTheme(this)
+        when (themeId) {
+            ThemeManager.THEME_ESCOM -> setTheme(R.style.Theme_BattleNaval_V2_Escom)
+            ThemeManager.THEME_GUINDA -> setTheme(R.style.Theme_BattleNaval_V2_Guinda)
+            else -> setTheme(R.style.Theme_BattleNaval_V2_Guinda)
+        }
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_unified)
 
         // Inicializar vistas
+        btnLearn = findViewById(R.id.btnLearn)
+        btnGames = findViewById(R.id.btnGames)
+        btnSettings = findViewById(R.id.btnSettings)
+
+        layoutGamesSubMenu = findViewById(R.id.layoutGamesSubMenu)
         btnBattleNaval = findViewById(R.id.btnBattleNaval)
-        btnSinglePlayer = findViewById(R.id.btnSinglePlayer)
-        btnBluetooth = findViewById(R.id.btnBluetooth)
-        btnEducational = findViewById(R.id.btnEducational)
-        btnChangeTheme = findViewById(R.id.btnChangeTheme)
+        btnBattleNavalSinglePlayer = findViewById(R.id.btnBattleNavalSinglePlayer)
+        btnBattleNavalBluetooth = findViewById(R.id.btnBattleNavalBluetooth)
+        btnBinaryGames = findViewById(R.id.btnBinaryGames)
+
+        layoutBattleNavalOptions = findViewById(R.id.layoutBattleNavalOptions)
 
         // Configurar listeners
-        btnBattleNaval.setOnClickListener {
-            // Mostrar/ocultar opciones de Battle Naval
-            val isVisible = btnSinglePlayer.visibility == View.VISIBLE
-            val newVisibility = if (isVisible) View.GONE else View.VISIBLE
-
-            btnSinglePlayer.visibility = newVisibility
-            btnBluetooth.visibility = newVisibility
-        }
-
-        btnSinglePlayer.setOnClickListener {
-            val intent = Intent(this, SinglePlayerActivity::class.java)
-            startActivity(intent)
-        }
-
-        btnBluetooth.setOnClickListener {
-            val intent = Intent(this, BluetoothActivity::class.java)
-            startActivity(intent)
-        }
-
-        btnEducational.setOnClickListener {
+        btnLearn.setOnClickListener {
             val intent = Intent(this, EducationalActivity::class.java)
             startActivity(intent)
         }
 
-        btnChangeTheme.setOnClickListener {
+        btnGames.setOnClickListener {
+            // Mostrar/ocultar opciones de juegos
+            val isVisible = layoutGamesSubMenu.visibility == View.VISIBLE
+            layoutGamesSubMenu.visibility = if (isVisible) View.GONE else View.VISIBLE
+
+            // Si estaba visible el submenu de Battle Naval, ocultarlo también
+            if (layoutBattleNavalOptions.visibility == View.VISIBLE && isVisible) {
+                layoutBattleNavalOptions.visibility = View.GONE
+            }
+        }
+
+        btnBattleNaval.setOnClickListener {
+            // Mostrar/ocultar opciones de Battle Naval
+            val isVisible = layoutBattleNavalOptions.visibility == View.VISIBLE
+            layoutBattleNavalOptions.visibility = if (isVisible) View.GONE else View.VISIBLE
+        }
+
+        btnBattleNavalSinglePlayer.setOnClickListener {
+            val intent = Intent(this, SinglePlayerActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnBattleNavalBluetooth.setOnClickListener {
+            val intent = Intent(this, BluetoothActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnBinaryGames.setOnClickListener {
+            val intent = Intent(this, GamesActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnSettings.setOnClickListener {
             showThemeDialog()
         }
 
-        // Inicialmente las opciones de Battle Naval están ocultas
-        btnSinglePlayer.visibility = View.GONE
-        btnBluetooth.visibility = View.GONE
+        // Inicialmente los submenús están ocultos
+        layoutGamesSubMenu.visibility = View.GONE
+        layoutBattleNavalOptions.visibility = View.GONE
     }
 
     private fun showThemeDialog() {
         val dialog = android.app.Dialog(this)
         dialog.setContentView(R.layout.dialog_theme_selector)
-        dialog.setTitle("Seleccionar Tema")
+        dialog.setTitle(getString(R.string.select_theme))
 
         // Obtener tema actual
         val currentTheme = ThemeManager.getTheme(this)
