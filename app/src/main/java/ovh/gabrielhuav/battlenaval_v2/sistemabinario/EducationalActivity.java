@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import ovh.gabrielhuav.battlenaval_v2.R;
-import ovh.gabrielhuav.battlenaval_v2.ThemeManager;
 
 public class EducationalActivity extends AppCompatActivity {
 

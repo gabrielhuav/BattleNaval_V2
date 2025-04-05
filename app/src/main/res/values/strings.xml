@@ -82,11 +82,6 @@
     <string name="start_challenge">Iniciar Desafío</string>
     <string name="restart_challenge">Reiniciar Desafío</string>
 
-    <!-- Temas de la aplicación -->
-    <string name="select_theme">Seleccionar Tema</string>
-    <string name="theme_guinda">Tema UNAM (Guinda)</string>
-    <string name="theme_escom">Tema IPN (ESCOM)</string>
-
     <!-- Pantalla principal unificada -->
     <string name="app_title">Battle Naval &amp; Sistema Binario</string>
     <string name="battle_naval_option">Battle Naval</string>
@@ -112,4 +107,9 @@
     <!-- Instructivos -->
     <string name="battle_naval_instructions">Selecciona el modo de juego:</string>
     <string name="binary_games_instructions">Selecciona el mini-juego que deseas jugar:</string>
+
+    <!-- Selección de temas -->
+    <string name="select_theme">Seleccionar Tema</string>
+    <string name="theme_unam">Tema UNAM (Guinda y Oro)</string>
+    <string name="theme_ipn">Tema IPN (Guinda y Blanco)</string>
 </resources>

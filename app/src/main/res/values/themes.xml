@@ -1,79 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme -->
+    <!-- Base application theme. -->
     <style name="Base.Theme.BattleNaval_V2" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Default palette -->
-        <item name="colorPrimary">@color/teal_700</item>
-        <item name="colorPrimaryVariant">@color/teal_200</item>
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/purple_500</item>
-        <item name="colorSecondaryVariant">@color/purple_700</item>
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
 
-    <!-- Base theme -->
     <style name="Theme.BattleNaval_V2" parent="Base.Theme.BattleNaval_V2" />
 
-    <!-- UNAM/Guinda Theme -->
-    <style name="Theme.BattleNaval_V2.Guinda" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <!-- Tema UNAM (Guinda) -->
+    <style name="Theme.BattleNaval_V2.UNAM" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/unam_primary</item>
         <item name="colorPrimaryVariant">@color/unam_primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/unam_accent</item>
         <item name="colorSecondaryVariant">@color/unam_primary_dark</item>
         <item name="colorOnSecondary">@color/black</item>
-        <item name="android:colorBackground">@color/unam_background</item>
-        <item name="colorSurface">@color/unam_surface</item>
-        <item name="colorOnSurface">@color/unam_text</item>
-        <item name="colorOnBackground">@color/unam_text</item>
         <item name="android:statusBarColor">@color/unam_primary_dark</item>
-        <item name="actionBarStyle">@style/ActionBar.Guinda</item>
-        <item name="bottomNavigationStyle">@style/BottomNavigation.Guinda</item>
+        <item name="buttonStyle">@style/Button.UNAM</item>
+        <item name="textAppearanceButton">@style/TextAppearance.UNAM.Button</item>
     </style>
 
-    <!-- IPN/ESCOM Theme -->
-    <style name="Theme.BattleNaval_V2.Escom" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <!-- Tema IPN (Guinda) -->
+    <style name="Theme.BattleNaval_V2.IPN" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/ipn_primary</item>
         <item name="colorPrimaryVariant">@color/ipn_primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/ipn_accent</item>
         <item name="colorSecondaryVariant">@color/ipn_primary_dark</item>
         <item name="colorOnSecondary">@color/black</item>
-        <item name="android:colorBackground">@color/ipn_background</item>
-        <item name="colorSurface">@color/ipn_surface</item>
-        <item name="colorOnSurface">@color/ipn_text</item>
-        <item name="colorOnBackground">@color/ipn_text</item>
         <item name="android:statusBarColor">@color/ipn_primary_dark</item>
-        <item name="actionBarStyle">@style/ActionBar.Escom</item>
-        <item name="bottomNavigationStyle">@style/BottomNavigation.Escom</item>
+        <item name="buttonStyle">@style/Button.IPN</item>
+        <item name="textAppearanceButton">@style/TextAppearance.IPN.Button</item>
     </style>
 
-    <!-- Action Bar Styles -->
-    <style name="ActionBar.Guinda" parent="Widget.MaterialComponents.ActionBar.Primary">
-        <item name="background">@color/unam_primary</item>
-        <item name="titleTextStyle">@style/ActionBarTitle</item>
-    </style>
-
-    <style name="ActionBar.Escom" parent="Widget.MaterialComponents.ActionBar.Primary">
-        <item name="background">@color/ipn_primary</item>
-        <item name="titleTextStyle">@style/ActionBarTitle</item>
-    </style>
-
-    <style name="ActionBarTitle" parent="TextAppearance.MaterialComponents.Headline6">
+    <!-- Estilos adicionales para botones UNAM -->
+    <style name="Button.UNAM" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/unam_primary</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <!-- Bottom Navigation Styles -->
-    <style name="BottomNavigation.Guinda" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="backgroundTint">@color/unam_primary</item>
-        <item name="itemIconTint">@color/white</item>
-        <item name="itemTextColor">@color/white</item>
+    <style name="TextAppearance.UNAM.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="BottomNavigation.Escom" parent="Widget.MaterialComponents.BottomNavigationView">
+    <!-- Estilos adicionales para botones IPN -->
+    <style name="Button.IPN" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/ipn_primary</item>
-        <item name="itemIconTint">@color/white</item>
-        <item name="itemTextColor">@color/white</item>
+        <item name="android:textColor">@color/white</item>
     </style>
+
+    <style name="TextAppearance.IPN.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Alias para mantener compatibilidad con código existente -->
+    <style name="Theme.BattleNaval_V2.Guinda" parent="Theme.BattleNaval_V2.UNAM" />
+    <style name="Theme.BattleNaval_V2.Escom" parent="Theme.BattleNaval_V2.IPN" />
+
+    <!-- Alias para nombres de temas en Exam1 (si es necesario) -->
+    <style name="Theme.Exam1.Guinda" parent="Theme.BattleNaval_V2.UNAM" />
+    <style name="Theme.Exam1.Escom" parent="Theme.BattleNaval_V2.IPN" />
 </resources>

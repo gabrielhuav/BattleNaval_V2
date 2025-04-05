@@ -4,18 +4,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import ovh.gabrielhuav.battlenaval_v2.sistemabinario.EducationalActivity
+import ovh.gabrielhuav.battlenaval_v2.sistemabinario.GamesActivity
+import ovh.gabrielhuav.battlenaval_v2.sistemabinario.ThemeManager
 import ovh.gabrielhuav.battlenaval_v2.battlenavalbinario.BluetoothActivity
 import ovh.gabrielhuav.battlenaval_v2.battlenavalbinario.SinglePlayerActivity
-import ovh.gabrielhuav.battlenaval_v2.sistemabinario.GamesActivity
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var btnLearn: Button
     private lateinit var btnGames: Button
     private lateinit var btnSettings: Button
+    private lateinit var backgroundImage: ImageView
 
     // Botones de juegos (se mostrarán/ocultarán)
     private lateinit var layoutGamesSubMenu: LinearLayout
@@ -29,17 +32,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Aplicar tema antes de inflar la vista
-        val themeId = ThemeManager.getTheme(this)
-        when (themeId) {
-            ThemeManager.THEME_ESCOM -> setTheme(R.style.Theme_BattleNaval_V2_Escom)
-            ThemeManager.THEME_GUINDA -> setTheme(R.style.Theme_BattleNaval_V2_Guinda)
-            else -> setTheme(R.style.Theme_BattleNaval_V2_Guinda)
-        }
+        ThemeManager.applyTheme(this)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_unified)
 
         // Inicializar vistas
+        backgroundImage = findViewById(R.id.backgroundImage)
         btnLearn = findViewById(R.id.btnLearn)
         btnGames = findViewById(R.id.btnGames)
         btnSettings = findViewById(R.id.btnSettings)
@@ -51,6 +50,9 @@ class MainActivity : AppCompatActivity() {
         btnBinaryGames = findViewById(R.id.btnBinaryGames)
 
         layoutBattleNavalOptions = findViewById(R.id.layoutBattleNavalOptions)
+
+        // Aplicar wallpaper según el tema
+        backgroundImage.setImageResource(ThemeManager.getThemeWallpaper(this))
 
         // Configurar listeners
         btnLearn.setOnClickListener {
@@ -109,21 +111,21 @@ class MainActivity : AppCompatActivity() {
 
         // Configurar radio buttons
         val radioGroup = dialog.findViewById<android.widget.RadioGroup>(R.id.themeRadioGroup)
-        val radioGuinda = dialog.findViewById<android.widget.RadioButton>(R.id.radioGuinda)
-        val radioEscom = dialog.findViewById<android.widget.RadioButton>(R.id.radioEscom)
+        val radioUNAM = dialog.findViewById<android.widget.RadioButton>(R.id.radioUNAM)
+        val radioIPN = dialog.findViewById<android.widget.RadioButton>(R.id.radioIPN)
 
         // Marcar el tema actual
-        if (currentTheme == ThemeManager.THEME_GUINDA) {
-            radioGuinda.isChecked = true
+        if (currentTheme == ThemeManager.THEME_UNAM) {
+            radioUNAM.isChecked = true
         } else {
-            radioEscom.isChecked = true
+            radioIPN.isChecked = true
         }
 
         // Listener para selección de tema
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedTheme = when (checkedId) {
-                R.id.radioGuinda -> ThemeManager.THEME_GUINDA
-                else -> ThemeManager.THEME_ESCOM
+                R.id.radioUNAM -> ThemeManager.THEME_UNAM
+                else -> ThemeManager.THEME_IPN
             }
 
             // Guardar y aplicar el tema seleccionado

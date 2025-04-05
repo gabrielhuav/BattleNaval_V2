@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permisos existentes -->
+    <!-- Permisos requeridos -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" tools:targetApi="31" />
@@ -22,9 +22,9 @@
         android:theme="@style/Theme.BattleNaval_V2"
         tools:targetApi="31">
 
-        <!-- Nueva actividad principal -->
+        <!-- Actividad principal unificada -->
         <activity
-            android:name="MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,21 +32,18 @@
             </intent-filter>
         </activity>
 
-        <!-- Actividades existentes de Battle Naval -->
-        <activity
-            android:name=".battlenavalbinario.MainActivityBattleNaval"
-            android:exported="false" />
-        <activity
-            android:name=".battlenavalbinario.DeviceListActivity"
-            android:exported="false" />
+        <!-- Actividades Battle Naval -->
         <activity
             android:name=".battlenavalbinario.SinglePlayerActivity"
             android:exported="false" />
         <activity
             android:name=".battlenavalbinario.BluetoothActivity"
             android:exported="false" />
+        <activity
+            android:name=".battlenavalbinario.DeviceListActivity"
+            android:exported="false" />
 
-        <!-- Actividades del Sistema Binario -->
+        <!-- Actividades Sistema Binario -->
         <activity
             android:name=".sistemabinario.EducationalActivity"
             android:exported="false" />

@@ -8,10 +8,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Seleccionar Tema"
-        android:textSize="20sp"
+        android:text="@string/select_theme"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp" />
 
     <RadioGroup
         android:id="@+id/themeRadioGroup"
@@ -20,18 +20,22 @@
         android:orientation="vertical">
 
         <RadioButton
-            android:id="@+id/radioGuinda"
+            android:id="@+id/radioUNAM"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tema Guinda (IPN)"
-            android:padding="12dp"/>
+            android:text="@string/theme_unam"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_marginBottom="8dp" />
 
         <RadioButton
-            android:id="@+id/radioEscom"
+            android:id="@+id/radioIPN"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tema Azul (ESCOM)"
-            android:padding="12dp"/>
+            android:text="@string/theme_ipn"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
+
     </RadioGroup>
 
 </LinearLayout>

@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ovh.gabrielhuav.battlenaval_v2.R
-import ovh.gabrielhuav.battlenaval_v2.ThemeManager
 
 /**
  * Actividad que contiene los juegos educativos sobre sistema binario
