@@ -33,13 +33,21 @@
     <color name="background_overlay_dark">#4D000000</color> <!-- Negro transparente -->
     <color name="orange_transparent">#88FF9800</color> <!-- Naranja con transparencia -->
 
-    <!-- Tema UNAM (Guinda) -->
-    <color name="unam_primary">#862633</color>  <!-- Guinda UNAM -->
-    <color name="unam_primary_dark">#621B26</color>
+    <!-- Tema UNAM (Azul y Oro) - Modo Claro -->
+    <color name="unam_primary">#004680</color>  <!-- Azul UNAM -->
+    <color name="unam_primary_dark">#00336B</color> <!-- Azul UNAM oscuro -->
     <color name="unam_accent">#FCD116</color>  <!-- Dorado UNAM -->
+    <!-- Tema UNAM Variantes Oscuras -->
+    <color name="unam_primary_night">#00336B</color>  <!-- Azul UNAM versión noche -->
+    <color name="unam_primary_dark_night">#00234A</color> <!-- Azul UNAM más oscuro -->
+    <color name="unam_accent_night">#DBB100</color>  <!-- Dorado UNAM versión noche -->
 
-    <!-- Tema IPN (ESCOM) -->
-    <color name="ipn_primary">#6F1E51</color>  <!-- Guinda IPN -->
-    <color name="ipn_primary_dark">#4E1536</color>
+    <!-- Tema IPN (Guinda y Blanco) - Modo Claro -->
+    <color name="ipn_primary">#7A193E</color>  <!-- Guinda IPN -->
+    <color name="ipn_primary_dark">#5C1430</color> <!-- Guinda IPN oscuro -->
     <color name="ipn_accent">#FFFFFF</color>   <!-- Blanco IPN -->
+    <!-- Tema IPN Variantes Oscuras -->
+    <color name="ipn_primary_night">#5C1430</color>  <!-- Guinda IPN versión noche -->
+    <color name="ipn_primary_dark_night">#440F22</color> <!-- Guinda IPN más oscuro -->
+    <color name="ipn_accent_night">#E0E0E0</color>   <!-- Blanco IPN versión noche (ligeramente grisáceo) -->
 </resources>

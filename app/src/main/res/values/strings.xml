@@ -110,6 +110,6 @@
 
     <!-- Selección de temas -->
     <string name="select_theme">Seleccionar Tema</string>
-    <string name="theme_unam">Tema UNAM (Guinda y Oro)</string>
+    <string name="theme_unam">Tema UNAM (Azul y Oro)</string>
     <string name="theme_ipn">Tema IPN (Guinda y Blanco)</string>
 </resources>

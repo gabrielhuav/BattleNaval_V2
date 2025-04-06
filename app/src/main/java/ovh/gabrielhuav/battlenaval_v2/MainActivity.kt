@@ -6,7 +6,11 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.compose.material3.RadioButton
 import ovh.gabrielhuav.battlenaval_v2.sistemabinario.EducationalActivity
 import ovh.gabrielhuav.battlenaval_v2.sistemabinario.GamesActivity
 import ovh.gabrielhuav.battlenaval_v2.sistemabinario.ThemeManager
@@ -102,7 +106,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showThemeDialog() {
-        val dialog = android.app.Dialog(this)
+        // Crear diálogo con estilo personalizado para fondo gris
+        val dialog = android.app.Dialog(this, R.style.Theme_Dialog_Gray)
         dialog.setContentView(R.layout.dialog_theme_selector)
         dialog.setTitle(getString(R.string.select_theme))
 
@@ -110,32 +115,73 @@ class MainActivity : AppCompatActivity() {
         val currentTheme = ThemeManager.getTheme(this)
 
         // Configurar radio buttons
-        val radioGroup = dialog.findViewById<android.widget.RadioGroup>(R.id.themeRadioGroup)
-        val radioUNAM = dialog.findViewById<android.widget.RadioButton>(R.id.radioUNAM)
-        val radioIPN = dialog.findViewById<android.widget.RadioButton>(R.id.radioIPN)
+        val radioUNAM = dialog.findViewById<RadioButton>(R.id.radioUNAM)
+        val radioIPN = dialog.findViewById<RadioButton>(R.id.radioIPN)
+
+        // Botones de acción
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
+        val btnApply = dialog.findViewById<Button>(R.id.btnApply)
 
         // Marcar el tema actual
-        if (currentTheme == ThemeManager.THEME_UNAM) {
+        when (currentTheme) {
+            ThemeManager.THEME_UNAM -> radioUNAM.isChecked = true
+            ThemeManager.THEME_IPN -> radioIPN.isChecked = true
+        }
+
+        // Implementar comportamiento de exclusión mutua manual (ya que estamos usando CardViews)
+        radioUNAM.setOnClickListener {
             radioUNAM.isChecked = true
-        } else {
+            radioIPN.isChecked = false
+        }
+
+        radioIPN.setOnClickListener {
+            radioUNAM.isChecked = false
             radioIPN.isChecked = true
         }
 
-        // Listener para selección de tema
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val selectedTheme = when (checkedId) {
-                R.id.radioUNAM -> ThemeManager.THEME_UNAM
-                else -> ThemeManager.THEME_IPN
+        // También hacer que las tarjetas completas sean clickeables
+        val cardUNAM = dialog.findViewById<CardView>(R.id.cardUNAM)
+        val cardIPN = dialog.findViewById<CardView>(R.id.cardIPN)
+
+        cardUNAM?.setOnClickListener {
+            radioUNAM.isChecked = true
+            radioIPN.isChecked = false
+        }
+
+        cardIPN?.setOnClickListener {
+            radioUNAM.isChecked = false
+            radioIPN.isChecked = true
+        }
+
+        // Botón Cancelar
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        // Botón Aplicar
+        btnApply.setOnClickListener {
+            val selectedTheme = when {
+                radioUNAM.isChecked -> ThemeManager.THEME_UNAM
+                radioIPN.isChecked -> ThemeManager.THEME_IPN
+                else -> currentTheme // Mantener el tema actual si nada está seleccionado
             }
 
-            // Guardar y aplicar el tema seleccionado
-            ThemeManager.setTheme(this, selectedTheme)
-            dialog.dismiss()
+            // Solo aplicar si realmente cambió el tema
+            if (selectedTheme != currentTheme) {
+                ThemeManager.setTheme(this, selectedTheme)
+                dialog.dismiss()
 
-            // Reiniciar la actividad para aplicar el tema
-            recreate()
+                // Mostrar un mensaje de confirmación
+                Toast.makeText(this, "Tema actualizado", Toast.LENGTH_SHORT).show()
+
+                // Reiniciar la actividad para aplicar el nuevo tema
+                recreate()
+            } else {
+                dialog.dismiss()
+            }
         }
 
         dialog.show()
     }
+
 }
