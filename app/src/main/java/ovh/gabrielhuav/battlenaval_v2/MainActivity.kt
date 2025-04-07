@@ -11,10 +11,10 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import ovh.gabrielhuav.battlenaval_v2.sistemabinario.LearningOptionsFragment
-import ovh.gabrielhuav.battlenaval_v2.sistemabinario.GamesActivity
 import ovh.gabrielhuav.battlenaval_v2.battlenavalbinario.BluetoothActivity
 import ovh.gabrielhuav.battlenaval_v2.battlenavalbinario.SinglePlayerActivity
+import ovh.gabrielhuav.battlenaval_v2.sistemabinario.GamesActivity
+import ovh.gabrielhuav.battlenaval_v2.sistemabinario.LearningOptionsFragment
 
 class MainActivity : AppCompatActivity() {
 

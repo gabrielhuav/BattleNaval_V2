@@ -36,6 +36,11 @@
     <color name="green">#4CAF50</color>
     <color name="red">#F44336</color>
 
+    <color name="dark_background">#1E1E1E</color>    <!-- Fondo oscuro pero no negro puro -->
+    <color name="dark_surface">#2D2D2D</color>       <!-- Superficies un poco más claras que el fondo -->
+    <color name="dark_text_primary">#F1F1F1</color>  <!-- Texto blanco con un ligero tinte para reducir la intensidad -->
+    <color name="dark_text_secondary">#BDBDBD</color><!-- Texto secundario menos prominente -->
+
     <!-- Tema UNAM (Azul y Oro) - Modo Claro -->
     <color name="unam_primary">#004680</color>  <!-- Azul UNAM -->
     <color name="unam_primary_dark">#00336B</color> <!-- Azul UNAM oscuro -->

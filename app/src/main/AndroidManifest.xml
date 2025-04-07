@@ -50,5 +50,8 @@
         <activity
             android:name=".sistemabinario.GamesActivity"
             android:exported="false" />
+        <activity
+            android:name=".codigoascii.AsciiEducationalActivity"
+            android:exported="false" />
     </application>
 </manifest>

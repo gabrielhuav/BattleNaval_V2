@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import ovh.gabrielhuav.battlenaval_v2.R
+import ovh.gabrielhuav.battlenaval_v2.codigoascii.AsciiEducationalActivity
 
 class LearningOptionsFragment : Fragment() {
 
@@ -37,8 +38,9 @@ class LearningOptionsFragment : Fragment() {
         }
 
         cardAsciiCode.setOnClickListener {
-            // Mostrar Toast para ASCII
-            Toast.makeText(activity, "Código ASCII: Próximamente disponible", Toast.LENGTH_SHORT).show()
+            // Abrir la nueva actividad de código ASCII
+            val intent = Intent(activity, AsciiEducationalActivity::class.java)
+            startActivity(intent)
         }
 
         cardStorageUnits.setOnClickListener {
