@@ -2,8 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <!-- Contenedor principal -->
     <LinearLayout
@@ -36,8 +35,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Iniciar Servidor"
-                android:backgroundTint="@color/teal_200"
-                android:textColor="@color/white"
                 android:layout_marginEnd="8dp" />
 
             <Button
@@ -45,9 +42,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Conectar a Dispositivo"
-                android:backgroundTint="@color/teal_700"
-                android:textColor="@color/white" />
+                android:text="Conectar a Dispositivo" />
         </LinearLayout>
 
         <!-- Contenedor para los tableros -->
@@ -98,8 +93,6 @@
             android:layout_height="60dp"
             android:text="+"
             android:textSize="24sp"
-            android:backgroundTint="#FFCC80"
-            android:textColor="@color/black"
             android:layout_marginEnd="8dp" />
 
         <Button
@@ -107,9 +100,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:text="-"
-            android:textSize="24sp"
-            android:backgroundTint="#FFCC80"
-            android:textColor="@color/black" />
+            android:textSize="24sp" />
     </LinearLayout>
 
     <!-- Botón para regresar al menú principal -->
@@ -119,7 +110,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_margin="16dp"
-        android:text="Regresar al Menú"
-        android:backgroundTint="@color/teal_200"
-        android:textColor="@color/white" />
+        android:text="Regresar al Menú" />
 </FrameLayout>

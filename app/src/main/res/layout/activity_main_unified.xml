@@ -14,129 +14,146 @@
         android:scaleType="centerCrop"
         android:src="@drawable/wallpaper_ipn" />
 
-    <!-- Título de la aplicación -->
-    <TextView
-        android:id="@+id/tvAppTitle"
+    <!-- Contenedor para fragments -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="@string/app_title"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:background="#80000000"
-        android:padding="16dp" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
-    <!-- Contenedor principal de botones -->
+    <!-- Contenedor principal -->
     <LinearLayout
+        android:id="@+id/mainContentLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:background="#80000000"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <!-- Botón de Aprendizaje -->
-        <Button
-            android:id="@+id/btnLearn"
+        <!-- Título de la aplicación -->
+        <TextView
+            android:id="@+id/tvAppTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/learn"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="40dp"
+            android:text="@string/app_title"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="#80000000"
             android:padding="16dp" />
 
-        <!-- Botón de Juegos (principal) -->
-        <Button
-            android:id="@+id/btnGames"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/games"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"
-            android:padding="16dp" />
-
-        <!-- Submenu de Juegos (inicialmente oculto) -->
+        <!-- Contenedor principal de botones -->
         <LinearLayout
-            android:id="@+id/layoutGamesSubMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:gravity="center"
+            android:background="#80000000"
+            android:padding="16dp"
+            android:layout_marginTop="40dp">
 
-            <!-- Opción Battle Naval -->
+            <!-- Botón de Aprendizaje -->
             <Button
-                android:id="@+id/btnBattleNaval"
+                android:id="@+id/btnLearn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/battle_naval_title"
-                android:textColor="@color/black"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp" />
+                android:text="@string/learn"
+                android:textColor="@color/white"
+                android:layout_marginBottom="8dp"
+                android:padding="16dp" />
 
-            <!-- Opciones de Battle Naval (inicialmente ocultas) -->
+            <!-- Botón de Juegos (principal) -->
+            <Button
+                android:id="@+id/btnGames"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/games"
+                android:textColor="@color/white"
+                android:layout_marginBottom="8dp"
+                android:padding="16dp" />
+
+            <!-- Submenu de Juegos (inicialmente oculto) -->
             <LinearLayout
-                android:id="@+id/layoutBattleNavalOptions"
+                android:id="@+id/layoutGamesSubMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
 
+                <!-- Opción Battle Naval -->
                 <Button
-                    android:id="@+id/btnBattleNavalSinglePlayer"
+                    android:id="@+id/btnBattleNaval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/single_player"
+                    android:text="@string/battle_naval_title"
                     android:textColor="@color/black"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp" />
 
-                <Button
-                    android:id="@+id/btnBattleNavalBluetooth"
+                <!-- Opciones de Battle Naval (inicialmente ocultas) -->
+                <LinearLayout
+                    android:id="@+id/layoutBattleNavalOptions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/multiplayer_bluetooth"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/btnBattleNavalSinglePlayer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/single_player"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <Button
+                        android:id="@+id/btnBattleNavalBluetooth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/multiplayer_bluetooth"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp" />
+                </LinearLayout>
+
+                <!-- Opción Juegos Binarios -->
+                <Button
+                    android:id="@+id/btnBinaryGames"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/games_challenges_title"
                     android:textColor="@color/black"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="16dp" />
             </LinearLayout>
 
-            <!-- Opción Juegos Binarios -->
+            <!-- Botón de Configuración -->
             <Button
-                android:id="@+id/btnBinaryGames"
+                android:id="@+id/btnSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/games_challenges_title"
-                android:textColor="@color/black"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp" />
+                android:text="@string/change_theme"
+                android:textColor="@color/white"
+                android:padding="16dp" />
         </LinearLayout>
 
-        <!-- Botón de Configuración -->
-        <Button
-            android:id="@+id/btnSettings"
+        <!-- Pie de página -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/change_theme"
-            android:textColor="@color/white"
-            android:padding="16dp" />
+            android:layout_alignParentBottom="true"
+            android:padding="8dp"
+            android:text="@string/app_footer"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:background="#80000000"
+            android:layout_marginTop="40dp" />
     </LinearLayout>
-
-    <!-- Pie de página -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:padding="8dp"
-        android:text="@string/app_footer"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:background="#80000000" />
 
 </RelativeLayout>

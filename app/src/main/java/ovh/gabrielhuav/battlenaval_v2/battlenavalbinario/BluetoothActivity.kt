@@ -9,16 +9,15 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.gson.Gson
 import ovh.gabrielhuav.battlenaval_v2.R
+import ovh.gabrielhuav.battlenaval_v2.ThemeManager
 import kotlin.random.Random
 
 class BluetoothActivity : AppCompatActivity() {
@@ -43,6 +42,7 @@ class BluetoothActivity : AppCompatActivity() {
     private val maxZoom = 2.0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bluetooth)
 

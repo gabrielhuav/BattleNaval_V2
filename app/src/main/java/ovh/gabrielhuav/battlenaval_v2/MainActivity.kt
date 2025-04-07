@@ -4,16 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.compose.material3.RadioButton
-import ovh.gabrielhuav.battlenaval_v2.sistemabinario.EducationalActivity
+import ovh.gabrielhuav.battlenaval_v2.sistemabinario.LearningOptionsFragment
 import ovh.gabrielhuav.battlenaval_v2.sistemabinario.GamesActivity
-import ovh.gabrielhuav.battlenaval_v2.sistemabinario.ThemeManager
 import ovh.gabrielhuav.battlenaval_v2.battlenavalbinario.BluetoothActivity
 import ovh.gabrielhuav.battlenaval_v2.battlenavalbinario.SinglePlayerActivity
 
@@ -23,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnGames: Button
     private lateinit var btnSettings: Button
     private lateinit var backgroundImage: ImageView
+    private lateinit var fragmentContainer: FrameLayout
+    private lateinit var mainContentLayout: LinearLayout
 
     // Botones de juegos (se mostrarán/ocultarán)
     private lateinit var layoutGamesSubMenu: LinearLayout
@@ -43,6 +44,8 @@ class MainActivity : AppCompatActivity() {
 
         // Inicializar vistas
         backgroundImage = findViewById(R.id.backgroundImage)
+        fragmentContainer = findViewById(R.id.fragment_container)
+        mainContentLayout = findViewById(R.id.mainContentLayout)
         btnLearn = findViewById(R.id.btnLearn)
         btnGames = findViewById(R.id.btnGames)
         btnSettings = findViewById(R.id.btnSettings)
@@ -60,8 +63,15 @@ class MainActivity : AppCompatActivity() {
 
         // Configurar listeners
         btnLearn.setOnClickListener {
-            val intent = Intent(this, EducationalActivity::class.java)
-            startActivity(intent)
+            // Ocultar el contenido principal y mostrar el fragment
+            mainContentLayout.visibility = View.GONE
+            fragmentContainer.visibility = View.VISIBLE
+
+            // Mostrar el fragment con las opciones de aprendizaje
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, LearningOptionsFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         btnGames.setOnClickListener {
@@ -100,10 +110,23 @@ class MainActivity : AppCompatActivity() {
             showThemeDialog()
         }
 
+
         // Inicialmente los submenús están ocultos
         layoutGamesSubMenu.visibility = View.GONE
         layoutBattleNavalOptions.visibility = View.GONE
     }
+
+    override fun onBackPressed() {
+        if (fragmentContainer.visibility == View.VISIBLE) {
+            // Si el fragmento está visible, volver al contenido principal
+            fragmentContainer.visibility = View.GONE
+            mainContentLayout.visibility = View.VISIBLE
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
 
     private fun showThemeDialog() {
         // Crear diálogo con estilo personalizado para fondo gris
@@ -183,5 +206,4 @@ class MainActivity : AppCompatActivity() {
 
         dialog.show()
     }
-
 }

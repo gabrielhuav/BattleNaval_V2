@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Bombilla -->
+    <path
+        android:pathData="M50,10 a20,20 0 1,0 0.1,0 L50,50 Z"
+        android:fillColor="#FFEB3B" />
+
+    <!-- Base de la bombilla -->
+    <path
+        android:pathData="M43,50 h14 v10 h-14 Z"
+        android:fillColor="#9E9E9F" />
+
+    <!-- Detalles de la bombilla encendida -->
+    <path
+        android:pathData="M50,5 v-10 M65,10 l5,-5 M75,25 l10,-3 M75,45 l10,3 M35,10 l-5,-5 M25,25 l-10,-3 M25,45 l-10,3"
+        android:strokeWidth="2"
+        android:strokeColor="#FFC107" />
+</vector>

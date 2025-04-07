@@ -1,8 +1,7 @@
-package ovh.gabrielhuav.battlenaval_v2.sistemabinario
+package ovh.gabrielhuav.battlenaval_v2
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import ovh.gabrielhuav.battlenaval_v2.R
 
 /**
  * Administrador de temas para la aplicación.

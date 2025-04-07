@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ovh.gabrielhuav.battlenaval_v2.R
+import ovh.gabrielhuav.battlenaval_v2.ThemeManager
 import kotlin.random.Random
 
 class SinglePlayerActivity : AppCompatActivity() {
@@ -26,6 +27,7 @@ class SinglePlayerActivity : AppCompatActivity() {
     private val maxZoom = 2.0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_player)
 

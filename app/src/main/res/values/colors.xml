@@ -33,6 +33,9 @@
     <color name="background_overlay_dark">#4D000000</color> <!-- Negro transparente -->
     <color name="orange_transparent">#88FF9800</color> <!-- Naranja con transparencia -->
 
+    <color name="green">#4CAF50</color>
+    <color name="red">#F44336</color>
+
     <!-- Tema UNAM (Azul y Oro) - Modo Claro -->
     <color name="unam_primary">#004680</color>  <!-- Azul UNAM -->
     <color name="unam_primary_dark">#00336B</color> <!-- Azul UNAM oscuro -->
