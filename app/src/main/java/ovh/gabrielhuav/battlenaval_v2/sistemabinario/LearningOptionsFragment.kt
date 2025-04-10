@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import ovh.gabrielhuav.battlenaval_v2.R
 import ovh.gabrielhuav.battlenaval_v2.codigoascii.AsciiEducationalActivity
+import ovh.gabrielhuav.battlenaval_v2.unidadesalmacenamiento.StorageUnitsActivity
 
 class LearningOptionsFragment : Fragment() {
 
@@ -44,8 +44,9 @@ class LearningOptionsFragment : Fragment() {
         }
 
         cardStorageUnits.setOnClickListener {
-            // Mostrar Toast para Unidades de Almacenamiento
-            Toast.makeText(activity, "Unidades de Medida de Almacenamiento: Próximamente disponible", Toast.LENGTH_SHORT).show()
+            // Abrir la actividad de unidades de almacenamiento
+            val intent = Intent(activity, StorageUnitsActivity::class.java)
+            startActivity(intent)
         }
 
         btnBackToMenu.setOnClickListener {

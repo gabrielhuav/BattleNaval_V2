@@ -53,5 +53,8 @@
         <activity
             android:name=".codigoascii.AsciiEducationalActivity"
             android:exported="false" />
+        <activity
+            android:name=".unidadesalmacenamiento.StorageUnitsActivity"
+            android:exported="false" />
     </application>
 </manifest>

@@ -1,4 +1,4 @@
-package ovh.gabrielhuav.battlenaval_v2.codigoascii
+package ovh.gabrielhuav.battlenaval_v2.unidadesalmacenamiento
 
 import android.os.Bundle
 import android.widget.Button
@@ -10,7 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import ovh.gabrielhuav.battlenaval_v2.R
 import ovh.gabrielhuav.battlenaval_v2.ThemeManager
 
-class AsciiEducationalActivity : AppCompatActivity() {
+class StorageUnitsActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var indicatorLayout: LinearLayout
@@ -18,12 +18,11 @@ class AsciiEducationalActivity : AppCompatActivity() {
     private lateinit var btnHome: Button
     private lateinit var indicators: Array<ImageView>
     private val fragments = listOf<Fragment>(
-        AsciiIntroductionFragment(),
-        AsciiEmojiComparisonFragment(),
-        AsciiTableFragment(),
-        AsciiBinaryConversionFragment(),
-        AsciiDecimalConversionFragment(),
-        AsciiConverterFragment()
+        StorageUnitsIntroFragment(),
+        StorageUnitsTypesFragment(),
+        StorageUnitsMeasurementsFragment(),
+        StorageUnitsRelationshipFragment(),
+        StorageUnitsInteractiveFragment()
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +30,7 @@ class AsciiEducationalActivity : AppCompatActivity() {
         ThemeManager.applyTheme(this)
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ascii_educational)
+        setContentView(R.layout.activity_storage_units)
 
         // Inicializar vistas
         viewPager = findViewById(R.id.viewPager)
@@ -40,7 +39,7 @@ class AsciiEducationalActivity : AppCompatActivity() {
         btnHome = findViewById(R.id.btnHome)
 
         // Configurar ViewPager
-        val pagerAdapter = AsciiEducationalPagerAdapter(this, fragments)
+        val pagerAdapter = StorageUnitsPagerAdapter(this, fragments)
         viewPager.adapter = pagerAdapter
 
         // Crear indicadores
