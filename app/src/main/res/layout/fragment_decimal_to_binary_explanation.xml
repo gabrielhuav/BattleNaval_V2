@@ -9,6 +9,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Título -->
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
@@ -19,44 +20,46 @@
             android:textColor="?attr/colorPrimary"
             android:layout_marginBottom="16dp" />
 
+        <!-- Explicación del método principal (División) -->
         <TextView
-            android:id="@+id/contentTextView"
+            android:id="@+id/contentTextViewDivision"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Contenido..."
             android:textSize="16sp"
             android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Método Alternativo: División por 2"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="También puedes convertir decimales a binarios dividiendo repetidamente por 2 y registrando los residuos:"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp" />
-
-        <TableLayout
-            android:id="@+id/exampleTableLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="*"
-            android:layout_marginBottom="24dp" />
-
+        <!-- Imagen ilustrativa -->
         <ImageView
             android:id="@+id/illustrationImageView"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="fitCenter"
             android:src="@drawable/decimal_to_binary"
-            android:layout_marginTop="16dp" />
+            android:layout_marginBottom="16dp" />
+
+        <!-- Tabla de ejemplo -->
+        <TableLayout
+            android:id="@+id/exampleTableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Explicación de LSB y MSB -->
+        <TextView
+            android:id="@+id/lsbMsbExplanation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Explicación del método alternativo (Potencias de 2) -->
+        <TextView
+            android:id="@+id/contentTextViewPowers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
 
     </LinearLayout>
 </ScrollView>

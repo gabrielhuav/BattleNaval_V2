@@ -156,84 +156,59 @@ class DecimalToBinaryFragment : Fragment() {
         if (userAnswer == currentNumber) {
             tvFeedback.text = "¡Correcto! $userBinary = $currentNumber"
             tvFeedback.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
-
-            // Explicar la conversión
-            explainConversion()
+            tvExplanation.text = "" // No mostrar explicación si es correcto
         } else {
             tvFeedback.text = "Incorrecto. Intenta de nuevo."
             tvFeedback.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
-            tvExplanation.text = ""
+            // Mostrar explicación solo si es incorrecto
+            explainConversion()
         }
     }
 
     private fun explainConversion() {
-        val binaryString = StringBuilder()
         val explanation = StringBuilder()
+        explanation.append("Cómo convertir $currentNumber a binario:\n\n")
 
-        explanation.append("Explicación:\n\n")
+        // Convertir usando el método de potencias de 2
+        var remainder = currentNumber
+        val binaryResult = arrayOf(0, 0, 0, 0) // Para 8, 4, 2, 1
 
-        // Agregar los bits y sus valores
-        var hasAddedValue = false
-
-        for (i in binaryBits.indices) {
-            val bit = binaryBits[i].text.toString()
-            binaryString.append(bit)
-
-            val positionValue = when(i) {
-                0 -> 8  // 2^3
-                1 -> 4  // 2^2
-                2 -> 2  // 2^1
-                3 -> 1  // 2^0
-                else -> 0
-            }
-
-            if (bit == "1") {
-                if (hasAddedValue) {
-                    explanation.append(" + ")
-                }
-                explanation.append("$positionValue")
-                hasAddedValue = true
-            }
-        }
-
-        explanation.append(" = $currentNumber")
-        explanation.append("\n\nPara convertir $currentNumber a binario:")
-        explanation.append("\n1. ¿$currentNumber contiene 8? ")
-
-        if (currentNumber >= 8) {
-            explanation.append("Sí, ponemos 1 en posición de 8")
-            explanation.append("\n   $currentNumber - 8 = ${currentNumber - 8} (nos queda por convertir)")
+        // Verificar cada potencia de 2
+        if (remainder >= 8) {
+            binaryResult[0] = 1
+            remainder -= 8
+            explanation.append("• $currentNumber contiene 8 (2³), ponemos 1 en la posición de 8\n")
+            explanation.append("  $currentNumber - 8 = $remainder (nos queda por convertir)\n")
         } else {
-            explanation.append("No, ponemos 0 en posición de 8")
+            explanation.append("• $currentNumber no contiene 8 (2³), ponemos 0 en la posición de 8\n")
         }
 
-        var remainder = if (currentNumber >= 8) currentNumber - 8 else currentNumber
-
-        explanation.append("\n2. ¿$remainder contiene 4? ")
         if (remainder >= 4) {
-            explanation.append("Sí, ponemos 1 en posición de 4")
-            explanation.append("\n   $remainder - 4 = ${remainder - 4} (nos queda por convertir)")
+            binaryResult[1] = 1
             remainder -= 4
+            explanation.append("• $remainder contiene 4 (2²), ponemos 1 en la posición de 4\n")
+            explanation.append("  $remainder - 4 = ${remainder - 4} (nos queda por convertir)\n")
         } else {
-            explanation.append("No, ponemos 0 en posición de 4")
+            explanation.append("• $remainder no contiene 4 (2²), ponemos 0 en la posición de 4\n")
         }
 
-        explanation.append("\n3. ¿$remainder contiene 2? ")
         if (remainder >= 2) {
-            explanation.append("Sí, ponemos 1 en posición de 2")
-            explanation.append("\n   $remainder - 2 = ${remainder - 2} (nos queda por convertir)")
+            binaryResult[2] = 1
             remainder -= 2
+            explanation.append("• $remainder contiene 2 (2¹), ponemos 1 en la posición de 2\n")
+            explanation.append("  $remainder - 2 = ${remainder - 2} (nos queda por convertir)\n")
         } else {
-            explanation.append("No, ponemos 0 en posición de 2")
+            explanation.append("• $remainder no contiene 2 (2¹), ponemos 0 en la posición de 2\n")
         }
 
-        explanation.append("\n4. ¿$remainder contiene 1? ")
         if (remainder >= 1) {
-            explanation.append("Sí, ponemos 1 en posición de 1")
+            binaryResult[3] = 1
+            explanation.append("• $remainder contiene 1 (2⁰), ponemos 1 en la posición de 1\n")
         } else {
-            explanation.append("No, ponemos 0 en posición de 1")
+            explanation.append("• $remainder no contiene 1 (2⁰), ponemos 0 en la posición de 1\n")
         }
 
+        explanation.append("\nResultado binario: ${binaryResult.joinToString("")}")
         tvExplanation.text = explanation.toString()
     }
 }

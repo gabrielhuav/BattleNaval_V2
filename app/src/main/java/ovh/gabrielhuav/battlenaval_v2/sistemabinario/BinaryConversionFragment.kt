@@ -29,7 +29,7 @@ class BinaryConversionFragment : Fragment() {
         val exampleTableLayout = view.findViewById<TableLayout>(R.id.exampleTableLayout)
         val illustrationImageView = view.findViewById<ImageView>(R.id.illustrationImageView)
 
-        titleTextView.text = "Convertir un número binario a decimal"
+        titleTextView.text = "Convertir de Binario a Decimal"
 
         contentTextView.text = """
             Convertir un número binario a decimal es como sumar el valor de las luces encendidas.
@@ -47,22 +47,22 @@ class BinaryConversionFragment : Fragment() {
             Si la luz está encendida (1), sumamos su valor.
             Si la luz está apagada (0), no sumamos nada.
             
-            Veamos un ejemplo con el número binario 1101:
+            Veamos un ejemplo con el número binario 1011:
             
             1 × 8 = 8
-            1 × 4 = 4
-            0 × 2 = 0
+            0 × 4 = 0
+            1 × 2 = 2
             1 × 1 = 1
             
-            8 + 4 + 0 + 1 = 13
+            8 + 0 + 2 + 1 = 11
             
-            ¡Por lo tanto, 1101 en binario es igual a 13 en decimal!
+            ¡Por lo tanto, 1011 en binario es igual a 11 en decimal!
         """.trimIndent()
 
         // Crear tabla de valores binarios
         createBinaryTable(binaryTableLayout)
 
-        // Crear tabla de ejemplo para 1101 -> 13
+        // Crear tabla de ejemplo para 1011 -> 11
         createExampleTable(exampleTableLayout)
 
         illustrationImageView.setImageResource(R.drawable.tabla_binario)
@@ -99,7 +99,7 @@ class BinaryConversionFragment : Fragment() {
 
         // Valores binarios
         val dataRow = TableRow(requireContext())
-        val binaries = listOf("1", "1", "0", "1")
+        val binaries = listOf("1", "0", "1", "1")
         for (binary in binaries) {
             dataRow.addView(createTextView(binary))
         }
@@ -107,7 +107,7 @@ class BinaryConversionFragment : Fragment() {
 
         // Valores calculados
         val calculationRow = TableRow(requireContext())
-        val calculations = listOf("1×8=8", "1×4=4", "0×2=0", "1×1=1")
+        val calculations = listOf("1×8=8", "0×4=0", "1×2=2", "1×1=1")
         for (calculation in calculations) {
             calculationRow.addView(createTextView(calculation))
         }
@@ -115,7 +115,7 @@ class BinaryConversionFragment : Fragment() {
 
         // Total
         val totalRow = TableRow(requireContext())
-        val totalCell = createTextView("Total: 8+4+0+1=13", true)
+        val totalCell = createTextView("Total: 8+0+2+1=11", true)
         totalCell.setPadding(16, 16, 16, 16)
 
         // Usar un TableRow.LayoutParams con span para que ocupe todas las columnas
