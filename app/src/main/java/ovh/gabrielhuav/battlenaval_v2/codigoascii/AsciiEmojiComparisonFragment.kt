@@ -1,6 +1,10 @@
 package ovh.gabrielhuav.battlenaval_v2.codigoascii
 
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,30 +32,57 @@ class AsciiEmojiComparisonFragment : Fragment() {
         val windowsEmojiImage = view.findViewById<ImageView>(R.id.windowsEmojiImage)
         val unicodeTableImage = view.findViewById<ImageView>(R.id.unicodeTableImage)
 
-        titleTextView.text = "Código ASCII y su Aplicación"
+        titleTextView.text = "¿Cómo Funciona el Código ASCII?"
 
-        contentTextView.text = """
-            ASCII fue la base para la comunicación de datos y representación de texto en computadoras, pero su alcance era limitado a un conjunto básico de caracteres.
-            
-            Aplicaciones prácticas del código ASCII:
-            
-            • Comunicaciones: Transmisión de mensajes entre computadoras usando códigos numéricos estándar
-            • Desarrollo de software: Base para manipulación y procesamiento de texto
-            • Almacenamiento de datos: Representación eficiente de texto en memoria
-            • Procesos de entrada/salida: Interpretación de pulsaciones de teclado y visualización en pantalla
-            
-            La evolución de ASCII:
-            
-            El código ASCII, con sus 128 caracteres, era suficiente para el inglés, pero inadecuado para otros idiomas y símbolos. Esto llevó a la creación de estándares más amplios:
-            
-            1. ASCII Extendido: Amplió a 256 caracteres usando 8 bits
-            2. ISO-8859: Familia de conjuntos de caracteres para diferentes idiomas
-            3. Unicode: Estándar universal que puede representar prácticamente cualquier caracter de cualquier idioma
-            
-            El ejemplo más visible de esta evolución son los emojis modernos. Mientras que ASCII solo podía crear emoticones simples como ":)" o ":(", Unicode permite emojis completos con diferentes interpretaciones visuales según la plataforma.
-            
-            Esta evolución ilustra un principio fundamental en informática: la separación entre el código (representación numérica de un carácter) y su visualización (cómo se muestra al usuario).
+        // Texto con títulos en Markdown
+        val rawText = """
+            Ya hablamos de ASCII: un sistema que asigna números a letras, números y símbolos básicos.  Pero, ¿por qué es importante?
+
+            Piensa en los emojis.  Cuando envías un emoji a un amigo, ¿cómo sabe su teléfono qué carita mostrar?  Bueno, hay un "código" detrás de cada emoji.
+
+            **ASCII: El Primer "Código" Digital**
+
+            ASCII hacía algo similar, pero mucho más simple.  En lugar de emojis, asignaba un número a cada letra y símbolo.  Por ejemplo, la letra "A" era el número 65, y la letra "B" era el 66.
+
+            **¿Por qué es importante tener un código?**
+
+            Porque las computadoras no entienden letras directamente, solo entienden números.  ASCII permitía que las computadoras tradujeran esos números a letras en la pantalla, o que enviaran mensajes de texto a través de la red.
+
+            **Los Emojis: ASCII, Pero Visual.**
+
+            Piensa en los emojis como una versión moderna y mucho más elaborada de ASCII.  Cada emoji tiene un número (en Unicode, que es como un ASCII gigante), y tu teléfono usa ese número para mostrar el dibujo correcto.
+
+            **¿Por qué los emojis se ven diferentes en cada teléfono?**
+
+            Aquí es donde se pone interesante.  Aunque el *código* del emoji es el mismo en todos los teléfonos, cada compañía (Apple, Google, etc.) tiene su propio "estilo" para dibujar ese emoji.  Es como si todos estuvieran cantando la misma canción, pero cada uno con su propia voz.
+
+            **¿Cómo se realciona el Código ASCII y los Emojis?**
+
+            Tanto ASCII como los emojis (gracias a Unicode) nos enseñan que las computadoras necesitan un "código" para entender y mostrar información.  ASCII fue el primer paso, y los emojis son una prueba de lo lejos que hemos llegado.  ¡Ahora, en lugar de solo letras, podemos enviar caritas, animales y hasta comida virtual gracias a estos sistemas de codificación!
         """.trimIndent()
+
+        // Procesar el texto para aplicar negritas a los títulos
+        val spannableStringBuilder = SpannableStringBuilder()
+        val regex = Regex("\\*\\*(.*?)\\*\\*")
+
+        var lastIndex = 0
+        regex.findAll(rawText).forEach { matchResult ->
+            // Append text before the title
+            spannableStringBuilder.append(rawText.substring(lastIndex, matchResult.range.first))
+
+            // Extract title and apply bold style
+            val title = matchResult.groupValues[1]
+            val spannableTitle = SpannableString(title)
+            spannableTitle.setSpan(StyleSpan(Typeface.BOLD), 0, title.length, 0)
+            spannableStringBuilder.append(spannableTitle)
+
+            lastIndex = matchResult.range.last + 1
+        }
+
+        // Append any remaining text after the last title
+        spannableStringBuilder.append(rawText.substring(lastIndex))
+
+        contentTextView.text = spannableStringBuilder
 
         // Establecer imágenes de emojis en diferentes plataformas
         appleEmojiImage.setImageResource(R.drawable.emoji_apple)

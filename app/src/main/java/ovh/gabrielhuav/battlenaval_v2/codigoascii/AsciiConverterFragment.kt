@@ -18,7 +18,6 @@ class AsciiConverterFragment : Fragment() {
     private lateinit var inputText: EditText
     private lateinit var decimalResult: TextView
     private lateinit var binaryResult: TextView
-    private lateinit var hexResult: TextView
     private lateinit var clearButton: Button
 
     override fun onCreateView(
@@ -35,7 +34,6 @@ class AsciiConverterFragment : Fragment() {
         inputText = view.findViewById(R.id.inputText)
         decimalResult = view.findViewById(R.id.decimalResult)
         binaryResult = view.findViewById(R.id.binaryResult)
-        hexResult = view.findViewById(R.id.hexResult)
         clearButton = view.findViewById(R.id.clearButton)
 
         // Configurar filtro para permitir solo caracteres ASCII válidos
@@ -73,23 +71,19 @@ class AsciiConverterFragment : Fragment() {
         val charArray = input.toCharArray()
         val decimalValues = charArray.map { it.code }
         val binaryValues = decimalValues.map { Integer.toBinaryString(it).padStart(8, '0') }
-        val hexValues = decimalValues.map { String.format("%02X", it) }
 
         // Actualizar los resultados
         decimalResult.text = formatArray(decimalValues)
         binaryResult.text = formatArray(binaryValues)
-        hexResult.text = formatArray(hexValues)
     }
 
     private fun clearResults() {
         decimalResult.text = "N/A"
         binaryResult.text = "N/A"
-        hexResult.text = "N/A"
     }
 
     private fun <T> formatArray(list: List<T>): String {
         if (list.isEmpty()) return "N/A"
-
         return list.joinToString(", ")
     }
 }

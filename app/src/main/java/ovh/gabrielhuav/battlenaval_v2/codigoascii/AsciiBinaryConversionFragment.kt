@@ -44,7 +44,7 @@ class AsciiBinaryConversionFragment : Fragment() {
             
             1. El valor ASCII de 'A' es 65
             2. 65 en binario es 1000001
-            3. Como ya tiene 7 bits, no es necesario añadir ceros
+            3. Como ya tenemos 7 bits, no es necesario agregar un 0
             
             Otro ejemplo, para convertir '5' a binario:
             
@@ -52,16 +52,13 @@ class AsciiBinaryConversionFragment : Fragment() {
             2. 53 en binario es 110101
             3. Añadimos un cero a la izquierda para tener 7 bits: 0110101
             
-            Esta conversión es fundamental en la comunicación digital, ya que las computadoras almacenan y transmiten todos los datos en forma binaria.
+            Esta conversión es la base de la comunicación digital, ya que las computadoras almacenan y transmiten todos los datos en forma binaria.
             
             A continuación se muestran algunos ejemplos de caracteres ASCII convertidos a binario:
         """.trimIndent()
 
         // Crear ejemplos en la tabla
         createExampleTable(exampleTableLayout)
-
-        // Establecer imagen ilustrativa
-        illustrationImageView.setImageResource(R.drawable.ascii_binary_conversion)
     }
 
     private fun createExampleTable(tableLayout: TableLayout) {

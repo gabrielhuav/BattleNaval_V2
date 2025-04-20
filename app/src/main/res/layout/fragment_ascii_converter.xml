@@ -8,7 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="?attr/colorSurface">
 
         <TextView
             android:layout_width="match_parent"
@@ -22,8 +23,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ingresa cualquier texto (solo caracteres ASCII) para ver su representación en decimal, binario y hexadecimal."
+            android:text="Ingresa texto para ver su representación en decimal y binario."
             android:textSize="16sp"
+            android:textColor="?attr/colorOnSurface"
             android:layout_marginBottom="24dp" />
 
         <!-- Sección de entrada de texto -->
@@ -32,7 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             app:cardElevation="4dp"
-            app:cardCornerRadius="8dp">
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="?attr/colorSurface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,8 +47,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Texto de entrada:"
-                    android:background="#E0E0E0"
-                    android:textColor="@android:color/black"
+                    android:background="?attr/colorSecondaryVariant"
+                    android:textColor="?attr/colorOnSecondary"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp" />
@@ -57,7 +60,9 @@
                     android:hint="Ingresa texto aquí (sólo ASCII)"
                     android:inputType="textVisiblePassword"
                     android:padding="12dp"
-                    android:background="@android:drawable/edit_text"
+                    android:backgroundTint="?attr/colorSecondary"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurface"
                     android:layout_marginBottom="16dp" />
 
                 <Button
@@ -65,7 +70,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Limpiar"
-                    android:layout_gravity="end" />
+                    android:layout_gravity="end"
+                    style="?attr/buttonStyle" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -74,7 +80,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardElevation="4dp"
-            app:cardCornerRadius="8dp">
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="?attr/colorSurface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -88,6 +95,7 @@
                     android:text="Resultados de la conversión:"
                     android:textSize="18sp"
                     android:textStyle="bold"
+                    android:textColor="?attr/colorPrimary"
                     android:layout_marginBottom="16dp" />
 
                 <!-- Resultado decimal -->
@@ -96,6 +104,7 @@
                     android:layout_height="wrap_content"
                     android:text="Decimal (ASCII):"
                     android:textStyle="bold"
+                    android:textColor="?attr/colorOnSurface"
                     android:layout_marginBottom="4dp" />
 
                 <TextView
@@ -104,8 +113,8 @@
                     android:layout_height="wrap_content"
                     android:text="N/A"
                     android:padding="8dp"
-                    android:background="#E0E0E0"
-                    android:textColor="@android:color/black"
+                    android:background="?attr/colorSecondaryVariant"
+                    android:textColor="?attr/colorOnSecondary"
                     android:layout_marginBottom="16dp" />
 
                 <!-- Resultado binario -->
@@ -114,6 +123,7 @@
                     android:layout_height="wrap_content"
                     android:text="Binario:"
                     android:textStyle="bold"
+                    android:textColor="?attr/colorOnSurface"
                     android:layout_marginBottom="4dp" />
 
                 <TextView
@@ -122,26 +132,9 @@
                     android:layout_height="wrap_content"
                     android:text="N/A"
                     android:padding="8dp"
-                    android:background="#E0E0E0"
-                    android:textColor="@android:color/black"
+                    android:background="?attr/colorSecondaryVariant"
+                    android:textColor="?attr/colorOnSecondary"
                     android:layout_marginBottom="16dp" />
-
-                <!-- Resultado hexadecimal -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Hexadecimal:"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="4dp" />
-
-                <TextView
-                    android:id="@+id/hexResult"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="N/A"
-                    android:padding="8dp"
-                    android:background="#E0E0E0"
-                    android:textColor="@android:color/black" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -151,6 +144,7 @@
             android:layout_height="wrap_content"
             android:text="Nota: Solo se permiten caracteres ASCII válidos (códigos 0-127)."
             android:textStyle="italic"
+            android:textColor="?attr/colorOnSurface"
             android:layout_marginTop="16dp" />
 
     </LinearLayout>

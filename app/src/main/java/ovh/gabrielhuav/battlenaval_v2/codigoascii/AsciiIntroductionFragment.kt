@@ -29,25 +29,27 @@ class AsciiIntroductionFragment : Fragment() {
         titleTextView.text = "¿Qué es el Código ASCII?"
 
         contentTextView1.text = """
-            ASCII (American Standard Code for Information Interchange) es un estándar de codificación de caracteres que asigna valores numéricos a letras, números, signos de puntuación y otros caracteres.
-            
-            Desarrollado en la década de 1960, ASCII fue uno de los primeros estándares que permitió a las computadoras intercambiar información de texto de manera consistente.
+            El código ASCII (American Standard Code for Information Interchange) es un sistema de codificación que permite a las computadoras representar caracteres (letras, números, símbolos) utilizando números.  Es como una tabla de equivalencias universal para que diferentes dispositivos puedan "entenderse".
+
+            En esencia, ASCII asigna un valor numérico a cada carácter.  Por ejemplo:
+            • La letra "A" mayúscula corresponde al número decimal 65.
+            • El dígito "5" está representado por el número 53.
+            • El símbolo de exclamación "!" tiene asignado el número 33.
+
+            Cuando escribes algo en tu teclado, la computadora no guarda las letras directamente.  En su lugar, almacena los números ASCII correspondientes, que luego utiliza para mostrar el texto en la pantalla.
         """.trimIndent()
 
-        // Establecer imagen ilustrativa (ahora entre los dos textos)
+        // Establecer imagen ilustrativa (entre los dos textos)
         illustrationImageView.setImageResource(R.drawable.ascii_illustration)
 
         contentTextView2.text = """
-            Características principales:
-            
-            • Utiliza 7 bits para representar cada carácter, permitiendo 128 valores posibles (del 0 al 127)
-            • Los primeros 32 valores (0-31) son caracteres de control (no imprimibles) como salto de línea o retorno de carro
-            • Los valores 32-126 representan caracteres imprimibles como letras, números y símbolos
-            • El ASCII extendido usa 8 bits (añadiendo un bit más), permitiendo 256 valores posibles
-            
-            El código ASCII fue fundamental para el desarrollo de la computación moderna, aunque actualmente ha sido ampliamente reemplazado por Unicode (que incluye ASCII como su primer bloque) para soportar caracteres de todos los idiomas del mundo.
-            
-            Sin embargo, entender ASCII sigue siendo importante para comprender los fundamentos de la representación de texto en computadoras y la relación entre caracteres y sus equivalentes numéricos y binarios.
+            ¿Cómo funciona el código ASCII?
+
+            • Cada carácter tiene un número asignado dentro del rango de 0 a 127.  Estos números se almacenan en binario (ceros y unos) dentro de la computadora.
+            • Cuando la computadora necesita mostrar un texto, consulta la tabla ASCII para convertir esos números en los caracteres correspondientes.
+            • Por ejemplo, para mostrar la palabra "HOLA", la computadora utilizaría la secuencia de números ASCII: 72 (H), 79 (O), 76 (L), 65 (A).
+
+            Es importante saber que ASCII tiene sus limitaciones.  Solo puede representar un número limitado de caracteres.  Por eso, se desarrolló Unicode, un estándar mucho más amplio que incluye caracteres de prácticamente todos los idiomas del mundo, permitiendo una mayor compatibilidad y representación de textos diversos.  Pero ASCII sentó las bases para la comunicación digital que usamos hoy en día.
         """.trimIndent()
     }
 }
