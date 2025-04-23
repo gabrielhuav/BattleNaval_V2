@@ -26,19 +26,47 @@ class StorageUnitsRelationshipFragment : Fragment() {
 
         val titleTextView = view.findViewById<TextView>(R.id.titleTextView)
         val contentTextView = view.findViewById<TextView>(R.id.contentTextView)
+        val examplesTextView = view.findViewById<TextView>(R.id.examplesTextView)
         val comparisonTableLayout = view.findViewById<TableLayout>(R.id.comparisonTableLayout)
         val illustrationImageView = view.findViewById<ImageView>(R.id.illustrationImageView)
 
-        titleTextView.text = "Relación entre Unidades Analógicas y Digitales"
+        titleTextView.text = "El Mundo Real y Digital: ¿Cómo se Relacionan?"
 
         contentTextView.text = """
-            Tanto en el mundo analógico como en el digital, necesitamos medir y cuantificar información. Aunque las representaciones son diferentes, muchas veces están midiendo los mismos fenómenos.
+            Nuestro mundo físico (el que podemos tocar) y el mundo digital (el de las computadoras) están conectados. Muchas cosas del mundo real pueden convertirse en información digital que guardamos en dispositivos.
             
-            Los dispositivos analógicos suelen representar la información de forma continua, mediante elementos físicos como agujas, columnas de líquido o manecillas. Por otro lado, los dispositivos digitales utilizan representaciones discretas, generalmente numéricas, que pueden ser procesadas por computadoras.
+            Algunos ejemplos de cómo convertimos cosas reales a digitales:
             
-            Algunos ejemplos comunes de dispositivos con versiones analógicas y digitales incluyen relojes, termómetros, velocímetros y básculas. En cada caso, aunque la representación visual cambia, la magnitud medida sigue siendo la misma.
+            • Una foto impresa → Una imagen digital (JPG, PNG)
+            • Una carta escrita → Un documento de texto (PDF, DOC)
+            • Un disco de música → Archivos de audio (MP3, WAV)
+            • Un libro → Un libro electrónico (PDF, EPUB)
+            • Un video en cinta → Un archivo de video (MP4, AVI)
             
-            La siguiente tabla muestra ejemplos de dispositivos de medición y sus versiones analógicas y digitales:
+            Al convertir algo físico a digital, lo transformamos en información que puede guardarse como bits y bytes.
+        """.trimIndent()
+
+        examplesTextView.text = """
+            ¿CUÁNTO ESPACIO OCUPAN LAS COSAS QUE CONVERTIMOS?
+            
+            Piensa en estas comparaciones:
+            
+            • Una página de texto: 2 KB (kilobytes) aproximadamente
+                → Podrías guardar 500 páginas en 1 MB
+            
+            • Una fotografía de calidad media: 2 MB (megabytes) aproximadamente
+                → En 1 GB cabrían unas 500 fotos
+            
+            • Una canción de 3 minutos: 3-5 MB aproximadamente
+                → Un álbum completo: 50-70 MB
+            
+            • Un video de 10 minutos en HD: 200-500 MB aproximadamente
+                → Una película de 2 horas: 2-4 GB
+            
+            • Todos tus libros de texto de un año escolar (digitalizados): 
+                → Aproximadamente 100-200 MB
+            
+            ¡Es increíble! Una biblioteca pequeña con 1,000 libros podría caber en una memoria USB de 8 GB. El mundo digital nos permite almacenar mucha información en espacios muy pequeños.
         """.trimIndent()
 
         // Crear tabla de comparación
@@ -51,7 +79,7 @@ class StorageUnitsRelationshipFragment : Fragment() {
     private fun createComparisonTable(tableLayout: TableLayout) {
         // Crear encabezados
         val headerRow = TableRow(requireContext())
-        listOf("Tipo de Medición", "Versión Analógica", "Versión Digital").forEach { header ->
+        listOf("Objeto Físico", "Versión Digital", "Tamaño Digital Aprox.").forEach { header ->
             val textView = TextView(requireContext()).apply {
                 text = header
                 setPadding(8, 8, 8, 8)
@@ -66,12 +94,12 @@ class StorageUnitsRelationshipFragment : Fragment() {
 
         // Datos de comparación
         val comparisonData = listOf(
-            arrayOf("Tiempo", "Reloj de manecillas", "Reloj digital (LCD/LED)"),
-            arrayOf("Temperatura", "Termómetro de mercurio", "Termómetro digital"),
-            arrayOf("Velocidad", "Velocímetro de aguja", "Velocímetro digital"),
-            arrayOf("Peso", "Báscula de resorte", "Báscula digital"),
-            arrayOf("Presión arterial", "Esfigmomanómetro de mercurio", "Monitor digital de presión"),
-            arrayOf("Volumen de sonido", "VU meter con aguja", "Medidor digital en decibelios")
+            arrayOf("Libreta de notas (100 páginas)", "Documento de texto", "200 KB"),
+            arrayOf("Álbum de fotos (100 imágenes)", "Carpeta con imágenes JPG", "200-300 MB"),
+            arrayOf("Enciclopedia (20 tomos)", "Wikipedia (parcial)", "10 GB"),
+            arrayOf("Colección de 100 CDs de música", "Biblioteca de MP3", "30-50 GB"),
+            arrayOf("DVD con película", "Archivo MP4", "2-4 GB"),
+            arrayOf("Tu mochila con libros de texto", "Carpeta con PDFs", "100-200 MB")
         )
 
         // Agregar filas de datos

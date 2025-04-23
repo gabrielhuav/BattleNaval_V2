@@ -14,7 +14,7 @@
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Relaciona Unidades con Instrumentos"
+            android:text="¿Cuánto Espacio Ocupa?"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"
@@ -24,7 +24,7 @@
             android:id="@+id/instructionsTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Instrucciones para la actividad interactiva..."
+            android:text="Instrucciones del juego..."
             android:textSize="16sp"
             android:layout_marginBottom="16dp" />
 
@@ -32,460 +32,78 @@
             android:id="@+id/scoreTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Puntuación: 0 de 0"
+            android:text="Puntuación: 0 / 10"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="16dp" />
 
-        <!-- Contenedor de tarjetas -->
-        <LinearLayout
+        <!-- Sección 1: Elementos digitales -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:text="Elementos digitales:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
 
-            <!-- Columna de unidades de medida -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="4dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Unidades de Medida"
-                    android:textStyle="bold"
-                    android:textAlignment="center"
-                    android:layout_marginBottom="8dp" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/unitCard1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <TextView
-                        android:id="@+id/unitLabel1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Unidad 1"
-                        android:textAlignment="center"
-                        android:padding="12dp" />
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/unitCard2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <TextView
-                        android:id="@+id/unitLabel2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Unidad 2"
-                        android:textAlignment="center"
-                        android:padding="12dp" />
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/unitCard3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <TextView
-                        android:id="@+id/unitLabel3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Unidad 3"
-                        android:textAlignment="center"
-                        android:padding="12dp" />
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/unitCard4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <TextView
-                        android:id="@+id/unitLabel4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Unidad 4"
-                        android:textAlignment="center"
-                        android:padding="12dp" />
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <!-- Columna de instrumentos analógicos -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Instrumentos Analógicos"
-                    android:textStyle="bold"
-                    android:textAlignment="center"
-                    android:layout_marginBottom="8dp" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/analogCard1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <ImageView
-                            android:id="@+id/analogImage1"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/sistema_decimal"
-                            android:contentDescription="Instrumento analógico 1" />
-
-                        <TextView
-                            android:id="@+id/analogLabel1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Analógico 1"
-                            android:textAlignment="center"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/analogCard2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <ImageView
-                            android:id="@+id/analogImage2"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/sistema_decimal"
-                            android:contentDescription="Instrumento analógico 2" />
-
-                        <TextView
-                            android:id="@+id/analogLabel2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Analógico 2"
-                            android:textAlignment="center"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/analogCard3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <ImageView
-                            android:id="@+id/analogImage3"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/sistema_decimal"
-                            android:contentDescription="Instrumento analógico 3" />
-
-                        <TextView
-                            android:id="@+id/analogLabel3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Analógico 3"
-                            android:textAlignment="center"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/analogCard4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <ImageView
-                            android:id="@+id/analogImage4"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/sistema_decimal"
-                            android:contentDescription="Instrumento analógico 4" />
-
-                        <TextView
-                            android:id="@+id/analogLabel4"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Analógico 4"
-                            android:textAlignment="center"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <!-- Columna de instrumentos digitales -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="4dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Instrumentos Digitales"
-                    android:textStyle="bold"
-                    android:textAlignment="center"
-                    android:layout_marginBottom="8dp" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/digitalCard1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <ImageView
-                            android:id="@+id/digitalImage1"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/sistema_decimal"
-                            android:contentDescription="Instrumento digital 1" />
-
-                        <TextView
-                            android:id="@+id/digitalLabel1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Digital 1"
-                            android:textAlignment="center"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/digitalCard2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <ImageView
-                            android:id="@+id/digitalImage2"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/sistema_decimal"
-                            android:contentDescription="Instrumento digital 2" />
-
-                        <TextView
-                            android:id="@+id/digitalLabel2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Digital 2"
-                            android:textAlignment="center"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/digitalCard3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <ImageView
-                            android:id="@+id/digitalImage3"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/sistema_decimal"
-                            android:contentDescription="Instrumento digital 3" />
-
-                        <TextView
-                            android:id="@+id/digitalLabel3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Digital 3"
-                            android:textAlignment="center"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/digitalCard4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <ImageView
-                            android:id="@+id/digitalImage4"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/sistema_decimal"
-                            android:contentDescription="Instrumento digital 4" />
-
-                        <TextView
-                            android:id="@+id/digitalLabel4"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Digital 4"
-                            android:textAlignment="center"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Botones de acción -->
-        <LinearLayout
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/itemsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            app:columnCount="2"
+            app:rowCount="5"
+            android:layout_marginBottom="24dp">
 
-            <Button
-                android:id="@+id/checkButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Verificar"
-                android:layout_marginEnd="8dp" />
+            <!-- Las tarjetas de elementos se añadirán aquí dinámicamente -->
 
-            <Button
-                android:id="@+id/resetButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Reiniciar Selección"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
+        </androidx.gridlayout.widget.GridLayout>
+
+        <!-- Sección 2: Unidades de almacenamiento -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¿Qué unidad de almacenamiento es más adecuada?"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/unitsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:columnCount="1"
+            app:rowCount="5"
+            android:layout_marginBottom="24dp">
+
+            <!-- Las tarjetas de unidades se añadirán aquí dinámicamente -->
+
+        </androidx.gridlayout.widget.GridLayout>
+
+        <!-- Botón de reinicio -->
+        <Button
+            android:id="@+id/resetButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reiniciar Juego"
+            android:layout_marginTop="16dp" />
+
+        <!-- Área de explicación -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¿Por qué es importante saberlo?"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Conocer el tamaño aproximado de los elementos digitales nos ayuda a entender cuánto espacio necesitamos en nuestros dispositivos. Por ejemplo, si sabes que una película ocupa aproximadamente 2 GB, entenderás por qué no puedes guardar muchas películas en un celular con 16 GB de almacenamiento."
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
 
     </LinearLayout>
 </ScrollView>

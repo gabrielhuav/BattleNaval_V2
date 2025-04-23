@@ -13,7 +13,7 @@
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Relación entre Unidades Analógicas y Digitales"
+            android:text="El Mundo Real y Digital: ¿Cómo se Relacionan?"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"
@@ -23,17 +23,27 @@
             android:id="@+id/contentTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Contenido sobre relación entre unidades..."
+            android:text="Contenido sobre relación entre mundo físico y digital..."
             android:textSize="16sp"
             android:layout_marginBottom="16dp" />
+
+        <!-- Ejemplos con cantidades -->
+        <TextView
+            android:id="@+id/examplesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ejemplos de almacenamiento digital..."
+            android:textSize="16sp"
+            android:background="#F1F8E9"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Comparación de dispositivos analógicos y digitales:"
+            android:text="Comparando el mundo físico y digital:"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp" />
 
         <HorizontalScrollView
@@ -54,8 +64,27 @@
             android:layout_height="200dp"
             android:scaleType="fitCenter"
             android:src="@drawable/analog_vs_digital"
-            android:contentDescription="Comparación de sistemas analógicos y digitales"
+            android:contentDescription="Comparación analógico-digital"
             android:layout_marginTop="16dp" />
+
+        <!-- Actividad interactiva simple -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¡Piénsalo!"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¿Cuántas fotografías digitales de 4 MB cada una podrías guardar en una memoria USB de 16 GB? ¿Cabrían todas las fotos que has tomado en tu vida?"
+            android:textSize="16sp"
+            android:background="#E3F2FD"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp" />
 
     </LinearLayout>
 </ScrollView>

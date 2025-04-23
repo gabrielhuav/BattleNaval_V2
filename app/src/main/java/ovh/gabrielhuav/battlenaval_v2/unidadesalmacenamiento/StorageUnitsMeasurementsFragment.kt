@@ -1,15 +1,45 @@
 package ovh.gabrielhuav.battlenaval_v2.unidadesalmacenamiento
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import ovh.gabrielhuav.battlenaval_v2.R
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.content.res.Resources
 
 class StorageUnitsMeasurementsFragment : Fragment() {
+
+    // Vistas para la sección expandible 1 (Vida Diaria)
+    private lateinit var expandableCardView1: CardView
+    private lateinit var expandableHeaderLayout1: LinearLayout
+    private lateinit var expandableHeaderText1: TextView
+    private lateinit var expandArrowImage1: ImageView
+    private lateinit var expandableContentLayout1: LinearLayout
+    private lateinit var expandableContent1: TextView
+    private lateinit var illustrationImage1: ImageView
+
+    // Vistas para la sección expandible 2 (Mundo Digital)
+    private lateinit var expandableCardView2: CardView
+    private lateinit var expandableHeaderLayout2: LinearLayout
+    private lateinit var expandableHeaderText2: TextView
+    private lateinit var expandArrowImage2: ImageView
+    private lateinit var expandableContentLayout2: LinearLayout
+    private lateinit var expandableContent2: TextView
+    private lateinit var illustrationImage2: ImageView
+
+    // Estados de expansión
+    private var isExpanded1 = false
+    private var isExpanded2 = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,41 +53,221 @@ class StorageUnitsMeasurementsFragment : Fragment() {
 
         val titleTextView = view.findViewById<TextView>(R.id.titleTextView)
         val contentTextView = view.findViewById<TextView>(R.id.contentTextView)
-        val illustrationImage1 = view.findViewById<ImageView>(R.id.illustrationImage1)
-        val illustrationImage2 = view.findViewById<ImageView>(R.id.illustrationImage2)
 
-        titleTextView.text = "Medición de Fenómenos Físicos y Digitales"
+        // Inicializar las vistas expandibles de la sección 1 (Vida Diaria)
+        expandableCardView1 = view.findViewById(R.id.expandableCardView1)
+        expandableHeaderLayout1 = view.findViewById(R.id.expandableHeaderLayout1)
+        expandableHeaderText1 = view.findViewById(R.id.expandableHeaderText1)
+        expandArrowImage1 = view.findViewById(R.id.expandArrowImage1)
+        expandableContentLayout1 = view.findViewById(R.id.expandableContentLayout1)
+        expandableContent1 = view.findViewById(R.id.expandableContent1)
+        illustrationImage1 = view.findViewById(R.id.illustrationImage1)
+
+        // Inicializar las vistas expandibles de la sección 2 (Mundo Digital)
+        expandableCardView2 = view.findViewById(R.id.expandableCardView2)
+        expandableHeaderLayout2 = view.findViewById(R.id.expandableHeaderLayout2)
+        expandableHeaderText2 = view.findViewById(R.id.expandableHeaderText2)
+        expandArrowImage2 = view.findViewById(R.id.expandArrowImage2)
+        expandableContentLayout2 = view.findViewById(R.id.expandableContentLayout2)
+        expandableContent2 = view.findViewById(R.id.expandableContent2)
+        illustrationImage2 = view.findViewById(R.id.illustrationImage2)
+
+        titleTextView.text = "¿Cómo Medimos en el Mundo Real y Digital?"
 
         contentTextView.text = """
-            Así como medimos fenómenos físicos con unidades específicas, también necesitamos unidades especializadas para medir fenómenos digitales.
-            
-            En el mundo físico:
-            
-            • Distancia: metros, kilómetros, millas
-            • Tiempo: segundos, minutos, horas
-            • Peso: gramos, kilogramos, toneladas
-            • Temperatura: grados Celsius, Fahrenheit, Kelvin
-            • Volumen: litros, galones, metros cúbicos
-            
-            Estas unidades nos ayudan a cuantificar y comparar magnitudes físicas de manera precisa.
-            
-            De manera similar, en el mundo digital necesitamos unidades para medir:
-            
-            • Almacenamiento: bits, bytes, kilobytes, etc.
-            • Velocidad de transmisión: bits por segundo (bps), megabits por segundo (Mbps)
-            • Frecuencia de procesamiento: hercios (Hz), gigahercios (GHz)
-            • Resolución de pantalla: píxeles, megapíxeles
-            • Calidad de audio: bits de profundidad, frecuencia de muestreo (kHz)
-            
-            Relación entre mediciones analógicas y digitales:
-            
-            Muchos dispositivos modernos tienen tanto representaciones analógicas como digitales. Por ejemplo, un reloj puede mostrar la hora con manecillas (analógico) o con números digitales. Un termómetro puede usar una columna de mercurio (analógico) o una pantalla LED (digital).
-            
-            En estos casos, aunque la representación visual cambia, la magnitud subyacente que se mide sigue siendo la misma. La diferencia está en cómo se visualiza y procesa la información.
+            Así como medimos cosas en la vida diaria, también necesitamos medir información en el mundo digital.
         """.trimIndent()
 
-        // Establecer imágenes ilustrativas
+        // Configurar texto e imagen para la sección expandible 1 (Vida Diaria)
+        expandableHeaderText1.text = "EN NUESTRA VIDA DIARIA MEDIMOS MUCHAS COSAS:"
+        expandableContent1.text = """
+            • Distancia: metros y kilómetros (para saber lo lejos que está algo)
+            • Peso: gramos y kilogramos (para saber cuánto pesa algo)
+            • Tiempo: segundos, minutos y horas (para saber cuánto dura algo)
+            • Temperatura: grados Celsius (para saber si hace frío o calor)
+            • Volumen: litros y mililitros (para saber cuánto líquido hay)
+        """.trimIndent()
         illustrationImage1.setImageResource(R.drawable.physical_measurements)
+
+        // Configurar texto e imagen para la sección expandible 2 (Mundo Digital)
+        expandableHeaderText2.text = "EN EL MUNDO DIGITAL TAMBIÉN MEDIMOS COSAS:"
+        expandableContent2.text = """
+            • Almacenamiento: bytes, kilobytes, megabytes y gigabytes (para saber cuánta información podemos guardar)
+            • Velocidad de internet: megabits por segundo (Mbps) (para saber qué tan rápido descargamos)
+            • Velocidad de procesador: gigahercios (GHz) (para saber qué tan rápido funciona una computadora)
+            • Calidad de imagen: megapíxeles (MP) (para saber qué tan nítida será una foto)
+            • Calidad de sonido: bits y kilohercio (kHz) (para saber qué tan claro escucharemos)
+            
+            ALGUNOS EJEMPLOS DE MEDICIONES:
+            
+            • Una página de texto ocupa aproximadamente 2 kilobytes (KB) de almacenamiento
+            • Una conexión a Internet de 50 Mbps puede descargar hasta 6 megabytes por segundo
+            • Un procesador de 2.5 GHz realiza 2,500,000,000 operaciones cada segundo
+            • Una cámara de 12 MP puede tomar fotos con 12 millones de puntos (píxeles)
+            • Un archivo de música con calidad de 16 bits y 44.1 kHz suena casi como un CD original
+            
+            Estas medidas nos ayudan a comparar diferentes dispositivos y entender sus capacidades.
+            
+            Por ejemplo: Un celular con 128 GB de almacenamiento puede guardar el doble de fotos, 
+            videos y aplicaciones que uno con 64 GB.
+        """.trimIndent()
         illustrationImage2.setImageResource(R.drawable.digital_measurements)
+
+        // Configurar el comportamiento expandible
+        setupExpandableSections()
+    }
+
+    private fun setupExpandableSections() {
+        // Inicialmente, ocultar los contenidos expandibles
+        expandableContentLayout1.visibility = View.GONE
+        expandableContentLayout2.visibility = View.GONE
+
+        // Configurar listeners para expandir/contraer
+        expandableHeaderLayout1.setOnClickListener {
+            toggleExpand1()
+        }
+
+        expandableHeaderLayout2.setOnClickListener {
+            toggleExpand2()
+        }
+    }
+
+    private fun toggleExpand1() {
+        isExpanded1 = !isExpanded1
+
+        // Rotar la flecha según el estado
+        val rotationAngle = if (isExpanded1) 180f else 0f
+        val arrowAnimator = ValueAnimator.ofFloat(expandArrowImage1.rotation, rotationAngle)
+        arrowAnimator.interpolator = AccelerateDecelerateInterpolator()
+        arrowAnimator.duration = 300
+        arrowAnimator.addUpdateListener { animation ->
+            expandArrowImage1.rotation = animation.animatedValue as Float
+        }
+        arrowAnimator.start()
+
+        // Mostrar u ocultar el contenido con animación
+        if (isExpanded1) {
+            // Forzar medición del contenido completo del ScrollView
+            expandableContentLayout1.visibility = View.VISIBLE
+            expandableContentLayout1.alpha = 0f
+            expandableContentLayout1.measure(
+                View.MeasureSpec.makeMeasureSpec(expandableContentLayout1.width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+
+            // Obtener la altura medida, limitada por maxHeight del ScrollView
+            val scrollView = expandableContentLayout1.findViewById<ScrollView>(R.id.scrollView1)
+            val targetHeight = minOf(expandableContentLayout1.measuredHeight, dpToPx(400)) // Respetar maxHeight=400dp
+
+            // Animar la altura desde 0 hasta la altura objetivo
+            val heightAnimator = ValueAnimator.ofInt(0, targetHeight)
+            heightAnimator.interpolator = AccelerateDecelerateInterpolator()
+            heightAnimator.duration = 300
+            heightAnimator.addUpdateListener { animation ->
+                val params = expandableContentLayout1.layoutParams
+                params.height = animation.animatedValue as Int
+                expandableContentLayout1.layoutParams = params
+                expandableContentLayout1.alpha = animation.animatedFraction
+            }
+            heightAnimator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    // Habilitar scrollbar después de la animación
+                    scrollView.setVerticalScrollBarEnabled(true)
+                }
+            })
+            heightAnimator.start()
+        } else {
+            // Animar la altura desde la altura actual hasta 0
+            val scrollView = expandableContentLayout1.findViewById<ScrollView>(R.id.scrollView1)
+            scrollView.setVerticalScrollBarEnabled(false) // Deshabilitar scrollbar durante colapso
+
+            val heightAnimator = ValueAnimator.ofInt(expandableContentLayout1.height, 0)
+            heightAnimator.interpolator = AccelerateDecelerateInterpolator()
+            heightAnimator.duration = 300
+            heightAnimator.addUpdateListener { animation ->
+                val params = expandableContentLayout1.layoutParams
+                params.height = animation.animatedValue as Int
+                expandableContentLayout1.layoutParams = params
+                expandableContentLayout1.alpha = 1f - animation.animatedFraction
+                if (animation.animatedFraction == 1.0f) {
+                    expandableContentLayout1.visibility = View.GONE
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    expandableContentLayout1.layoutParams = params
+                }
+            }
+            heightAnimator.start()
+        }
+    }
+
+    private fun toggleExpand2() {
+        isExpanded2 = !isExpanded2
+
+        // Rotar la flecha según el estado
+        val rotationAngle = if (isExpanded2) 180f else 0f
+        val arrowAnimator = ValueAnimator.ofFloat(expandArrowImage2.rotation, rotationAngle)
+        arrowAnimator.interpolator = AccelerateDecelerateInterpolator()
+        arrowAnimator.duration = 300
+        arrowAnimator.addUpdateListener { animation ->
+            expandArrowImage2.rotation = animation.animatedValue as Float
+        }
+        arrowAnimator.start()
+
+        // Mostrar u ocultar el contenido con animación
+        if (isExpanded2) {
+            // Forzar medición del contenido completo del ScrollView
+            expandableContentLayout2.visibility = View.VISIBLE
+            expandableContentLayout2.alpha = 0f
+            expandableContentLayout2.measure(
+                View.MeasureSpec.makeMeasureSpec(expandableContentLayout2.width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+
+            // Obtener la altura medida, limitada por maxHeight del ScrollView
+            val scrollView = expandableContentLayout2.findViewById<ScrollView>(R.id.scrollView2)
+            val targetHeight = minOf(expandableContentLayout2.measuredHeight, dpToPx(400)) // Respetar maxHeight=400dp
+
+            // Animar la altura desde 0 hasta la altura objetivo
+            val heightAnimator = ValueAnimator.ofInt(0, targetHeight)
+            heightAnimator.interpolator = AccelerateDecelerateInterpolator()
+            heightAnimator.duration = 300
+            heightAnimator.addUpdateListener { animation ->
+                val params = expandableContentLayout2.layoutParams
+                params.height = animation.animatedValue as Int
+                expandableContentLayout2.layoutParams = params
+                expandableContentLayout2.alpha = animation.animatedFraction
+            }
+            heightAnimator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    // Habilitar scrollbar después de la animación
+                    scrollView.setVerticalScrollBarEnabled(true)
+                }
+            })
+            heightAnimator.start()
+        } else {
+            // Animar la altura desde la altura actual hasta 0
+            val scrollView = expandableContentLayout2.findViewById<ScrollView>(R.id.scrollView2)
+            scrollView.setVerticalScrollBarEnabled(false) // Deshabilitar scrollbar durante colapso
+
+            val heightAnimator = ValueAnimator.ofInt(expandableContentLayout2.height, 0)
+            heightAnimator.interpolator = AccelerateDecelerateInterpolator()
+            heightAnimator.duration = 300
+            heightAnimator.addUpdateListener { animation ->
+                val params = expandableContentLayout2.layoutParams
+                params.height = animation.animatedValue as Int
+                expandableContentLayout2.layoutParams = params
+                expandableContentLayout2.alpha = 1f - animation.animatedFraction
+                if (animation.animatedFraction == 1.0f) {
+                    expandableContentLayout2.visibility = View.GONE
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    expandableContentLayout2.layoutParams = params
+                }
+            }
+            heightAnimator.start()
+        }
+    }
+
+    // Utilidad para convertir dp a píxeles
+    private fun dpToPx(dp: Int): Int {
+        return (dp * Resources.getSystem().displayMetrics.density).toInt()
     }
 }

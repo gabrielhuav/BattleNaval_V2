@@ -58,8 +58,6 @@ class AsciiDecimalConversionFragment : Fragment() {
               - El número "5" (como carácter) es el número 53.
               - Un espacio en blanco es el número 32.
 
-            Esto es súper útil porque así las computadoras saben cómo guardar y mostrar texto. Por ejemplo, "Hola" se guarda como los números 72, 111, 108, 97.
-
             Toca una sección para ver los caracteres y sus números. Toca un carácter para más detalles.
         """.trimIndent()
 

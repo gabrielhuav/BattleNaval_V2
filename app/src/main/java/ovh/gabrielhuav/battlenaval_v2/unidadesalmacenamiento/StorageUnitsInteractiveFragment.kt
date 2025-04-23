@@ -6,14 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.gridlayout.widget.GridLayout
 import ovh.gabrielhuav.battlenaval_v2.R
-import java.util.*
 
 class StorageUnitsInteractiveFragment : Fragment() {
 
@@ -21,60 +20,56 @@ class StorageUnitsInteractiveFragment : Fragment() {
     private lateinit var titleTextView: TextView
     private lateinit var instructionsTextView: TextView
     private lateinit var scoreTextView: TextView
-    private lateinit var checkButton: Button
+    private lateinit var itemsContainer: GridLayout
+    private lateinit var unitsContainer: GridLayout
     private lateinit var resetButton: Button
 
-    // Cards de instrumentos analógicos
-    private lateinit var analogCards: List<CardView>
-    private lateinit var analogLabels: List<TextView>
-    private lateinit var analogImages: List<ImageView>
-
-    // Cards de instrumentos digitales
-    private lateinit var digitalCards: List<CardView>
-    private lateinit var digitalLabels: List<TextView>
-    private lateinit var digitalImages: List<ImageView>
-
-    // Cards de unidades de medida
-    private lateinit var unitCards: List<CardView>
-    private lateinit var unitLabels: List<TextView>
-
     // Estado del juego
-    private var selectedAnalogCard: Int = -1
-    private var selectedDigitalCard: Int = -1
-    private var selectedUnitCard: Int = -1
-    private var correctAnswers: Int = 0
-    private var totalQuestions: Int = 0
+    private var selectedItemCard: CardView? = null
+    private var selectedUnitCard: CardView? = null
+    private var score = 0
+    private var totalMatched = 0
+    private val maxItems = 10
 
-    // Datos del juego
-    private val instruments = listOf(
-        Triple("Reloj", R.drawable.storage_units_hierarchy, R.drawable.storage_units_hierarchy),
-        Triple("Termómetro", R.drawable.storage_units_hierarchy, R.drawable.storage_units_hierarchy),
-        Triple("Velocímetro", R.drawable.storage_units_hierarchy, R.drawable.storage_units_hierarchy),
-        Triple("Báscula", R.drawable.storage_units_hierarchy, R.drawable.storage_units_hierarchy)
+    // Datos del juego - Relaciones correctas elemento-unidad
+    private val correctMatches = mapOf(
+        "Una letra" to "Bytes (B)",
+        "Un emoji" to "Bytes (B)",
+        "Un mensaje de texto" to "Kilobytes (KB)",
+        "Un libro electrónico" to "Megabytes (MB)",
+        "Una foto de perfil" to "Kilobytes (KB)",
+        "Una canción" to "Megabytes (MB)",
+        "Un episodio de serie" to "Gigabytes (GB)",
+        "Un juego para celular" to "Megabytes (MB)",
+        "Una película en HD" to "Gigabytes (GB)",
+        "Todas tus fotos y videos" to "Gigabytes (GB)"
     )
 
-//    // Datos del juego
-//    private val instruments = listOf(
-//        Triple("Reloj", R.drawable.analog_clock, R.drawable.digital_clock),
-//        Triple("Termómetro", R.drawable.analog_thermometer, R.drawable.digital_thermometer),
-//        Triple("Velocímetro", R.drawable.analog_speedometer, R.drawable.digital_speedometer),
-//        Triple("Báscula", R.drawable.analog_scale, R.drawable.digital_scale)
-//    )
-
-    private val units = listOf(
-        "Tiempo (segundos, minutos, horas)",
-        "Temperatura (grados)",
-        "Velocidad (km/h)",
-        "Peso (kg)"
+    // Lista de elementos digitales para clasificar
+    private val digitalItems = listOf(
+        "Una letra",
+        "Un emoji",
+        "Un mensaje de texto",
+        "Un libro electrónico",
+        "Una foto de perfil",
+        "Una canción",
+        "Un episodio de serie",
+        "Un juego para celular",
+        "Una película en HD",
+        "Todas tus fotos y videos"
     )
 
-    // Mapeo de respuestas correctas: índice de unidad -> índice de instrumento
-    private val correctMapping = mapOf(
-        0 to 0, // Tiempo -> Reloj
-        1 to 1, // Temperatura -> Termómetro
-        2 to 2, // Velocidad -> Velocímetro
-        3 to 3  // Peso -> Báscula
+    // Lista de unidades de almacenamiento
+    private val storageUnits = listOf(
+        "Bytes (B)",
+        "Kilobytes (KB)",
+        "Megabytes (MB)",
+        "Gigabytes (GB)",
+        "Terabytes (TB)"
     )
+
+    // Mapa para rastrear los elementos ya emparejados
+    private val matchedItems = mutableMapOf<String, String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,272 +85,278 @@ class StorageUnitsInteractiveFragment : Fragment() {
         titleTextView = view.findViewById(R.id.titleTextView)
         instructionsTextView = view.findViewById(R.id.instructionsTextView)
         scoreTextView = view.findViewById(R.id.scoreTextView)
-        checkButton = view.findViewById(R.id.checkButton)
+        itemsContainer = view.findViewById(R.id.itemsContainer)
+        unitsContainer = view.findViewById(R.id.unitsContainer)
         resetButton = view.findViewById(R.id.resetButton)
 
-        // Inicializar cards analógicas
-        analogCards = listOf(
-            view.findViewById(R.id.analogCard1),
-            view.findViewById(R.id.analogCard2),
-            view.findViewById(R.id.analogCard3),
-            view.findViewById(R.id.analogCard4)
-        )
-
-        analogLabels = listOf(
-            view.findViewById(R.id.analogLabel1),
-            view.findViewById(R.id.analogLabel2),
-            view.findViewById(R.id.analogLabel3),
-            view.findViewById(R.id.analogLabel4)
-        )
-
-        analogImages = listOf(
-            view.findViewById(R.id.analogImage1),
-            view.findViewById(R.id.analogImage2),
-            view.findViewById(R.id.analogImage3),
-            view.findViewById(R.id.analogImage4)
-        )
-
-        // Inicializar cards digitales
-        digitalCards = listOf(
-            view.findViewById(R.id.digitalCard1),
-            view.findViewById(R.id.digitalCard2),
-            view.findViewById(R.id.digitalCard3),
-            view.findViewById(R.id.digitalCard4)
-        )
-
-        digitalLabels = listOf(
-            view.findViewById(R.id.digitalLabel1),
-            view.findViewById(R.id.digitalLabel2),
-            view.findViewById(R.id.digitalLabel3),
-            view.findViewById(R.id.digitalLabel4)
-        )
-
-        digitalImages = listOf(
-            view.findViewById(R.id.digitalImage1),
-            view.findViewById(R.id.digitalImage2),
-            view.findViewById(R.id.digitalImage3),
-            view.findViewById(R.id.digitalImage4)
-        )
-
-        // Inicializar cards de unidades
-        unitCards = listOf(
-            view.findViewById(R.id.unitCard1),
-            view.findViewById(R.id.unitCard2),
-            view.findViewById(R.id.unitCard3),
-            view.findViewById(R.id.unitCard4)
-        )
-
-        unitLabels = listOf(
-            view.findViewById(R.id.unitLabel1),
-            view.findViewById(R.id.unitLabel2),
-            view.findViewById(R.id.unitLabel3),
-            view.findViewById(R.id.unitLabel4)
-        )
-
         // Configurar contenido
-        setupContent()
+        titleTextView.text = "¿Cuánto Espacio Ocupa?"
+        instructionsTextView.text = """
+            ¡Vamos a jugar! ¿Sabes cuánto espacio ocupa cada cosa en el mundo digital?
+            
+            Instrucciones:
+            1. Toca un elemento de arriba
+            2. Luego toca la unidad que crees que mejor lo representa abajo
+            3. Si aciertas, ¡ganarás un punto!
+            4. Intenta relacionar todos los elementos correctamente
+        """.trimIndent()
 
-        // Configurar listeners
-        setupListeners()
+        // Crear tarjetas para elementos digitales
+        createItemCards()
 
-        // Actualizar puntuación
+        // Crear tarjetas para unidades de almacenamiento
+        createUnitCards()
+
+        // Configurar botón de reinicio
+        resetButton.setOnClickListener {
+            resetGame()
+        }
+
+        // Actualizar puntuación inicial
         updateScore()
     }
 
-    private fun setupContent() {
-        titleTextView.text = "Relaciona Unidades con Instrumentos"
+    private fun createItemCards() {
+        // Limpiar el contenedor
+        itemsContainer.removeAllViews()
 
-        instructionsTextView.text = """
-            Relaciona cada unidad de medida con su correspondiente instrumento analógico y digital:
-            
-            1. Selecciona una tarjeta de unidad de medida (izquierda)
-            2. Selecciona su instrumento analógico correspondiente (centro)
-            3. Selecciona su instrumento digital correspondiente (derecha)
-            4. Presiona "Verificar" para comprobar tu respuesta
-            
-            ¡Intenta relacionar correctamente todas las unidades!
-        """.trimIndent()
+        // Para cada elemento digital...
+        for (item in digitalItems) {
+            // Si este elemento ya está emparejado, omitirlo
+            if (matchedItems.containsKey(item)) continue
 
-        // Barajar instrumentos y unidades (manteniendo su relación)
-        val shuffledIndices = (0..3).toList().shuffled()
+            // Crear una nueva tarjeta
+            val card = CardView(requireContext()).apply {
+                // Configurar apariencia
+                radius = resources.getDimension(R.dimen.card_corner_radius)
+                cardElevation = resources.getDimension(R.dimen.card_elevation)
+                setCardBackgroundColor(Color.WHITE)
 
-        // Configurar tarjetas de instrumentos analógicos
-        for (i in 0..3) {
-            val instrumentIndex = shuffledIndices[i]
-            val instrument = instruments[instrumentIndex]
+                // Configurar parámetros de layout
+                val params = GridLayout.LayoutParams()
+                params.width = 0
+                params.height = GridLayout.LayoutParams.WRAP_CONTENT
+                params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1f)
+                params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1f)
+                params.setMargins(8, 8, 8, 8)
+                layoutParams = params
 
-            analogLabels[i].text = "${instrument.first} Analógico"
-            analogImages[i].setImageResource(instrument.second)
+                // Hacer la tarjeta clickeable
+                isClickable = true
+                isFocusable = true
 
-            // Guardar el índice original como tag
-            analogCards[i].tag = instrumentIndex
-        }
+                // Añadir efecto de ripple al hacer clic
+                foreground = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.ripple_effect
+                )
 
-        // Configurar tarjetas de instrumentos digitales
-        for (i in 0..3) {
-            val instrumentIndex = shuffledIndices[i]
-            val instrument = instruments[instrumentIndex]
+                // Configurar listener
+                setOnClickListener {
+                    selectItemCard(this, item)
+                }
 
-            digitalLabels[i].text = "${instrument.first} Digital"
-            digitalImages[i].setImageResource(instrument.third)
+                // Guardar el item como tag para referencia
+                tag = item
+            }
 
-            // Guardar el índice original como tag
-            digitalCards[i].tag = instrumentIndex
-        }
+            // Añadir TextView dentro de la tarjeta
+            val textView = TextView(requireContext()).apply {
+                text = item
+                textSize = 16f
+                setTextColor(Color.BLACK)
+                setPadding(24, 24, 24, 24)
+                textAlignment = View.TEXT_ALIGNMENT_CENTER
+            }
 
-        // Configurar tarjetas de unidades (también barajadas)
-        val shuffledUnitIndices = (0..3).toList().shuffled()
-        for (i in 0..3) {
-            val unitIndex = shuffledUnitIndices[i]
-            unitLabels[i].text = units[unitIndex]
+            // Añadir el TextView a la tarjeta
+            card.addView(textView)
 
-            // Guardar el índice original como tag
-            unitCards[i].tag = unitIndex
+            // Añadir la tarjeta al contenedor
+            itemsContainer.addView(card)
         }
     }
 
-    private fun setupListeners() {
-        // Configurar listeners para tarjetas de unidades
-        for (i in unitCards.indices) {
-            unitCards[i].setOnClickListener {
-                selectUnitCard(i)
+    private fun createUnitCards() {
+        // Limpiar el contenedor
+        unitsContainer.removeAllViews()
+
+        // Para cada unidad de almacenamiento...
+        for (unit in storageUnits) {
+            // Crear una nueva tarjeta
+            val card = CardView(requireContext()).apply {
+                // Configurar apariencia
+                radius = resources.getDimension(R.dimen.card_corner_radius)
+                cardElevation = resources.getDimension(R.dimen.card_elevation)
+                setCardBackgroundColor(Color.WHITE)
+
+                // Configurar parámetros de layout
+                val params = GridLayout.LayoutParams()
+                params.width = 0
+                params.height = GridLayout.LayoutParams.WRAP_CONTENT
+                params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1f)
+                params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1f)
+                params.setMargins(8, 8, 8, 8)
+                layoutParams = params
+
+                // Hacer la tarjeta clickeable
+                isClickable = true
+                isFocusable = true
+
+                // Añadir efecto de ripple al hacer clic
+                foreground = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.ripple_effect
+                )
+
+                // Configurar listener
+                setOnClickListener {
+                    selectUnitCard(this, unit)
+                }
+
+                // Guardar la unidad como tag para referencia
+                tag = unit
             }
-        }
 
-        // Configurar listeners para tarjetas analógicas
-        for (i in analogCards.indices) {
-            analogCards[i].setOnClickListener {
-                selectAnalogCard(i)
+            // Añadir TextView dentro de la tarjeta
+            val textView = TextView(requireContext()).apply {
+                text = unit
+                textSize = 16f
+                setTextColor(Color.BLACK)
+                setPadding(24, 24, 24, 24)
+                textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
-        }
 
-        // Configurar listeners para tarjetas digitales
-        for (i in digitalCards.indices) {
-            digitalCards[i].setOnClickListener {
-                selectDigitalCard(i)
-            }
-        }
+            // Añadir el TextView a la tarjeta
+            card.addView(textView)
 
-        // Configurar botones
-        checkButton.setOnClickListener {
-            checkAnswer()
-        }
-
-        resetButton.setOnClickListener {
-            resetSelections()
+            // Añadir la tarjeta al contenedor
+            unitsContainer.addView(card)
         }
     }
 
-    private fun selectUnitCard(index: Int) {
-        // Deseleccionar la tarjeta anterior
-        if (selectedUnitCard != -1) {
-            unitCards[selectedUnitCard].setCardBackgroundColor(Color.WHITE)
-        }
+    private fun selectItemCard(card: CardView, item: String) {
+        // Si ya había una tarjeta seleccionada, resetearla
+        selectedItemCard?.setCardBackgroundColor(Color.WHITE)
 
         // Seleccionar la nueva tarjeta
-        selectedUnitCard = index
-        unitCards[index].setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.teal_200))
+        selectedItemCard = card
+        card.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.teal_200))
+
+        // Si también hay una unidad seleccionada, verificar el match
+        if (selectedUnitCard != null) {
+            val unit = selectedUnitCard?.tag as String
+            checkMatch(item, unit)
+        }
     }
 
-    private fun selectAnalogCard(index: Int) {
-        // Deseleccionar la tarjeta anterior
-        if (selectedAnalogCard != -1) {
-            analogCards[selectedAnalogCard].setCardBackgroundColor(Color.WHITE)
-        }
+    private fun selectUnitCard(card: CardView, unit: String) {
+        // Si ya había una tarjeta seleccionada, resetearla
+        selectedUnitCard?.setCardBackgroundColor(Color.WHITE)
 
         // Seleccionar la nueva tarjeta
-        selectedAnalogCard = index
-        analogCards[index].setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.teal_200))
+        selectedUnitCard = card
+        card.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.teal_200))
+
+        // Si también hay un elemento seleccionado, verificar el match
+        if (selectedItemCard != null) {
+            val item = selectedItemCard?.tag as String
+            checkMatch(item, unit)
+        }
     }
 
-    private fun selectDigitalCard(index: Int) {
-        // Deseleccionar la tarjeta anterior
-        if (selectedDigitalCard != -1) {
-            digitalCards[selectedDigitalCard].setCardBackgroundColor(Color.WHITE)
-        }
-
-        // Seleccionar la nueva tarjeta
-        selectedDigitalCard = index
-        digitalCards[index].setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.teal_200))
-    }
-
-    private fun checkAnswer() {
-        // Verificar que se hayan seleccionado todas las tarjetas necesarias
-        if (selectedUnitCard == -1 || selectedAnalogCard == -1 || selectedDigitalCard == -1) {
-            Toast.makeText(context, "Debes seleccionar una unidad, un instrumento analógico y uno digital", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Obtener los índices originales de las tarjetas seleccionadas
-        val unitIndex = unitCards[selectedUnitCard].tag as Int
-        val analogInstrumentIndex = analogCards[selectedAnalogCard].tag as Int
-        val digitalInstrumentIndex = digitalCards[selectedDigitalCard].tag as Int
-
-        // Verificar si la respuesta es correcta
-        val isCorrect = correctMapping[unitIndex] == analogInstrumentIndex &&
-                correctMapping[unitIndex] == digitalInstrumentIndex
-
-        // Incrementar el contador de preguntas
-        totalQuestions++
+    private fun checkMatch(item: String, unit: String) {
+        // Verificar si el match es correcto según nuestro mapa
+        val isCorrect = correctMatches[item] == unit
 
         if (isCorrect) {
             // Incrementar puntuación
-            correctAnswers++
+            score++
+            totalMatched++
 
-            // Mostrar mensaje de éxito
-            Toast.makeText(context, "¡Correcto! Has relacionado correctamente.", Toast.LENGTH_SHORT).show()
+            // Añadir a los items emparejados
+            matchedItems[item] = unit
 
-            // Desactivar las tarjetas usadas
-            unitCards[selectedUnitCard].isEnabled = false
-            analogCards[selectedAnalogCard].isEnabled = false
-            digitalCards[selectedDigitalCard].isEnabled = false
+            // Mostrar feedback positivo
+            Toast.makeText(
+                requireContext(),
+                "¡Correcto! $item ocupa aproximadamente $unit",
+                Toast.LENGTH_SHORT
+            ).show()
 
-            // Cambiar el color a verde para indicar acierto
-            unitCards[selectedUnitCard].setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
-            analogCards[selectedAnalogCard].setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
-            digitalCards[selectedDigitalCard].setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
+            // Marcar visualmente como correcto
+            selectedItemCard?.setCardBackgroundColor(Color.GREEN)
+            selectedUnitCard?.setCardBackgroundColor(Color.GREEN)
 
-            // Resetear selección actual
-            selectedUnitCard = -1
-            selectedAnalogCard = -1
-            selectedDigitalCard = -1
+            // Desactivar estas tarjetas para futuros clicks
+            selectedItemCard?.isClickable = false
+            selectedUnitCard?.isClickable = false
 
-            // Verificar si se completaron todas las relaciones
-            if (correctAnswers == 4) {
-                Toast.makeText(context, "¡Felicidades! Has relacionado correctamente todas las unidades.", Toast.LENGTH_LONG).show()
-                checkButton.isEnabled = false
+            // Actualizar la puntuación mostrada
+            updateScore()
+
+            // Limpiar selecciones
+            selectedItemCard = null
+            selectedUnitCard = null
+
+            // Recrear las tarjetas para quitar las ya emparejadas
+            createItemCards()
+
+            // Verificar si se completaron todos los elementos
+            if (totalMatched >= maxItems) {
+                // ¡Victoria!
+                Toast.makeText(
+                    requireContext(),
+                    "¡Felicidades! Has completado correctamente todas las relaciones",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         } else {
-            // Mostrar mensaje de error
-            Toast.makeText(context, "Incorrecto. Intenta otra combinación.", Toast.LENGTH_SHORT).show()
+            // Feedback negativo
+            Toast.makeText(
+                requireContext(),
+                "Incorrecto. Intenta de nuevo",
+                Toast.LENGTH_SHORT
+            ).show()
 
-            // Resetear selecciones para intentar de nuevo
-            resetSelections()
-        }
+            // Marcar visualmente como incorrecto
+            selectedItemCard?.setCardBackgroundColor(Color.RED)
+            selectedUnitCard?.setCardBackgroundColor(Color.RED)
 
-        // Actualizar puntuación
-        updateScore()
-    }
+            // Esperar un momento y luego resetear el color
+            selectedItemCard?.postDelayed({
+                selectedItemCard?.setCardBackgroundColor(Color.WHITE)
+                selectedUnitCard?.setCardBackgroundColor(Color.WHITE)
 
-    private fun resetSelections() {
-        // Deseleccionar todas las tarjetas
-        if (selectedUnitCard != -1) {
-            unitCards[selectedUnitCard].setCardBackgroundColor(Color.WHITE)
-            selectedUnitCard = -1
-        }
-
-        if (selectedAnalogCard != -1) {
-            analogCards[selectedAnalogCard].setCardBackgroundColor(Color.WHITE)
-            selectedAnalogCard = -1
-        }
-
-        if (selectedDigitalCard != -1) {
-            digitalCards[selectedDigitalCard].setCardBackgroundColor(Color.WHITE)
-            selectedDigitalCard = -1
+                // Limpiar selecciones
+                selectedItemCard = null
+                selectedUnitCard = null
+            }, 1000)
         }
     }
 
     private fun updateScore() {
-        scoreTextView.text = "Puntuación: $correctAnswers de $totalQuestions"
+        scoreTextView.text = "Puntuación: $score / $maxItems"
+    }
+
+    private fun resetGame() {
+        // Reiniciar variables de estado
+        score = 0
+        totalMatched = 0
+        matchedItems.clear()
+
+        // Limpiar selecciones
+        selectedItemCard = null
+        selectedUnitCard = null
+
+        // Recrear tarjetas
+        createItemCards()
+        createUnitCards()
+
+        // Actualizar puntuación
+        updateScore()
+
+        // Feedback
+        Toast.makeText(requireContext(), "Juego reiniciado", Toast.LENGTH_SHORT).show()
     }
 }
