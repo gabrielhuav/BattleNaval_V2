@@ -8,14 +8,10 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import ovh.gabrielhuav.battlenaval_v2.R
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.content.res.Resources
 
 class StorageUnitsMeasurementsFragment : Fragment() {
 
@@ -145,57 +141,30 @@ class StorageUnitsMeasurementsFragment : Fragment() {
         }
         arrowAnimator.start()
 
-        // Mostrar u ocultar el contenido con animación
+        // Mostrar u ocultar el contenido con animación simplificada
         if (isExpanded1) {
-            // Forzar medición del contenido completo del ScrollView
+            // Simplemente hacemos visible el contenido
             expandableContentLayout1.visibility = View.VISIBLE
             expandableContentLayout1.alpha = 0f
-            expandableContentLayout1.measure(
-                View.MeasureSpec.makeMeasureSpec(expandableContentLayout1.width, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            )
 
-            // Obtener la altura medida, limitada por maxHeight del ScrollView
-            val scrollView = expandableContentLayout1.findViewById<ScrollView>(R.id.scrollView1)
-            val targetHeight = minOf(expandableContentLayout1.measuredHeight, dpToPx(400)) // Respetar maxHeight=400dp
-
-            // Animar la altura desde 0 hasta la altura objetivo
-            val heightAnimator = ValueAnimator.ofInt(0, targetHeight)
-            heightAnimator.interpolator = AccelerateDecelerateInterpolator()
-            heightAnimator.duration = 300
-            heightAnimator.addUpdateListener { animation ->
-                val params = expandableContentLayout1.layoutParams
-                params.height = animation.animatedValue as Int
-                expandableContentLayout1.layoutParams = params
-                expandableContentLayout1.alpha = animation.animatedFraction
+            // Animar la transparencia para una transición suave
+            val alphaAnimator = ValueAnimator.ofFloat(0f, 1f)
+            alphaAnimator.duration = 300
+            alphaAnimator.addUpdateListener { animation ->
+                expandableContentLayout1.alpha = animation.animatedValue as Float
             }
-            heightAnimator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    // Habilitar scrollbar después de la animación
-                    scrollView.setVerticalScrollBarEnabled(true)
-                }
-            })
-            heightAnimator.start()
+            alphaAnimator.start()
         } else {
-            // Animar la altura desde la altura actual hasta 0
-            val scrollView = expandableContentLayout1.findViewById<ScrollView>(R.id.scrollView1)
-            scrollView.setVerticalScrollBarEnabled(false) // Deshabilitar scrollbar durante colapso
-
-            val heightAnimator = ValueAnimator.ofInt(expandableContentLayout1.height, 0)
-            heightAnimator.interpolator = AccelerateDecelerateInterpolator()
-            heightAnimator.duration = 300
-            heightAnimator.addUpdateListener { animation ->
-                val params = expandableContentLayout1.layoutParams
-                params.height = animation.animatedValue as Int
-                expandableContentLayout1.layoutParams = params
-                expandableContentLayout1.alpha = 1f - animation.animatedFraction
+            // Animar la transparencia hacia 0 y luego ocultar
+            val alphaAnimator = ValueAnimator.ofFloat(1f, 0f)
+            alphaAnimator.duration = 300
+            alphaAnimator.addUpdateListener { animation ->
+                expandableContentLayout1.alpha = animation.animatedValue as Float
                 if (animation.animatedFraction == 1.0f) {
                     expandableContentLayout1.visibility = View.GONE
-                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    expandableContentLayout1.layoutParams = params
                 }
             }
-            heightAnimator.start()
+            alphaAnimator.start()
         }
     }
 
@@ -212,62 +181,30 @@ class StorageUnitsMeasurementsFragment : Fragment() {
         }
         arrowAnimator.start()
 
-        // Mostrar u ocultar el contenido con animación
+        // Mostrar u ocultar el contenido con animación simplificada
         if (isExpanded2) {
-            // Forzar medición del contenido completo del ScrollView
+            // Simplemente hacemos visible el contenido
             expandableContentLayout2.visibility = View.VISIBLE
             expandableContentLayout2.alpha = 0f
-            expandableContentLayout2.measure(
-                View.MeasureSpec.makeMeasureSpec(expandableContentLayout2.width, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            )
 
-            // Obtener la altura medida, limitada por maxHeight del ScrollView
-            val scrollView = expandableContentLayout2.findViewById<ScrollView>(R.id.scrollView2)
-            val targetHeight = minOf(expandableContentLayout2.measuredHeight, dpToPx(400)) // Respetar maxHeight=400dp
-
-            // Animar la altura desde 0 hasta la altura objetivo
-            val heightAnimator = ValueAnimator.ofInt(0, targetHeight)
-            heightAnimator.interpolator = AccelerateDecelerateInterpolator()
-            heightAnimator.duration = 300
-            heightAnimator.addUpdateListener { animation ->
-                val params = expandableContentLayout2.layoutParams
-                params.height = animation.animatedValue as Int
-                expandableContentLayout2.layoutParams = params
-                expandableContentLayout2.alpha = animation.animatedFraction
+            // Animar la transparencia para una transición suave
+            val alphaAnimator = ValueAnimator.ofFloat(0f, 1f)
+            alphaAnimator.duration = 300
+            alphaAnimator.addUpdateListener { animation ->
+                expandableContentLayout2.alpha = animation.animatedValue as Float
             }
-            heightAnimator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    // Habilitar scrollbar después de la animación
-                    scrollView.setVerticalScrollBarEnabled(true)
-                }
-            })
-            heightAnimator.start()
+            alphaAnimator.start()
         } else {
-            // Animar la altura desde la altura actual hasta 0
-            val scrollView = expandableContentLayout2.findViewById<ScrollView>(R.id.scrollView2)
-            scrollView.setVerticalScrollBarEnabled(false) // Deshabilitar scrollbar durante colapso
-
-            val heightAnimator = ValueAnimator.ofInt(expandableContentLayout2.height, 0)
-            heightAnimator.interpolator = AccelerateDecelerateInterpolator()
-            heightAnimator.duration = 300
-            heightAnimator.addUpdateListener { animation ->
-                val params = expandableContentLayout2.layoutParams
-                params.height = animation.animatedValue as Int
-                expandableContentLayout2.layoutParams = params
-                expandableContentLayout2.alpha = 1f - animation.animatedFraction
+            // Animar la transparencia hacia 0 y luego ocultar
+            val alphaAnimator = ValueAnimator.ofFloat(1f, 0f)
+            alphaAnimator.duration = 300
+            alphaAnimator.addUpdateListener { animation ->
+                expandableContentLayout2.alpha = animation.animatedValue as Float
                 if (animation.animatedFraction == 1.0f) {
                     expandableContentLayout2.visibility = View.GONE
-                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    expandableContentLayout2.layoutParams = params
                 }
             }
-            heightAnimator.start()
+            alphaAnimator.start()
         }
-    }
-
-    // Utilidad para convertir dp a píxeles
-    private fun dpToPx(dp: Int): Int {
-        return (dp * Resources.getSystem().displayMetrics.density).toInt()
     }
 }

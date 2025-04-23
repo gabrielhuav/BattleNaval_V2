@@ -21,8 +21,7 @@ class StorageUnitsActivity : AppCompatActivity() {
         StorageUnitsIntroFragment(),
         StorageUnitsTypesFragment(),
         StorageUnitsMeasurementsFragment(),
-        StorageUnitsRelationshipFragment(),
-        StorageUnitsInteractiveFragment()
+        StorageUnitsRelationshipFragment()
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
