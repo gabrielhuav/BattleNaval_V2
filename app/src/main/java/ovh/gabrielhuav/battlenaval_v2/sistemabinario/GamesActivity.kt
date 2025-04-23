@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ovh.gabrielhuav.battlenaval_v2.R
 import ovh.gabrielhuav.battlenaval_v2.ThemeManager
+import ovh.gabrielhuav.battlenaval_v2.codigoascii.AsciiPracticeGameFragment
 
 /**
  * Actividad que contiene los juegos educativos sobre sistema binario
@@ -37,7 +38,7 @@ class GamesActivity : AppCompatActivity() {
 
             when (item.itemId) {
                 R.id.nav_switches -> selectedFragment = SwitchesGameFragment()
-                R.id.nav_practice -> selectedFragment = PracticeFragment()
+                R.id.nav_practice -> selectedFragment = AsciiPracticeGameFragment()
                 R.id.nav_challenges -> selectedFragment = ChallengesFragment()
             }
 

@@ -45,9 +45,8 @@ class AsciiTableFragment : Fragment() {
         val contentTextView = view.findViewById<TextView>(R.id.contentTextView)
         val expandableListView = view.findViewById<ExpandableListView>(R.id.asciiExpandableList)
 
-        // Habilitar scrollbar
-        expandableListView.isVerticalScrollBarEnabled = true
-        expandableListView.isScrollbarFadingEnabled = false
+        // Asegurar compatibilidad con NestedScrollView
+        expandableListView.isNestedScrollingEnabled = true
 
         titleTextView.text = "Tabla ASCII: Caracteres Comunes"
 
@@ -61,7 +60,7 @@ class AsciiTableFragment : Fragment() {
         - Espacio
         - Caracteres de control (Enter, Borrar)
         
-        Toca una sección para expandirla y ver los caracteres. Toca un carácter para más detalles.
+        Toca una sección para expandirla o colapsarla.
     """.trimIndent()
 
         // Definir las secciones y caracteres
@@ -127,33 +126,46 @@ class AsciiTableFragment : Fragment() {
 
         // Configurar el ExpandableListView
         try {
-            val adapter = AsciiExpandableListAdapter(asciiGroups)
-            expandableListView.setAdapter(adapter)
+            expandableListView?.let {
+                val adapter = AsciiExpandableListAdapter(asciiGroups)
+                it.setAdapter(adapter)
+                Log.d(TAG, "Adaptador del ExpandableListView configurado")
 
-            // Expandir automáticamente el primer grupo (opcional)
-            expandableListView.expandGroup(0)
+                // No expandimos ningún grupo inicialmente, dejamos que el usuario lo haga manualmente
 
-            // Manejar clics en los elementos hijos
-            expandableListView.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-                Log.d(TAG, "Child clicked: group=$groupPosition, child=$childPosition")
-                if (childPosition > 0) { // Ensure it's not the header
-                    val char = asciiGroups[groupPosition].chars.getOrNull(childPosition - 1)
-                    if (char != null && isAdded && activity?.isFinishing == false) {
-                        try {
-                            showCharDetailsDialog(char)
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Error handling child click: ${e.message}", e)
+                // Manejar clics en los elementos hijos
+                it.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
+                    Log.d(TAG, "Child clicked: group=$groupPosition, child=$childPosition")
+                    if (childPosition > 0) { // Asegurarse de que no sea el encabezado
+                        val char = asciiGroups[groupPosition].chars.getOrNull(childPosition - 1)
+                        if (char != null && isAdded && activity?.isFinishing == false) {
+                            try {
+                                showCharDetailsDialog(char)
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error handling child click: ${e.message}", e)
+                            }
+                        } else {
+                            Log.w(TAG, "Click ignored: childPosition=$childPosition, isAdded=$isAdded, isFinishing=${activity?.isFinishing}")
                         }
-                    } else {
-                        Log.w(TAG, "Click ignored: childPosition=$childPosition, isAdded=$isAdded, isFinishing=${activity?.isFinishing}")
                     }
+                    true
                 }
-                true
-            }
 
-            // Log when groups are expanded
-            expandableListView.setOnGroupExpandListener { groupPosition ->
-                Log.d(TAG, "Group expanded: ${asciiGroups[groupPosition].name}")
+                // Log cuando los grupos se expanden o colapsan
+                it.setOnGroupExpandListener { groupPosition ->
+                    Log.d(TAG, "Group expanded: ${asciiGroups[groupPosition].name}")
+                }
+
+                it.setOnGroupCollapseListener { groupPosition ->
+                    Log.d(TAG, "Group collapsed: ${asciiGroups[groupPosition].name}")
+                }
+
+                // Añadir un log para depurar cuántos grupos son visibles inicialmente
+                it.post {
+                    val firstVisiblePosition = it.firstVisiblePosition
+                    val lastVisiblePosition = it.lastVisiblePosition
+                    Log.d(TAG, "Grupos visibles inicialmente: firstVisible=$firstVisiblePosition, lastVisible=$lastVisiblePosition")
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error setting up ExpandableListView: ${e.message}", e)
@@ -161,20 +173,6 @@ class AsciiTableFragment : Fragment() {
                 Log.e(TAG, "DeadObjectException caught, activity may be dead")
             }
         }
-    }
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume called")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause called")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d(TAG, "onDestroyView called")
     }
 
     private fun showCharDetailsDialog(char: AsciiChar) {
