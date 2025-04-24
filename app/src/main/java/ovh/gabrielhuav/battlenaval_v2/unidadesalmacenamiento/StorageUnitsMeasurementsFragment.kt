@@ -94,14 +94,6 @@ class StorageUnitsMeasurementsFragment : Fragment() {
             • Calidad de imagen: megapíxeles (MP) (para saber qué tan nítida será una foto)
             • Calidad de sonido: bits y kilohercio (kHz) (para saber qué tan claro escucharemos)
             
-            ALGUNOS EJEMPLOS DE MEDICIONES:
-            
-            • Una página de texto ocupa aproximadamente 2 kilobytes (KB) de almacenamiento
-            • Una conexión a Internet de 50 Mbps puede descargar hasta 6 megabytes por segundo
-            • Un procesador de 2.5 GHz realiza 2,500,000,000 operaciones cada segundo
-            • Una cámara de 12 MP puede tomar fotos con 12 millones de puntos (píxeles)
-            • Un archivo de música con calidad de 16 bits y 44.1 kHz suena casi como un CD original
-            
             Estas medidas nos ayudan a comparar diferentes dispositivos y entender sus capacidades.
             
             Por ejemplo: Un celular con 128 GB de almacenamiento puede guardar el doble de fotos, 

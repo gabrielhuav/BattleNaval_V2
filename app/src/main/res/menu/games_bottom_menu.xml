@@ -3,13 +3,13 @@
     <item
         android:id="@+id/nav_switches"
         android:icon="@android:drawable/button_onoff_indicator_on"
-        android:title="Interruptores" />
+        android:title="Sistema Binario" />
     <item
         android:id="@+id/nav_practice"
         android:icon="@android:drawable/ic_menu_edit"
-        android:title="Práctica" />
+        android:title="Código ASCII" />
     <item
         android:id="@+id/nav_challenges"
         android:icon="@android:drawable/ic_menu_myplaces"
-        android:title="Desafíos" />
+        android:title="Unid. Almacén." />
 </menu>

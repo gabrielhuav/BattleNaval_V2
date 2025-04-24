@@ -76,14 +76,6 @@ class StorageUnitsIntroFragment : Fragment() {
             • Un video de 1 minuto en HD puede ocupar 100 megabytes
             • Un juego para celular puede ocupar desde 50 megabytes hasta varios gigabytes
             • La memoria de un celular moderno puede ser de 64 o 128 gigabytes
-            
-            Imagina que tu celular es como una mochila donde guardas cosas:
-            • Los mensajes de texto serían como clips pequeños
-            • Las fotos serían como cuadernos
-            • Los videos serían como libros gruesos
-            • Los juegos serían como loncheras grandes
-            
-            ¡Las unidades de almacenamiento nos ayudan a saber cuánto cabe en nuestra "mochila digital"!
         """.trimIndent()
 
         // Establecer imagen ilustrativa
