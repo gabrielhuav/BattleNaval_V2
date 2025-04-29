@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Agregamos un ScrollView principal que envuelve todo el contenido -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Título y contenido inicial -->
+            <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="¿Cómo Medimos en el Mundo Real y Digital?"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/contentTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Así como medimos cosas en la vida diaria, también necesitamos medir información en el mundo digital."
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Sección Expandible 1: Mundo Físico -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/expandableCardView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="#E8F5E9">
+
+                    <!-- Encabezado expandible -->
+                    <LinearLayout
+                        android:id="@+id/expandableHeaderLayout1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <TextView
+                            android:id="@+id/expandableHeaderText1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="EN NUESTRA VIDA DIARIA MEDIMOS MUCHAS COSAS:"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/black" />
+
+                        <ImageView
+                            android:id="@+id/expandArrowImage1"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_arrow_down"
+                            android:contentDescription="Expandir/Contraer" />
+                    </LinearLayout>
+
+                    <!-- Contenido expandible -->
+                    <LinearLayout
+                        android:id="@+id/expandableContentLayout1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="gone">
+
+                        <!-- El contenido se muestra directamente, sin ScrollView anidado -->
+                        <TextView
+                            android:id="@+id/expandableContent1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="16dp"
+                            android:text="• Distancia: metros y kilómetros\n• Peso: gramos y kilogramos\n• Tiempo: segundos, minutos y horas\n• Temperatura: grados Celsius\n• Volumen: litros y mililitros" />
+
+                        <ImageView
+                            android:id="@+id/illustrationImage1"
+                            android:layout_width="match_parent"
+                            android:layout_height="180dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/physical_measurements"
+                            android:contentDescription="Mediciones físicas" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Sección Expandible 2: Mundo Digital -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/expandableCardView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="#E0F2FD">
+
+                    <!-- Encabezado expandible -->
+                    <LinearLayout
+                        android:id="@+id/expandableHeaderLayout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <TextView
+                            android:id="@+id/expandableHeaderText2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="EN EL MUNDO DIGITAL TAMBIÉN MEDIMOS COSAS:"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/black" />
+
+                        <ImageView
+                            android:id="@+id/expandArrowImage2"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_arrow_down"
+                            android:contentDescription="Expandir/Contraer" />
+                    </LinearLayout>
+
+                    <!-- Contenido expandible -->
+                    <LinearLayout
+                        android:id="@+id/expandableContentLayout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="gone">
+
+                        <!-- El contenido se muestra directamente, sin ScrollView anidado -->
+                        <TextView
+                            android:id="@+id/expandableContent2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="16dp" />
+
+                        <ImageView
+                            android:id="@+id/illustrationImage2"
+                            android:layout_width="match_parent"
+                            android:layout_height="180dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/digital_measurements"
+                            android:contentDescription="Mediciones digitales" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

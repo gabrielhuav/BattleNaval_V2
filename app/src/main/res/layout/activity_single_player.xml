@@ -1,8 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <!-- ScrollView vertical -->
     <ScrollView
@@ -55,8 +55,6 @@
             android:layout_height="60dp"
             android:layout_marginEnd="8dp"
             android:text="+"
-            android:backgroundTint="@color/orange_transparent"
-            android:textColor="@color/black"
             android:textSize="24sp" />
 
         <Button
@@ -64,17 +62,6 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:text="-"
-            android:backgroundTint="@color/orange_transparent"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
-
-        <Button
-            android:id="@+id/btnDialog"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:text="D"
-            android:backgroundTint="@color/orange_transparent"
-            android:textColor="@color/black"
             android:textSize="24sp" />
     </LinearLayout>
 
@@ -94,9 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="Nuevo Juego"
-            android:backgroundTint="@color/teal_200"
-            android:textColor="@color/white" />
+            android:text="Nuevo Juego" />
 
         <!-- Botón para regresar al menú principal -->
         <Button
@@ -105,8 +90,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:text="Regresar al Menú"
-            android:backgroundTint="@color/teal_700"
-            android:textColor="@color/white" />
+            android:text="Regresar al Menú" />
     </LinearLayout>
 </FrameLayout>

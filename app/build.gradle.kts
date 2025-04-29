@@ -41,9 +41,12 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
+    implementation("androidx.core:core:1.12.0")
     implementation("com.google.code.gson:gson:2.10.1") // Dependencia de Gson
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1") // Dependencia para lifecycle (opcional)
-    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0") // Manejo de intents y Bluetooth
+    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
+    implementation(libs.androidx.material3.android) // Manejo de intents y Bluetooth
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,9 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.BattleNaval_V2" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.BattleNaval_V2" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
 
     <style name="Theme.BattleNaval_V2" parent="Base.Theme.BattleNaval_V2" />
+
+    <!-- Tema UNAM (Azul y Oro) -->
+    <style name="Theme.BattleNaval_V2.UNAM" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/unam_primary</item>
+        <item name="colorPrimaryVariant">@color/unam_primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/unam_accent</item>
+        <item name="colorSecondaryVariant">@color/unam_primary_dark</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor">@color/unam_primary_dark</item>
+        <item name="buttonStyle">@style/Button.UNAM</item>
+        <item name="textAppearanceButton">@style/TextAppearance.UNAM.Button</item>
+    </style>
+
+    <!-- Tema IPN (Guinda y Blanco) -->
+    <style name="Theme.BattleNaval_V2.IPN" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/ipn_primary</item>
+        <item name="colorPrimaryVariant">@color/ipn_primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/ipn_accent</item>
+        <item name="colorSecondaryVariant">@color/ipn_primary_dark</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor">@color/ipn_primary_dark</item>
+        <item name="buttonStyle">@style/Button.IPN</item>
+        <item name="textAppearanceButton">@style/TextAppearance.IPN.Button</item>
+    </style>
+
+    <!-- Estilos adicionales para botones UNAM -->
+    <style name="Button.UNAM" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/unam_primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="rippleColor">@color/unam_accent</item>
+    </style>
+
+    <style name="TextAppearance.UNAM.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Estilos adicionales para botones IPN -->
+    <style name="Button.IPN" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/ipn_primary</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextAppearance.IPN.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Alias para mantener compatibilidad con código existente -->
+    <style name="Theme.BattleNaval_V2.Guinda" parent="Theme.BattleNaval_V2.IPN" />
+    <style name="Theme.BattleNaval_V2.Escom" parent="Theme.BattleNaval_V2.UNAM" />
+
+    <!-- Alias para nombres de temas en Exam1 (si es necesario) -->
+    <style name="Theme.Exam1.Guinda" parent="Theme.BattleNaval_V2.IPN" />
+    <style name="Theme.Exam1.Escom" parent="Theme.BattleNaval_V2.UNAM" />
+
+    <!-- Estilo para cuadro de dialógo de seleccionar tema -->
+    <style name="Theme.Dialog.Gray" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+        <item name="colorSurface">#F5F5F5</item>
+    </style>
 </resources>

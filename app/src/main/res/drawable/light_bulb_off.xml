@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Bombilla apagada -->
+    <path
+        android:pathData="M50,10 a20,20 0 1,0 0.1,0 L50,50 Z"
+        android:fillColor="#D3D3D3" />
+
+    <!-- Base de la bombilla -->
+    <path
+        android:pathData="M43,50 h14 v10 h-14 Z"
+        android:fillColor="#9E9E9F" />
+
+    <!-- Contorno -->
+    <path
+        android:pathData="M50,10 a20,20 0 1,0 0.1,0 L50,50 Z"
+        android:strokeWidth="1"
+        android:strokeColor="#9E9E9E"
+        android:fillColor="@android:color/transparent" />
+</vector>
