@@ -95,11 +95,11 @@ class BinaryConversionDialog(private val context: Context) {
         layout.orientation = LinearLayout.VERTICAL
         layout.setPadding(30, 30, 30, 30)
 
-        // Texto explicativo
+        // Texto explicativo (modificado para ocultar las coordenadas reales)
         val textView = TextView(context)
         textView.text = "Coordenada binaria revelada:\n" +
-                "Vertical (ASCII): $binaryY (${charY}) - Letras de A a G\n" +
-                "Horizontal (Decimal): $binaryX (${numX}) - Números del 1 al 7\n\n" +
+                "Vertical (ASCII): $binaryY - Letras de A a G\n" +
+                "Horizontal (Decimal): $binaryX - Números del 1 al 7\n\n" +
                 "Convierte estos valores para poder disparar en esta ubicación."
         layout.addView(textView)
 
