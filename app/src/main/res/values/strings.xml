@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Nombre general de la aplicación -->
-    <string name="app_name">BattleNaval Binario</string>
+    <string name="app_name">BitBattles</string>
 
     <!-- Sección Battle Naval -->
     <string name="battle_naval_title">Battle Naval</string>
@@ -83,10 +83,10 @@
     <string name="restart_challenge">Reiniciar Desafío</string>
 
     <!-- Pantalla principal unificada -->
-    <string name="app_title">Battle Naval &amp; Sistema Binario</string>
+    <string name="app_title">Representación binaria de información</string>
     <string name="battle_naval_option">Battle Naval</string>
     <string name="learn_binary_option">Aprende Sistema Binario</string>
-    <string name="app_footer">Battle Naval &amp; Sistema Binario v1.0</string>
+    <string name="app_footer">BitBattles v1.0</string>
     <!-- Menú principal y navegación -->
 
     <string name="settings">Configuración</string>
