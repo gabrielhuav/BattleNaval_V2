@@ -2,79 +2,76 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"> <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="56dp"
+    android:layout_marginBottom="64dp"> <HorizontalScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
 
-    <!-- ScrollView vertical -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/boardContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_gravity="center"
+        android:gravity="center">
 
-        <!-- ScrollView horizontal dentro del vertical -->
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <FrameLayout
+            android:id="@+id/playerBoardFrame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/blue_border" />
 
-            <!-- Contenedor de los tableros -->
-            <LinearLayout
-                android:id="@+id/boardContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+        <FrameLayout
+            android:id="@+id/enemyBoardFrame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/red_border" />
 
-                <!-- Contenedor del tablero del jugador -->
-                <FrameLayout
-                    android:id="@+id/playerBoardFrame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:background="@drawable/blue_border" />
+    </LinearLayout>
+</HorizontalScrollView>
+</ScrollView>
 
-                <!-- Contenedor del tablero del enemigo -->
-                <FrameLayout
-                    android:id="@+id/enemyBoardFrame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/red_border" />
-
-            </LinearLayout>
-        </HorizontalScrollView>
-    </ScrollView>
-
-    <!-- Botones de zoom en la esquina superior derecha -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="top|end"
-        android:layout_margin="16dp">
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="16dp">
 
         <Button
             android:id="@+id/btnZoomIn"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginEnd="8dp"
             android:text="+"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btnZoomOut"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:text="-"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
-    <!-- Controles inferiores -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_gravity="bottom"
-        android:layout_margin="16dp">
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
-        <!-- Botón para iniciar un nuevo juego -->
         <Button
             android:id="@+id/btnNewGame"
             android:layout_width="0dp"
@@ -83,7 +80,6 @@
             android:layout_marginEnd="8dp"
             android:text="Nuevo Juego" />
 
-        <!-- Botón para regresar al menú principal -->
         <Button
             android:id="@+id/btnBackToMenu"
             android:layout_width="0dp"
