@@ -5,24 +5,20 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F5F5F5">
+    android:background="?attr/colorSurface"> <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/select_theme"
+    android:textSize="18sp"
+    android:textStyle="bold"
+    android:layout_marginBottom="16dp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/select_theme"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Opciones de tema como tarjetas seleccionables -->
     <RadioGroup
         android:id="@+id/themeRadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- UNAM Theme Option -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardUNAM"
             android:layout_width="match_parent"
@@ -30,7 +26,7 @@
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="8dp"
             app:cardElevation="2dp"
-            android:clickable="true"
+            app:cardBackgroundColor="?attr/colorSurface" android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground">
 
@@ -38,51 +34,61 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="12dp"
+                android:padding="16dp"
                 android:gravity="center_vertical">
 
                 <RadioButton
                     android:id="@+id/radioUNAM"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="#004680" />
+                    android:clickable="false" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/theme_unam"
-                    android:textSize="16sp"
-                    android:layout_marginStart="8dp" />
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
 
-                <!-- Color previews -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="UNAM"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Azul y Oro"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                     <View
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="#004680"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@color/unam_primary"
                         android:layout_marginEnd="4dp" />
-
                     <View
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="#FCD116" />
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@color/unam_accent" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- IPN Theme Option -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardIPN"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             app:cardCornerRadius="8dp"
             app:cardElevation="2dp"
-            android:clickable="true"
+            app:cardBackgroundColor="?attr/colorSurface" android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground">
 
@@ -90,39 +96,49 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="12dp"
+                android:padding="16dp"
                 android:gravity="center_vertical">
 
                 <RadioButton
                     android:id="@+id/radioIPN"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="#7A193E" />
+                    android:clickable="false" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/theme_ipn"
-                    android:textSize="16sp"
-                    android:layout_marginStart="8dp" />
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
 
-                <!-- Color previews con borde para el color blanco -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="IPN"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Guinda y Blanco"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                     <View
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="#7A193E"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@color/ipn_primary"
                         android:layout_marginEnd="4dp" />
 
-                    <!-- Color blanco con borde para que se vea -->
                     <FrameLayout
-                        android:layout_width="30dp"
-                        android:layout_height="30dp">
+                        android:layout_width="24dp"
+                        android:layout_height="24dp">
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -138,7 +154,6 @@
         </androidx.cardview.widget.CardView>
     </RadioGroup>
 
-    <!-- Botones de acción -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

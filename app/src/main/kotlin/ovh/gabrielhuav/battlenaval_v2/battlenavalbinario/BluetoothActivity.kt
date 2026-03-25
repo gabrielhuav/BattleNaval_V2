@@ -53,20 +53,20 @@ class BluetoothActivity : AppCompatActivity() {
         val startServerButton = findViewById<Button>(R.id.btnStartServer)
         val connectButton = findViewById<Button>(R.id.btnConnectToDevice)
         val backToMenuButton = findViewById<Button>(R.id.btnBackToMenu)
-        val zoomInButton = findViewById<Button>(R.id.btnZoomIn)
-        val zoomOutButton = findViewById<Button>(R.id.btnZoomOut)
+        //val zoomInButton = findViewById<Button>(R.id.btnZoomIn)
+        //val zoomOutButton = findViewById<Button>(R.id.btnZoomOut)
 
         // Inicializar el diálogo de conversión binaria
         binaryConversionDialog = BinaryConversionDialog(this)
 
-        // Configuración de botones de zoom
-        zoomInButton.setOnClickListener {
-            adjustZoom(0.1f)
-        }
+//        // Configuración de botones de zoom
+//        zoomInButton.setOnClickListener {
+//            adjustZoom(0.1f)
+//        }
 
-        zoomOutButton.setOnClickListener {
-            adjustZoom(-0.1f)
-        }
+//        zoomOutButton.setOnClickListener {
+//            adjustZoom(-0.1f)
+//        }
 
         bluetoothGameManager = BluetoothGameManager(this)
 

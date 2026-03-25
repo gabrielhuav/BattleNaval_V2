@@ -37,20 +37,20 @@ class SinglePlayerActivity : AppCompatActivity() {
 
         val newGameButton = findViewById<Button>(R.id.btnNewGame)
         val backToMenuButton = findViewById<Button>(R.id.btnBackToMenu)
-        val zoomInButton = findViewById<Button>(R.id.btnZoomIn)
-        val zoomOutButton = findViewById<Button>(R.id.btnZoomOut)
+//        val zoomInButton = findViewById<Button>(R.id.btnZoomIn)
+//        val zoomOutButton = findViewById<Button>(R.id.btnZoomOut)
 
         // Inicializar el diálogo de conversión binaria
         binaryConversionDialog = BinaryConversionDialog(this)
 
-        // Configuración de botones de zoom
-        zoomInButton.setOnClickListener {
-            adjustZoom(0.1f)
-        }
-
-        zoomOutButton.setOnClickListener {
-            adjustZoom(-0.1f)
-        }
+//        // Configuración de botones de zoom
+//        zoomInButton.setOnClickListener {
+//            adjustZoom(0.1f)
+//        }
+//
+//        zoomOutButton.setOnClickListener {
+//            adjustZoom(-0.1f)
+//        }
 
         newGameButton.setOnClickListener {
             startNewGame()

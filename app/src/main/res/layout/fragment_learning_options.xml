@@ -13,7 +13,12 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_marginBottom="32dp"/>
+        android:layout_marginBottom="32dp"
+        android:textColor="?attr/colorOnSurface"
+        android:shadowColor="#D9000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="5" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardBinarySystem"

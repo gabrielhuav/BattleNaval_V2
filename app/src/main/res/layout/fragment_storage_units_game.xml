@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Evaluación: Unidades de Almacenamiento"
+            android:text="Práctica de Unidades de Almacenamiento"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"

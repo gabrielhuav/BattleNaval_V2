@@ -112,4 +112,10 @@
     <string name="select_theme">Seleccionar Tema</string>
     <string name="theme_unam">Tema UNAM (Azul y Oro)</string>
     <string name="theme_ipn">Tema IPN (Guinda y Blanco)</string>
+
+    <string name="ascii_practice_title">Práctica ASCII</string>
+    <string name="ascii_practice_description">Pon a prueba tus conocimientos sobre los caracteres y el código ASCII.</string>
+    <string name="start_practice">Iniciar Práctica</string>
+    <string name="binary_conversion_title">Reto Binario</string>
+    <string name="binary_conversion_description">Demuestra tu rapidez mental convirtiendo números decimales a sistema binario.</string>
 </resources>
