@@ -42,6 +42,9 @@
         <item name="android:textColor">@color/text_primary_light</item>
         <item name="android:textColorPrimary">@color/text_primary_light</item>
         <item name="android:textColorSecondary">@color/text_secondary_light</item>
+
+        <!-- Esta es la línea mágica que arregla los RadioButtons -->
+        <item name="colorControlActivated">@color/ipn_primary</item>
     </style>
 
     <style name="Button.UNAM" parent="Widget.MaterialComponents.Button">
