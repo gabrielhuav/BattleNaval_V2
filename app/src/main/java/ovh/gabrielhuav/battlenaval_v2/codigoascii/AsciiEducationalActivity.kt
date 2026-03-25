@@ -32,6 +32,7 @@ class AsciiEducationalActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ascii_educational)
+        supportActionBar?.hide()
 
         // Inicializar vistas
         viewPager = findViewById(R.id.viewPager)

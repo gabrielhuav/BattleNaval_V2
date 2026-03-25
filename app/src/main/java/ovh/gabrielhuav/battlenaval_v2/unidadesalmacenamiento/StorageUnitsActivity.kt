@@ -30,6 +30,7 @@ class StorageUnitsActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_storage_units)
+        supportActionBar?.hide()
 
         // Inicializar vistas
         viewPager = findViewById(R.id.viewPager)

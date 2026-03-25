@@ -10,6 +10,7 @@ class MainActivityBattleNaval : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_menu)
+        supportActionBar?.hide()
 
         val singlePlayerButton = findViewById<Button>(R.id.btnSinglePlayer)
         val bluetoothButton = findViewById<Button>(R.id.btnBluetooth)

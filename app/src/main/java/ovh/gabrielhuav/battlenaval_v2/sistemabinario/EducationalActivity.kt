@@ -31,6 +31,7 @@ class EducationalActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_educational)
+        supportActionBar?.hide()
 
         // Inicializar vistas
         viewPager = findViewById(R.id.viewPager)

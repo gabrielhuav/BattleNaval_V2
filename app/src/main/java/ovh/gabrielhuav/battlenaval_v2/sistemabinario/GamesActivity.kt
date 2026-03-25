@@ -23,6 +23,7 @@ class GamesActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_games)
+        supportActionBar?.hide()
 
         // Configurar action bar
         supportActionBar?.apply {

@@ -30,6 +30,7 @@ class SinglePlayerActivity : AppCompatActivity() {
         ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_player)
+        supportActionBar?.hide()
 
         playerBoardFrame = findViewById(R.id.playerBoardFrame)
         enemyBoardFrame = findViewById(R.id.enemyBoardFrame)

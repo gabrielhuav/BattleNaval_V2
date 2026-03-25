@@ -45,6 +45,7 @@ class BluetoothActivity : AppCompatActivity() {
         ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bluetooth)
+        supportActionBar?.hide()
 
         playerBoardFrame = findViewById(R.id.playerBoardFrame)
         enemyBoardFrame = findViewById(R.id.enemyBoardFrame)
