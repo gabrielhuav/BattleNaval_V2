@@ -19,8 +19,8 @@ android {
         applicationId = "ovh.gabrielhuav.battlenaval_v2"
         minSdk = 24
         targetSdk = 35
-        versionCode = 8
-        versionName = "1.0.0.8"
+        versionCode = 9
+        versionName = "1.0.0.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

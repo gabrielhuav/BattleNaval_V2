@@ -41,35 +41,41 @@ class Board(
     private fun drawBoard() {
         removeAllViews()
 
-        // Encabezado vacío
+        val headerBgColor = Color.parseColor("#0F294D") // Azul marino profundo
+        val headerTextColor = Color.parseColor("#00E5FF") // Cian neón
+
+        // Encabezado vacío (esquina superior izquierda)
         addView(TextView(context).apply {
             gravity = Gravity.CENTER
             text = ""
-            setBackgroundColor(Color.LTGRAY)
+            setBackgroundColor(headerBgColor)
+            layoutParams = LayoutParams(cellSize, cellSize)
         })
 
-        // Encabezados de columnas
+        // Encabezados de columnas (1 al 7)
         for (i in 1..7) {
             addView(TextView(context).apply {
                 text = i.toString()
                 gravity = Gravity.CENTER
-                setBackgroundColor(Color.YELLOW)
-                setTextColor(Color.BLACK)
+                setBackgroundColor(headerBgColor)
+                setTextColor(headerTextColor)
                 layoutParams = LayoutParams(cellSize, cellSize)
                 textSize = (cellSize * 0.2f).coerceAtLeast(12f)
+                setTypeface(null, android.graphics.Typeface.BOLD)
             })
         }
 
         // Encabezados de filas y celdas
         for (y in 0 until 7) {
-            // Encabezados de fila
+            // Encabezados de fila (A a G)
             addView(TextView(context).apply {
                 text = rowLabels[y]
                 gravity = Gravity.CENTER
-                setBackgroundColor(Color.YELLOW)
-                setTextColor(Color.BLACK)
+                setBackgroundColor(headerBgColor)
+                setTextColor(headerTextColor)
                 layoutParams = LayoutParams(cellSize, cellSize)
                 textSize = (cellSize * 0.2f).coerceAtLeast(12f)
+                setTypeface(null, android.graphics.Typeface.BOLD)
             })
 
             // Celdas
