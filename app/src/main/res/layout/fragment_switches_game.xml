@@ -22,38 +22,51 @@
             android:gravity="center"
             android:layout_marginBottom="16dp" />
 
-        <LinearLayout
+        <!-- Tarjeta de puntuación — usa colorSurface + borde de colorPrimary -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#E8F5E9"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:strokeColor="?attr/colorPrimary"
+            app:strokeWidth="1dp"
+            app:cardBackgroundColor="?attr/colorSurface">
 
-            <TextView
-                android:id="@+id/tvScoreDisplay"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Puntuación: 0 / 10"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:gravity="center" />
+                android:orientation="vertical"
+                android:padding="12dp">
 
-            <TextView
-                android:id="@+id/tvProgress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Ejercicios restantes: 10 de 10"
-                android:textSize="16sp"
-                android:gravity="center" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/tvScoreDisplay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Puntuación: 0 / 10"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="center" />
+
+                <TextView
+                    android:id="@+id/tvProgress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ejercicios restantes: 10 de 10"
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="center" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Sección 1: Binario a Decimal -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"
+            app:cardBackgroundColor="?attr/colorSurface"
             android:layout_marginBottom="24dp">
 
             <LinearLayout
@@ -62,6 +75,7 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
+                <!-- Encabezado de sección con colorPrimary -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -77,41 +91,53 @@
                     android:layout_height="wrap_content"
                     android:text="Convierte este número binario a decimal:\n00101101"
                     android:textSize="16sp"
+                    android:textColor="?attr/colorOnSurface"
                     android:layout_marginBottom="12dp" />
 
-                <EditText
-                    android:id="@+id/etBinarioRespuesta"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Ingresa tu respuesta"
-                    android:inputType="number"
-                    android:padding="12dp"
-                    android:background="#F5F5F5"
-                    android:layout_marginBottom="12dp" />
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_marginBottom="12dp">
 
-                <Button
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etBinarioRespuesta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:padding="12dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnVerificarBinario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Verificar"
                     android:layout_marginBottom="8dp" />
 
+                <!-- Feedback con fondo de superficie secundaria -->
                 <TextView
                     android:id="@+id/tvFeedbackBinario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textSize="16sp"
-                    android:gravity="center" />
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:background="?attr/colorSecondaryVariant"
+                    android:visibility="gone" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Sección 2: Decimal a Binario con Interruptores -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"
+            app:cardBackgroundColor="?attr/colorSurface"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
@@ -135,6 +161,19 @@
                     android:layout_height="wrap_content"
                     android:text="Convierte este número decimal a binario:\n45"
                     android:textSize="16sp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Número a convertir destacado -->
+                <TextView
+                    android:id="@+id/tvDecimalNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="45"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorPrimary"
+                    android:gravity="center"
                     android:layout_marginBottom="16dp" />
 
                 <!-- Contenedor para interruptores binarios -->
@@ -147,26 +186,36 @@
                     <!-- Interruptores serán agregados dinámicamente -->
                 </LinearLayout>
 
-                <TextView
+                <!-- Resultado binario actual — fondo con colorSecondaryVariant (adapta en oscuro) -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tu respuesta:"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center" />
+                    android:orientation="vertical"
+                    android:background="?attr/colorSecondaryVariant"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp">
 
-                <TextView
-                    android:id="@+id/tvValorBinario"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="00000000"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:layout_marginBottom="12dp"
-                    android:layout_marginTop="4dp" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tu respuesta:"
+                        android:textSize="14sp"
+                        android:textColor="?attr/colorOnSecondary"
+                        android:gravity="center" />
 
-                <Button
+                    <TextView
+                        android:id="@+id/tvValorBinario"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="00000000"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorOnSecondary"
+                        android:gravity="center"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnVerificarDecimal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -178,26 +227,48 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textSize="16sp"
-                    android:gravity="center" />
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:background="?attr/colorSecondaryVariant"
+                    android:visibility="gone" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Sección de instrucciones -->
-        <TextView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Instrucciones"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp" />
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="• Para convertir de binario a decimal, suma los valores de cada posición donde haya un 1.\n• Para convertir de decimal a binario, activa los interruptores en las posiciones necesarias para sumar el valor decimal.\n• Cada sección tiene 5 ejercicios para completar."
-            android:textSize="14sp"
-            android:layout_marginBottom="16dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Instrucciones"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorPrimary"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="• Para convertir de binario a decimal, suma los valores de cada posición donde haya un 1.\n• Para convertir de decimal a binario, activa los interruptores en las posiciones necesarias para sumar el valor decimal.\n• Cada sección tiene 5 ejercicios para completar."
+                    android:textSize="14sp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </ScrollView>

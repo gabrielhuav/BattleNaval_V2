@@ -1,4 +1,4 @@
-package ovh.gabrielhuav.battlenaval_v2.unidadesalmacenamiento
+package ovh.gabrielhuav.battlenaval_v2.sistemabinario
 
 import android.animation.ValueAnimator
 import android.graphics.Color
@@ -171,12 +171,15 @@ class StorageUnitsGameFragment : Fragment() {
     }
 
     private fun updateProgressDisplay() {
-        tvScoreDisplay.text = "Puntuación: $currentScore / $totalQuestions"
-        tvProgress.text = "Ejercicios restantes: $questionsRemaining de $totalQuestions"
+        val puntuacionMostrada = currentScore.coerceAtMost(totalQuestions)
+        val restantes = questionsRemaining.coerceAtLeast(0)
 
-        // Actualizar barra de progreso
-        val progress = ((totalQuestions - questionsRemaining) * 100) / totalQuestions
-        progressBar.progress = progress
+        tvScoreDisplay.text = "Puntuación: $puntuacionMostrada / $totalQuestions"
+        tvProgress.text = "Ejercicios restantes: $restantes de $totalQuestions"
+
+        // Actualizar barra de progreso blindada
+        val progress = ((totalQuestions - restantes) * 100) / totalQuestions
+        progressBar.progress = progress.coerceIn(0, 100)
     }
 
     private fun generateQuestion() {
@@ -423,7 +426,9 @@ class StorageUnitsGameFragment : Fragment() {
             this.text = text
             setPadding(24, 16, 24, 16)
             textSize = 16f
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            val typedValue = android.util.TypedValue()
+            requireContext().theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
+            setTextColor(typedValue.data)
         }
 
         card.addView(textView)
@@ -439,7 +444,9 @@ class StorageUnitsGameFragment : Fragment() {
         // Deseleccionar la anterior selección
         if (selectedLeftItemIndex != -1) {
             val previousCard = findCardByTag("L$selectedLeftItemIndex", leftContainer)
-            previousCard?.setCardBackgroundColor(Color.WHITE)
+            val typedValue = android.util.TypedValue()
+            requireContext().theme.resolveAttribute(com.google.android.material.R.attr.colorSurface, typedValue, true)
+            previousCard?.setCardBackgroundColor(typedValue.data)
         }
 
         // Seleccionar esta
@@ -459,7 +466,9 @@ class StorageUnitsGameFragment : Fragment() {
         // Deseleccionar la anterior selección
         if (selectedRightItemIndex != -1) {
             val previousCard = findCardByTag("R$selectedRightItemIndex", rightContainer)
-            previousCard?.setCardBackgroundColor(Color.WHITE)
+            val typedValue = android.util.TypedValue()
+            requireContext().theme.resolveAttribute(com.google.android.material.R.attr.colorSurface, typedValue, true)
+            previousCard?.setCardBackgroundColor(typedValue.data)
         }
 
         // Seleccionar esta
@@ -555,6 +564,8 @@ class StorageUnitsGameFragment : Fragment() {
     }
 
     private fun checkConversionAnswer() {
+        if (!btnCheckConversion.isEnabled || questionsRemaining <= 0) return
+
         val answerText = etConversionAnswer.text.toString().trim()
 
         if (answerText.isEmpty()) {
@@ -596,6 +607,7 @@ class StorageUnitsGameFragment : Fragment() {
     }
 
     private fun checkMatchingAnswer() {
+        if (!btnCheckMatching.isEnabled || questionsRemaining <= 0) return
         // Verificar si las selecciones son correctas (los índices deben coincidir)
         val leftItem = leftItems[selectedLeftItemIndex]
         val rightItem = rightItems[selectedRightItemIndex]
@@ -639,12 +651,13 @@ class StorageUnitsGameFragment : Fragment() {
             tvFeedbackMatching.text = "Incorrecto. Intenta otra combinación"
             tvFeedbackMatching.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
 
-            // Resetear colores a blanco
+            // Resetear colores al color de superficie del tema
             val leftCard = findCardByTag("L$selectedLeftItemIndex", leftContainer)
             val rightCard = findCardByTag("R$selectedRightItemIndex", rightContainer)
-
-            leftCard?.setCardBackgroundColor(Color.WHITE)
-            rightCard?.setCardBackgroundColor(Color.WHITE)
+            val typedValue = android.util.TypedValue()
+            requireContext().theme.resolveAttribute(com.google.android.material.R.attr.colorSurface, typedValue, true)
+            leftCard?.setCardBackgroundColor(typedValue.data)
+            rightCard?.setCardBackgroundColor(typedValue.data)
 
             // Resetear selecciones
             selectedLeftItemIndex = -1
@@ -656,6 +669,8 @@ class StorageUnitsGameFragment : Fragment() {
     }
 
     private fun checkPracticalAnswer() {
+        if (!btnCheckPractical.isEnabled || questionsRemaining <= 0) return
+
         val answerText = etPracticalAnswer.text.toString().trim()
 
         if (answerText.isEmpty()) {

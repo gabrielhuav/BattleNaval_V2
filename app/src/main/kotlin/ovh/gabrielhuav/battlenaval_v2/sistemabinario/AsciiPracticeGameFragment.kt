@@ -106,8 +106,13 @@ class AsciiPracticeGameFragment : Fragment() {
     }
 
     private fun updateProgressDisplay() {
-        tvScoreDisplay.text = "Puntuación: $puntuacionTotal / $ejerciciosTotales"
-        val ejerciciosRestantes = ejerciciosAsciiToDecimalRestantes + ejerciciosAsciiToBinaryRestantes
+        // Evita que la puntuación pase del máximo
+        val puntuacionMostrada = puntuacionTotal.coerceAtMost(ejerciciosTotales)
+
+        // Evita que los restantes sean números negativos
+        val ejerciciosRestantes = (ejerciciosAsciiToDecimalRestantes + ejerciciosAsciiToBinaryRestantes).coerceAtLeast(0)
+
+        tvScoreDisplay.text = "Puntuación: $puntuacionMostrada / $ejerciciosTotales"
         tvProgress.text = "Ejercicios restantes: $ejerciciosRestantes de $ejerciciosTotales"
     }
 
@@ -158,6 +163,8 @@ class AsciiPracticeGameFragment : Fragment() {
     }
 
     private fun checkAsciiToDecimalRespuesta() {
+        if (!btnVerificarAsciiToDecimal.isEnabled || ejerciciosAsciiToDecimalRestantes <= 0) return
+
         val respuesta = etAsciiToDecimalRespuesta.text.toString().trim()
 
         if (respuesta.isEmpty()) {
@@ -204,6 +211,8 @@ class AsciiPracticeGameFragment : Fragment() {
     }
 
     private fun checkAsciiToBinaryRespuesta() {
+        if (!btnVerificarAsciiToBinary.isEnabled || ejerciciosAsciiToBinaryRestantes <= 0) return
+
         val respuesta = etAsciiToBinaryRespuesta.text.toString().trim()
 
         if (respuesta.isEmpty()) {

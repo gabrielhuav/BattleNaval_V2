@@ -6,8 +6,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/titleTextView"
@@ -17,6 +16,9 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp" />
 
         <TextView
@@ -25,6 +27,9 @@
             android:layout_height="wrap_content"
             android:text="Contenido sobre conversión de ASCII a binario..."
             android:textSize="16sp"
+            android:textColor="?android:attr/textColorPrimary"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp" />
 
         <TextView
@@ -33,7 +38,10 @@
             android:text="Ejemplos de conversión ASCII a binario:"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"
+            android:textColor="?android:attr/textColorPrimary"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp" />
 
         <TableLayout

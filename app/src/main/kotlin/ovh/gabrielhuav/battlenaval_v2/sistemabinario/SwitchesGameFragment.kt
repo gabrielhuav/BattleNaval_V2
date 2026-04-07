@@ -150,8 +150,10 @@ class SwitchesGameFragment : Fragment() {
     }
 
     private fun updateProgressDisplay() {
-        tvScoreDisplay.text = "Puntuación: $puntuacionTotal / $ejerciciosTotales"
-        val ejerciciosRestantes = ejerciciosBinarioRestantes + ejerciciosDecimalRestantes
+        val puntuacionMostrada = puntuacionTotal.coerceAtMost(ejerciciosTotales)
+        val ejerciciosRestantes = (ejerciciosBinarioRestantes + ejerciciosDecimalRestantes).coerceAtLeast(0)
+
+        tvScoreDisplay.text = "Puntuación: $puntuacionMostrada / $ejerciciosTotales"
         tvProgress.text = "Ejercicios restantes: $ejerciciosRestantes de $ejerciciosTotales"
     }
 
@@ -205,6 +207,7 @@ class SwitchesGameFragment : Fragment() {
     }
 
     private fun checkBinarioRespuesta() {
+        if (!btnVerificarBinario.isEnabled || ejerciciosBinarioRestantes <= 0) return
         val respuesta = etBinarioRespuesta.text.toString().trim()
 
         if (respuesta.isEmpty()) {
@@ -252,6 +255,7 @@ class SwitchesGameFragment : Fragment() {
     }
 
     private fun checkDecimalRespuesta() {
+        if (!btnVerificarDecimal.isEnabled || ejerciciosDecimalRestantes <= 0) return
         // Obtener respuesta de los interruptores
         val respuestaBinaria = StringBuilder()
         var valorCalculado = 0

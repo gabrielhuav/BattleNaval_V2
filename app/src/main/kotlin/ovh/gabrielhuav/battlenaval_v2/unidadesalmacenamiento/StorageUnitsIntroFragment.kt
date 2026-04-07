@@ -110,12 +110,16 @@ class StorageUnitsIntroFragment : Fragment() {
 
         // Mostrar u ocultar el contenido con animación
         if (isExpanded) {
-            // Primero hacer visible el contenido con altura 0
             expandableContent.visibility = View.VISIBLE
             expandableContent.alpha = 0f
-            expandableContent.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
 
-            // Animar la altura desde 0 hasta la altura completa
+            // CORRECTO: Medir basándose en el ancho real del padre para calcular los saltos de línea
+            val parentWidth = (expandableContent.parent as View).width
+            val widthSpec = View.MeasureSpec.makeMeasureSpec(parentWidth, View.MeasureSpec.EXACTLY)
+            val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            expandableContent.measure(widthSpec, heightSpec)
+
+            // Animar la altura desde 0 hasta la altura calculada completa
             val heightAnimator = ValueAnimator.ofInt(0, expandableContent.measuredHeight)
             heightAnimator.interpolator = AccelerateDecelerateInterpolator()
             heightAnimator.duration = 300
@@ -126,6 +130,12 @@ class StorageUnitsIntroFragment : Fragment() {
 
                 // Animar la transparencia gradualmente
                 expandableContent.alpha = animation.animatedFraction
+
+                // IMPORTANTE: Al terminar de abrir, regresar a WRAP_CONTENT para evitar cortes
+                if (animation.animatedFraction == 1.0f) {
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    expandableContent.layoutParams = params
+                }
             }
             heightAnimator.start()
         } else {

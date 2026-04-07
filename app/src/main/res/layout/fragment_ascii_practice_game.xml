@@ -8,10 +8,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <!-- Encabezado con puntuación -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,134 +18,222 @@
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"
             android:gravity="center"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="12dp" />
 
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#E8F5E9"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:id="@+id/tvScoreDisplay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Puntuación: 0 / 10"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:gravity="center" />
-
-            <TextView
-                android:id="@+id/tvProgress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Ejercicios restantes: 10 de 10"
-                android:textSize="16sp"
-                android:gravity="center" />
-        </LinearLayout>
-
-        <!-- Sección 1: ASCII a Decimal -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp"
             app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            android:layout_marginBottom="24dp">
+            app:cardElevation="2dp"
+            app:strokeColor="?attr/colorPrimary"
+            app:strokeWidth="1dp"
+            app:cardBackgroundColor="?attr/colorSurface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tvScoreDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Puntuación: 0 / 10"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_marginEnd="16dp" />
+
+                <TextView
+                    android:id="@+id/tvProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Restantes: 10"
+                    android:textSize="14sp"
+                    android:textColor="?android:attr/textColorSecondary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="12dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Conversión de ASCII a Decimal"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
                     android:layout_marginBottom="12dp" />
 
-                <TextView
-                    android:id="@+id/tvAsciiToDecimalPrompt"
-                    android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Convierte este carácter ASCII a decimal:\n'A'"
-                    android:textSize="16sp"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="?attr/colorPrimary">
 
-                <EditText
-                    android:id="@+id/etAsciiToDecimalRespuesta"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Carácter \na \ndecimal:"
+                            android:textSize="15sp"
+                            android:textColor="?attr/colorOnPrimary" />
+
+                        <TextView
+                            android:id="@+id/tvAsciiToDecimalPrompt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="'A'"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="?attr/colorOnPrimary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Ingresa el valor decimal"
-                    android:inputType="number"
-                    android:padding="12dp"
-                    android:background="#F5F5F5"
-                    android:layout_marginBottom="12dp" />
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_marginBottom="8dp">
 
-                <Button
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etAsciiToDecimalRespuesta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:padding="10dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnVerificarAsciiToDecimal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Verificar"
-                    android:layout_marginBottom="8dp" />
+                    android:text="Verificar" />
 
                 <TextView
                     android:id="@+id/tvFeedbackAsciiToDecimal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textSize="16sp"
-                    android:gravity="center" />
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:visibility="gone" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
-        <!-- Sección 2: ASCII a Binario -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="?attr/colorSurface"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="12dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Conversión de ASCII a Binario"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
                     android:layout_marginBottom="12dp" />
 
-                <TextView
-                    android:id="@+id/tvAsciiToBinaryPrompt"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="?attr/colorSecondary">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Carácter \na binario \n(8 bits):"
+                            android:textSize="15sp"
+                            android:textColor="?attr/colorOnSecondary" />
+
+                        <TextView
+                            android:id="@+id/tvAsciiToBinaryPrompt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="'B'"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="?attr/colorOnSecondary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Convierte este carácter ASCII a binario (8 bits):\n'B'"
-                    android:textSize="16sp"
-                    android:layout_marginBottom="12dp" />
+                    android:hint="Ingresa el valor binario"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_marginBottom="8dp">
 
-                <EditText
-                    android:id="@+id/etAsciiToBinaryRespuesta"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Ingresa el valor binario (8 bits)"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:background="#F5F5F5"
-                    android:layout_marginBottom="12dp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etAsciiToBinaryRespuesta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:padding="10dp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnVerificarAsciiToBinary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -158,64 +244,58 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textSize="16sp"
-                    android:gravity="center" />
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:visibility="gone" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
-        <!-- Sección 3: Tabla ASCII de referencia -->
-        <TextView
-            android:id="@+id/tvAsciiTableTitle"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tabla ASCII de Referencia"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp" />
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            android:layout_marginBottom="16dp">
 
-        <Button
-            android:id="@+id/btnMostrarTablaAscii"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mostrar Tabla ASCII"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Contenedor para el fragmento de tabla ASCII -->
-        <LinearLayout
-            android:id="@+id/tableContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="600dp"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <!-- Contenedor real para el fragmento de tabla ASCII -->
-            <FrameLayout
-                android:id="@+id/asciiTableFragmentContainer"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="4dp"
-                android:background="#F5F5F5" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/tvAsciiTableTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tabla ASCII de Referencia"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorPrimary"
+                    android:padding="12dp" />
 
-        <!-- Sección de instrucciones -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Instrucciones"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnMostrarTablaAscii"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:text="Mostrar Tabla ASCII"
+                    android:layout_marginBottom="12dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="• Para la conversión ASCII a Decimal, ingresa el número decimal correspondiente al carácter mostrado.\n• Para la conversión ASCII a Binario, ingresa la representación binaria de 8 bits del carácter ASCII mostrado.\n• Cada sección tiene 5 ejercicios para completar.\n• Puedes consultar la tabla ASCII para ayudarte con las conversiones."
-            android:textSize="14sp"
-            android:layout_marginBottom="16dp" />
+                <LinearLayout
+                    android:id="@+id/tableContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <FrameLayout
+                        android:id="@+id/asciiTableFragmentContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="700dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

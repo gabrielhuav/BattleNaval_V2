@@ -3,33 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="8dp"
-    android:background="#DDDDDD"> <!-- A light gray background to distinguish the header -->
+    android:padding="10dp"
+    android:background="?attr/colorPrimary">
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Decimal"
-        android:textSize="14sp"
+        android:textSize="15sp"
         android:textStyle="bold"
-        android:paddingEnd="8dp" />
+        android:textColor="?attr/colorOnPrimary"
+        android:gravity="center" />
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1.5"
         android:text="Binario"
-        android:textSize="14sp"
+        android:textSize="15sp"
         android:textStyle="bold"
-        android:paddingEnd="8dp" />
+        android:textColor="?attr/colorOnPrimary"
+        android:gravity="center" />
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.5"
-        android:text="Caracter"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:text="Carácter"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnPrimary"
+        android:gravity="center" />
 
 </LinearLayout>

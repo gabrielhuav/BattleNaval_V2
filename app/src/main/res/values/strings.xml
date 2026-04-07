@@ -86,7 +86,7 @@
     <string name="app_title">Representación binaria de información</string>
     <string name="battle_naval_option">Battle Naval</string>
     <string name="learn_binary_option">Aprende Sistema Binario</string>
-    <string name="app_footer">BitBattles 1.0.0.8</string>
+    <string name="app_footer">BitBattles 1.0.0.9</string>
     <!-- Menú principal y navegación -->
 
     <string name="settings">Configuración</string>

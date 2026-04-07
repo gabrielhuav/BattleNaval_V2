@@ -27,24 +27,23 @@
             android:layout_height="wrap_content"
             android:text="Contenido sobre relación entre mundo físico y digital..."
             android:textSize="16sp"
+            android:textColor="?android:attr/textColorPrimary"
             android:layout_marginBottom="16dp" />
 
-        <!-- Sección Expandible de Ejemplos -->
         <androidx.cardview.widget.CardView
             android:id="@+id/examplesCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="8dp"
             app:cardElevation="2dp"
+            app:cardBackgroundColor="?attr/colorSurface"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#F1F8E9">
+                android:orientation="vertical">
 
-                <!-- Encabezado expandible -->
                 <LinearLayout
                     android:id="@+id/examplesHeaderLayout"
                     android:layout_width="match_parent"
@@ -71,37 +70,37 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_down"
+                        app:tint="?attr/colorPrimary"
                         android:contentDescription="Expandir/Contraer" />
                 </LinearLayout>
 
-                <!-- Contenido expandible -->
                 <TextView
                     android:id="@+id/examplesContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:textSize="16sp"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:lineSpacingExtra="6dp"
                     android:visibility="gone"
                     android:text="Ejemplos de almacenamiento digital..." />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Sección Expandible de Comparación -->
         <androidx.cardview.widget.CardView
             android:id="@+id/expandableCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="8dp"
             app:cardElevation="2dp"
+            app:cardBackgroundColor="?attr/colorSurface"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#E0F7FA">
+                android:orientation="vertical">
 
-                <!-- Encabezado expandible -->
                 <LinearLayout
                     android:id="@+id/expandableHeaderLayout"
                     android:layout_width="match_parent"
@@ -128,16 +127,18 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_down"
+                        app:tint="?attr/colorPrimary"
                         android:contentDescription="Expandir/Contraer" />
                 </LinearLayout>
 
-                <!-- Contenido expandible -->
                 <TextView
                     android:id="@+id/expandableContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:textSize="16sp"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:lineSpacingExtra="6dp"
                     android:visibility="gone"
                     android:text="Contenido expandible sobre relaciones entre unidades..." />
             </LinearLayout>
@@ -149,6 +150,7 @@
             android:text="Comparando el mundo físico y digital:"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="?android:attr/textColorPrimary"
             android:layout_marginBottom="8dp" />
 
         <HorizontalScrollView
@@ -173,7 +175,6 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="24dp" />
 
-        <!-- Sección interactiva de emparejamiento -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -190,6 +191,7 @@
             android:layout_height="wrap_content"
             android:text="Selecciona un elemento digital y su unidad de almacenamiento correspondiente, luego presiona 'Verificar'"
             android:textSize="16sp"
+            android:textColor="?android:attr/textColorPrimary"
             android:layout_marginBottom="16dp" />
 
         <LinearLayout
@@ -200,7 +202,6 @@
             android:baselineAligned="false"
             android:layout_marginBottom="16dp">
 
-            <!-- Elementos digitales -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -224,11 +225,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                    <!-- Las tarjetas se añadirán aquí dinámicamente -->
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Unidades de almacenamiento -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -252,23 +251,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                    <!-- Las tarjetas se añadirán aquí dinámicamente -->
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Texto de retroalimentación -->
-        <TextView
-            android:id="@+id/feedbackText"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Selecciona un elemento digital y una unidad de almacenamiento para emparejarlos"
-            android:textSize="16sp"
-            android:padding="16dp"
-            android:background="#E8F5E9"
-            android:layout_marginBottom="16dp" />
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            android:layout_marginBottom="16dp">
 
-        <!-- Botones -->
+            <TextView
+                android:id="@+id/feedbackText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Selecciona un elemento digital y una unidad de almacenamiento para emparejarlos"
+                android:textSize="16sp"
+                android:padding="16dp"
+                android:textColor="?android:attr/textColorPrimary" />
+        </androidx.cardview.widget.CardView>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

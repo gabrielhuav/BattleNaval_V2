@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:text="Contenido sobre unidades de almacenamiento..."
             android:textSize="16sp"
+            android:textColor="?android:attr/textColorPrimary"
             android:layout_marginBottom="16dp" />
 
         <HorizontalScrollView
@@ -40,22 +41,20 @@
                 android:stretchColumns="*" />
         </HorizontalScrollView>
 
-        <!-- Sección Expandible "¿Por qué es 1,024 y no 1,000?" -->
         <androidx.cardview.widget.CardView
             android:id="@+id/expandableCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="8dp"
             app:cardElevation="2dp"
+            app:cardBackgroundColor="?attr/colorSurface"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#E0F2F1">
+                android:orientation="vertical">
 
-                <!-- Encabezado expandible -->
                 <LinearLayout
                     android:id="@+id/expandableHeaderLayout"
                     android:layout_width="match_parent"
@@ -82,22 +81,23 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_down"
+                        app:tint="?attr/colorPrimary"
                         android:contentDescription="Expandir/Contraer" />
                 </LinearLayout>
 
-                <!-- Contenido expandible (inicialmente oculto) -->
                 <TextView
                     android:id="@+id/expandableContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:textSize="16sp"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:lineSpacingExtra="6dp"
                     android:paddingTop="0dp"
                     android:visibility="gone" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Imagen ilustrativa -->
         <ImageView
             android:id="@+id/illustrationImageView"
             android:layout_width="match_parent"
@@ -107,13 +107,13 @@
             android:contentDescription="Jerarquía de unidades de almacenamiento"
             android:layout_marginBottom="16dp" />
 
-        <!-- Ejemplos de dispositivos y sus capacidades -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Dispositivos comunes y sus capacidades típicas:"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="?android:attr/textColorPrimary"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp" />
 
@@ -149,6 +149,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:text="Memoria USB"
                     android:padding="8dp" />
 
@@ -156,6 +157,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:text="8 GB - 256 GB"
                     android:padding="8dp" />
             </TableRow>
@@ -165,6 +167,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:text="Teléfono celular"
                     android:padding="8dp" />
 
@@ -172,6 +175,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:text="64 GB - 512 GB"
                     android:padding="8dp" />
             </TableRow>
@@ -181,6 +185,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:text="Laptop/Computadora"
                     android:padding="8dp" />
 
@@ -188,6 +193,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:text="256 GB - 2 TB"
                     android:padding="8dp" />
             </TableRow>
@@ -197,6 +203,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:text="Consola de videojuegos"
                     android:padding="8dp" />
 
@@ -204,10 +211,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:text="500 GB - 2 TB"
                     android:padding="8dp" />
             </TableRow>
         </TableLayout>
-
     </LinearLayout>
 </ScrollView>
