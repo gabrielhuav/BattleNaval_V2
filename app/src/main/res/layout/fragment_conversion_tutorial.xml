@@ -33,7 +33,6 @@
             android:text="¡Entender las conversiones binarias te ayudará a encontrar los barcos enemigos!"
             android:layout_marginBottom="16dp" />
 
-        <!-- Contenedor para el ejemplo específico -->
         <LinearLayout
             android:id="@+id/exampleContainer"
             android:layout_width="match_parent"
@@ -61,7 +60,6 @@
 
         </LinearLayout>
 
-        <!-- Sección de conversión binaria a decimal -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -174,7 +172,6 @@
             </TableRow>
         </TableLayout>
 
-        <!-- Sección de conversión ASCII -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -330,6 +327,10 @@
             android:backgroundTint="#3F51B5"
             android:textColor="#FFFFFF"
             android:padding="12dp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="64dp" />
 
     </LinearLayout>
 </ScrollView>

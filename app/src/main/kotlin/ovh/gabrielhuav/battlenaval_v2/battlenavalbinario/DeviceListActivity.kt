@@ -32,7 +32,6 @@ class DeviceListActivity : AppCompatActivity() {
         Manifest.permission.ACCESS_FINE_LOCATION
     )
 
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_device_list)
@@ -44,15 +43,13 @@ class DeviceListActivity : AppCompatActivity() {
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
-        if (!bluetoothAdapter.isEnabled) {
-            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+        // FLUJO CORREGIDO: Primero validamos permisos, luego interactuamos con Bluetooth
+        if (hasRequiredPermissions()) {
+            checkBluetoothEnabled()
+            showPairedDevices()
+        } else {
+            checkAndRequestPermissions()
         }
-
-        checkAndRequestPermissions()
-
-        // Mostrar dispositivos vinculados
-        showPairedDevices()
 
         scanButton.setOnClickListener {
             if (hasRequiredPermissions()) {
@@ -83,6 +80,19 @@ class DeviceListActivity : AppCompatActivity() {
         registerReceiver(receiver, filter)
     }
 
+    // Nuevo método protegido con Try-Catch para activar Bluetooth
+    private fun checkBluetoothEnabled() {
+        try {
+            if (!bluetoothAdapter.isEnabled) {
+                val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+            }
+        } catch (e: SecurityException) {
+            Toast.makeText(this, "Falta permiso para activar Bluetooth", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
+    }
+
     private fun hasRequiredPermissions(): Boolean {
         return REQUIRED_PERMISSIONS.all {
             ActivityCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
@@ -99,20 +109,38 @@ class DeviceListActivity : AppCompatActivity() {
         }
     }
 
+    // Captura la respuesta del usuario cuando se le piden los permisos
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                // Si el usuario da el permiso, entonces revisamos el bluetooth y mostramos los dispositivos
+                checkBluetoothEnabled()
+                showPairedDevices()
+            } else {
+                Toast.makeText(this, "Los permisos son necesarios para jugar en red", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
     private fun showPairedDevices() {
         if (!hasRequiredPermissions()) return
 
-        val pairedDevices = bluetoothAdapter.bondedDevices
-        pairedDevices?.forEach { device ->
-            val deviceName = device.name ?: "Unknown Device"
-            val deviceAddress = device.address
-            val deviceInfo = "$deviceName\n$deviceAddress"
-            if (!deviceList.contains(deviceInfo)) {
-                deviceList.add(deviceInfo)
-                deviceMap[deviceInfo] = device
+        try {
+            val pairedDevices = bluetoothAdapter.bondedDevices
+            pairedDevices?.forEach { device ->
+                val deviceName = device.name ?: "Unknown Device"
+                val deviceAddress = device.address
+                val deviceInfo = "$deviceName\n$deviceAddress"
+                if (!deviceList.contains(deviceInfo)) {
+                    deviceList.add(deviceInfo)
+                    deviceMap[deviceInfo] = device
+                }
             }
+            updateDeviceList()
+        } catch (e: SecurityException) {
+            e.printStackTrace()
         }
-        updateDeviceList()
     }
 
     private fun startDiscovery() {
@@ -121,12 +149,17 @@ class DeviceListActivity : AppCompatActivity() {
         deviceList.clear()
         showPairedDevices()
 
-        if (bluetoothAdapter.isDiscovering) {
-            bluetoothAdapter.cancelDiscovery()
-        }
+        try {
+            if (bluetoothAdapter.isDiscovering) {
+                bluetoothAdapter.cancelDiscovery()
+            }
 
-        bluetoothAdapter.startDiscovery()
-        Toast.makeText(this, "Buscando dispositivos...", Toast.LENGTH_SHORT).show()
+            bluetoothAdapter.startDiscovery()
+            Toast.makeText(this, "Buscando dispositivos...", Toast.LENGTH_SHORT).show()
+        } catch (e: SecurityException) {
+            Toast.makeText(this, "Error de permisos al escanear", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
     }
 
     private val receiver = object : BroadcastReceiver() {
@@ -136,13 +169,17 @@ class DeviceListActivity : AppCompatActivity() {
                     val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                     device?.let {
                         if (!hasRequiredPermissions()) return
-                        val deviceName = it.name ?: "Unknown Device"
-                        val deviceAddress = it.address
-                        val deviceInfo = "$deviceName\n$deviceAddress"
-                        if (!deviceList.contains(deviceInfo)) {
-                            deviceList.add(deviceInfo)
-                            deviceMap[deviceInfo] = it
-                            updateDeviceList()
+                        try {
+                            val deviceName = it.name ?: "Unknown Device"
+                            val deviceAddress = it.address
+                            val deviceInfo = "$deviceName\n$deviceAddress"
+                            if (!deviceList.contains(deviceInfo)) {
+                                deviceList.add(deviceInfo)
+                                deviceMap[deviceInfo] = it
+                                updateDeviceList()
+                            }
+                        } catch (e: SecurityException) {
+                            e.printStackTrace()
                         }
                     }
                 }
@@ -160,8 +197,12 @@ class DeviceListActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (hasRequiredPermissions() && bluetoothAdapter.isDiscovering) {
-            bluetoothAdapter.cancelDiscovery()
+        try {
+            if (hasRequiredPermissions() && bluetoothAdapter.isDiscovering) {
+                bluetoothAdapter.cancelDiscovery()
+            }
+        } catch (e: SecurityException) {
+            e.printStackTrace()
         }
         unregisterReceiver(receiver)
     }

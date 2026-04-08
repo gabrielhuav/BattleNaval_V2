@@ -1,25 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:fitsSystemWindows="true"
-    android:layout_marginTop="56dp"> <Button
-    android:id="@+id/btnScanDevices"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Buscar Dispositivos"
-    android:layout_marginBottom="16dp" /> <ListView
-    android:id="@+id/deviceListView"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:layout_marginBottom="16dp" /> <Button
-    android:id="@+id/btnBackToMenu"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Regresar al Menú"
-    android:layout_gravity="center"
-    android:layout_marginBottom="16dp" /> </LinearLayout>
+    android:background="#0A192F"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DISPOSITIVOS CERCANOS"
+        android:textColor="#00E5FF"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:layout_marginTop="72dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnScanDevices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Buscar Dispositivos"
+        android:backgroundTint="#00B0FF"
+        android:layout_marginBottom="16dp" />
+
+    <ListView
+        android:id="@+id/deviceListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="#1A2A3A"
+        android:dividerHeight="1dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnBackToMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancelar"
+        android:backgroundTint="#37474F"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp" />
+</LinearLayout>

@@ -1,78 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"> <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:layout_marginTop="56dp">
+    android:background="#0A192F"
+    android:fitsSystemWindows="true">
 
-    <TextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_marginTop="72dp"> <TextView
         android:id="@+id/tvBluetoothStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Estado: Desconectado"
+        android:textColor="#00E5FF"
         android:textSize="16sp"
+        android:textStyle="bold"
         android:layout_marginBottom="12dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="12dp">
-
-        <Button
-            android:id="@+id/btnStartServer"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Iniciar Servidor"
-            android:layout_marginEnd="8dp" />
-
-        <Button
-            android:id="@+id/btnConnectToDevice"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Conectar a Dispositivo" />
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginBottom="56dp"> <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:gravity="center">
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="12dp">
 
-            <FrameLayout
-                android:id="@+id/playerBoardFrame"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/btnStartServer"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/blue_border" />
+                android:layout_weight="1"
+                android:text="Servidor"
+                android:backgroundTint="#37474F"
+                android:layout_marginEnd="8dp" />
 
-            <FrameLayout
-                android:id="@+id/enemyBoardFrame"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/btnConnectDevice"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/red_border" />
+                android:layout_weight="1"
+                android:text="Conectar"
+                android:backgroundTint="#00B0FF" />
         </LinearLayout>
-    </HorizontalScrollView>
-    </ScrollView>
-</LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="56dp">
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TU FLOTA"
+                        android:textColor="#00E5FF"
+                        android:layout_marginBottom="4dp" />
+                    <FrameLayout
+                        android:id="@+id/playerBoardFrame"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
+                        android:background="#4000E5FF"
+                        android:padding="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="RADAR ENEMIGO"
+                        android:textColor="#FF1744"
+                        android:layout_marginBottom="4dp" />
+                    <FrameLayout
+                        android:id="@+id/enemyBoardFrame"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#40FF0000"
+                        android:padding="4dp" />
+                </LinearLayout>
+            </HorizontalScrollView>
+        </ScrollView>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnBackToMenu"
@@ -80,5 +98,36 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="16dp"
-        android:text="Regresar al Menú" />
+        android:text="Regresar al Menú"
+        android:backgroundTint="#37474F" />
+
+    <LinearLayout
+        android:id="@+id/endGameOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E60A192F"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:elevation="10dp"
+        android:clickable="true"
+        android:focusable="true">
+        <TextView
+            android:id="@+id/tvEndGameTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¡VICTORIA!"
+            android:textColor="#00E5FF"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:shadowRadius="20"
+            android:shadowColor="#00E5FF" />
+        <TextView
+            android:id="@+id/tvEndGameSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Comunicación finalizada"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
 </FrameLayout>
