@@ -86,7 +86,11 @@
     <string name="app_title">Representación binaria de información</string>
     <string name="battle_naval_option">Battle Naval</string>
     <string name="learn_binary_option">Aprende Sistema Binario</string>
-    <string name="app_footer">BitBattles 1.0.0.9</string>
+    <string name="app_footer">BitBattles %1$s</string>
+
+    <string name="credits_title">Créditos</string>
+    <string name="credits_developer">Desarrollador:\nM. en C. Gabriel Hurtado Avilés</string>
+    <string name="credits_tutors">Directores:\nTutor principal: Dr. Jorge Alonso Bustamante Torres\nTutor: Dr. Rafael Fernández Flores\nTutor: Dr. J. Jesús Becerra Ramírez</string>
     <!-- Menú principal y navegación -->
 
     <string name="settings">Configuración</string>

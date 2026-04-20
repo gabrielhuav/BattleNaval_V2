@@ -1,4 +1,4 @@
-﻿# Log de archivos movidos - 04/07/2026 19:12:14
+﻿# Log de archivos movidos - 04/20/2026 01:26:18
 
 ARCHIVO: bitbattles.jks
 ORIGEN: C:\Users\gabri\AndroidStudioProjects\BattleNaval_V2\bitbattles.jks

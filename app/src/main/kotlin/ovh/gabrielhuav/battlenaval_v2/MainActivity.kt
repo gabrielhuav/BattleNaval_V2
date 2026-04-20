@@ -35,6 +35,9 @@ class MainActivity : AppCompatActivity() {
     // Layout para opciones de Batalla Naval (se mostrará/ocultará)
     private lateinit var layoutBattleNavalOptions: LinearLayout
 
+    // Mensaje de la version en el Menu Principal
+    private lateinit var tvAppFooter: android.widget.TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Aplicar tema antes de inflar la vista
         ThemeManager.applyTheme(this)
@@ -57,6 +60,16 @@ class MainActivity : AppCompatActivity() {
         btnBinaryGames = findViewById(R.id.btnBinaryGames)
 
         layoutBattleNavalOptions = findViewById(R.id.layoutBattleNavalOptions)
+
+        tvAppFooter = findViewById(R.id.tvAppFooter)
+
+        // Asignar dinámicamente la versión desde build.gradle.kts
+        tvAppFooter.text = getString(R.string.app_footer, BuildConfig.VERSION_NAME)
+
+        // Mostrar créditos al hacer clic
+        tvAppFooter.setOnClickListener {
+            showCreditsDialog()
+        }
 
         // Aplicar wallpaper según el tema
         backgroundImage.setImageResource(ThemeManager.getThemeWallpaper(this))
@@ -205,5 +218,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    private fun showCreditsDialog() {
+        val message = "${getString(R.string.credits_developer)}\n\n${getString(R.string.credits_tutors)}"
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(R.string.credits_title)
+            .setMessage(message)
+            .setPositiveButton("Aceptar") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }

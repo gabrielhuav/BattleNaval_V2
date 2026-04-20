@@ -141,6 +141,7 @@
             android:layout_weight="1" />
 
         <TextView
+            android:id="@+id/tvAppFooter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
@@ -148,7 +149,10 @@
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:background="#80000000"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground" />
     </LinearLayout>
 
 </RelativeLayout>

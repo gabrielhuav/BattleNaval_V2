@@ -15,12 +15,17 @@ android {
     namespace = "ovh.gabrielhuav.battlenaval_v2"
     compileSdk = 35
 
+    // Se agrega esto para poder usar BuildConfig.VERSION_NAME
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "ovh.gabrielhuav.battlenaval_v2"
         minSdk = 24
         targetSdk = 35
-        versionCode = 9
-        versionName = "1.0.0.9"
+        versionCode = 10
+        versionName = "1.0.0.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
