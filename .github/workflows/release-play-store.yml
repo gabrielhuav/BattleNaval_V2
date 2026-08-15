@@ -1,0 +1,108 @@
+name: Release a Google Play
+
+# Genera el AAB firmado y lo sube a Google Play.
+#
+# Se dispara de dos formas:
+#   1. Al empujar una etiqueta de version:  git tag v1.0.0.11 && git push origin v1.0.0.11
+#   2. Manualmente desde la pestana Actions (workflow_dispatch), eligiendo el track.
+#
+# Secrets necesarios (Settings > Secrets and variables > Actions):
+#   KEYSTORE_BASE64            keystore .jks codificado en base64
+#   KEYSTORE_PASSWORD          storePassword del keystore
+#   KEY_ALIAS                  alias de la clave de subida
+#   KEY_PASSWORD               keyPassword de esa clave
+#   GOOGLE_SERVICES_JSON       app/google-services.json codificado en base64
+#   PLAY_SERVICE_ACCOUNT_JSON  JSON de la cuenta de servicio con acceso a la Play Developer API
+#
+# Ver docs/RELEASE-Y-FIRMA.md para como generar cada uno.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      track:
+        description: 'Track de Play al que se sube'
+        required: true
+        default: internal
+        type: choice
+        options: [internal, alpha, beta, production]
+      status:
+        description: 'Estado de la version'
+        required: true
+        default: draft
+        type: choice
+        options: [draft, completed]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # El entorno permite exigir aprobacion manual antes de publicar.
+    environment: play-store
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Restaurar google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" | base64 --decode > app/google-services.json
+
+      - name: Restaurar keystore y key.properties
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/upload-keystore.jks"
+          # storeFile se resuelve desde el modulo app/, por eso la ruta absoluta.
+          {
+            echo "storeFile=$RUNNER_TEMP/upload-keystore.jks"
+            echo "storePassword=$KEYSTORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > key.properties
+
+      - name: Compilar AAB firmado
+        run: ./gradlew :app:bundleRelease --stacktrace
+
+      - name: Leer versionName del AAB
+        id: version
+        run: |
+          VERSION=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts)
+          echo "name=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Guardar el AAB como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitbattles-${{ steps.version.outputs.name }}-release-aab
+          path: app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      - name: Subir a Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: ovh.gabrielhuav.battlenaval_v2
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          track: ${{ inputs.track || 'internal' }}
+          status: ${{ inputs.status || 'draft' }}
+          whatsNewDirectory: distribution/whatsnew
+
+      - name: Limpiar secretos del runner
+        if: always()
+        run: rm -f key.properties "$RUNNER_TEMP/upload-keystore.jks" app/google-services.json

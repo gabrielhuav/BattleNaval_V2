@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import ovh.gabrielhuav.battlenaval_v2.enableEdgeToEdgeDark
 import ovh.gabrielhuav.battlenaval_v2.R
 import ovh.gabrielhuav.battlenaval_v2.ThemeManager
 import kotlin.random.Random
@@ -31,6 +32,7 @@ class SinglePlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeManager.applyTheme(this)
+        enableEdgeToEdgeDark()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_player)
         supportActionBar?.hide()

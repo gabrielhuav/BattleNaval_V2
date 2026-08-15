@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import ovh.gabrielhuav.battlenaval_v2.battlenavalbinario.BluetoothActivity
@@ -23,7 +24,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSettings: Button
     private lateinit var backgroundImage: ImageView
     private lateinit var fragmentContainer: FrameLayout
-    private lateinit var mainContentLayout: LinearLayout
+
+    // ScrollView: el menu debe poder desplazarse en horizontal y en ventanas
+    // pequenas. Se declara como View porque aqui solo se alterna su visibilidad.
+    private lateinit var mainContentLayout: View
 
     // Botones de juegos (se mostrarán/ocultarán)
     private lateinit var layoutGamesSubMenu: LinearLayout
@@ -42,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         // Aplicar tema antes de inflar la vista
         ThemeManager.applyTheme(this)
 
+        enableEdgeToEdgeDark()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_unified)
 
@@ -62,6 +67,8 @@ class MainActivity : AppCompatActivity() {
         layoutBattleNavalOptions = findViewById(R.id.layoutBattleNavalOptions)
 
         tvAppFooter = findViewById(R.id.tvAppFooter)
+
+        onBackPressedDispatcher.addCallback(this, backToMainMenuCallback)
 
         // Asignar dinámicamente la versión desde build.gradle.kts
         tvAppFooter.text = getString(R.string.app_footer, BuildConfig.VERSION_NAME)
@@ -85,6 +92,8 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragment_container, LearningOptionsFragment())
                 .addToBackStack(null)
                 .commit()
+
+            backToMainMenuCallback.isEnabled = true
         }
 
         btnGames.setOnClickListener {
@@ -129,14 +138,19 @@ class MainActivity : AppCompatActivity() {
         layoutBattleNavalOptions.visibility = View.GONE
     }
 
-    override fun onBackPressed() {
-        if (fragmentContainer.visibility == View.VISIBLE) {
-            // Si el fragmento está visible, volver al contenido principal
+    /**
+     * A partir de Android 16 (API 36) el sistema ya no invoca onBackPressed(),
+     * así que la navegación hacia atrás se registra en el OnBackPressedDispatcher.
+     * El callback solo está habilitado mientras el fragmento ocupa la pantalla;
+     * en cualquier otro caso el sistema aplica el comportamiento por defecto
+     * (salir de la app con la animación predictiva).
+     */
+    private val backToMainMenuCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
             fragmentContainer.visibility = View.GONE
             mainContentLayout.visibility = View.VISIBLE
             supportFragmentManager.popBackStack()
-        } else {
-            super.onBackPressed()
+            isEnabled = false
         }
     }
 

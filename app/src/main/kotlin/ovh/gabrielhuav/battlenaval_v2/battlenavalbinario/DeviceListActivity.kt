@@ -15,6 +15,7 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import ovh.gabrielhuav.battlenaval_v2.enableEdgeToEdgeDark
 import androidx.core.app.ActivityCompat
 import ovh.gabrielhuav.battlenaval_v2.R
 
@@ -33,6 +34,7 @@ class DeviceListActivity : AppCompatActivity() {
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdgeDark()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_device_list)
         supportActionBar?.hide()

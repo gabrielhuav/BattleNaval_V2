@@ -22,12 +22,23 @@
         android:layout_marginBottom="16dp"
         android:visibility="gone" />
 
-    <LinearLayout
+    <!--
+        El menu va dentro de un ScrollView para que quepa tambien en horizontal y
+        en ventanas pequenas de pantalla dividida, donde la altura disponible no
+        alcanza para el titulo, los botones y el pie. fillViewport mantiene el
+        pie pegado abajo cuando sobra espacio, como en vertical.
+    -->
+    <ScrollView
         android:id="@+id/mainContentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="56dp">
+        android:layout_marginTop="56dp"
+        android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvAppTitle"
@@ -154,5 +165,6 @@
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground" />
     </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

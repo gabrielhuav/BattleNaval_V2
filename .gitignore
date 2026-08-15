@@ -36,6 +36,9 @@ release/
 play-store-api.json
 api-*.json
 
+# Copias locales de material sensible y secrets en base64 para el CI
+_sensitive_backup/
+
 # Google Services (Firebase, Google Cloud)
 google-services.json
 google-services-*.json

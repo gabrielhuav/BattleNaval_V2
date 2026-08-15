@@ -6,14 +6,20 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-// Leer credenciales desde key.properties (este archivo NO se sube a GitHub)
+// Leer credenciales desde key.properties (este archivo NO se sube a GitHub).
+// Si no existe (por ejemplo en un clon limpio o en CI antes de escribir los secrets),
+// se compila sin firma de release en lugar de fallar la configuracion de Gradle.
 val keyPropertiesFile = rootProject.file("key.properties")
-val keyProperties = Properties()
-keyProperties.load(keyPropertiesFile.inputStream())
+val keyProperties = Properties().apply {
+    if (keyPropertiesFile.exists()) {
+        keyPropertiesFile.inputStream().use { load(it) }
+    }
+}
+val hasReleaseSigning = keyProperties.containsKey("storeFile")
 
 android {
     namespace = "ovh.gabrielhuav.battlenaval_v2"
-    compileSdk = 35
+    compileSdk = 36
 
     // Se agrega esto para poder usar BuildConfig.VERSION_NAME
     buildFeatures {
@@ -23,19 +29,21 @@ android {
     defaultConfig {
         applicationId = "ovh.gabrielhuav.battlenaval_v2"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 10
-        versionName = "1.0.0.10"
+        targetSdk = 36
+        versionCode = 11
+        versionName = "1.0.0.11"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file(keyProperties["storeFile"] as String)
-            storePassword = keyProperties["storePassword"] as String
-            keyAlias = keyProperties["keyAlias"] as String
-            keyPassword = keyProperties["keyPassword"] as String
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(keyProperties["storeFile"] as String)
+                storePassword = keyProperties["storePassword"] as String
+                keyAlias = keyProperties["keyAlias"] as String
+                keyPassword = keyProperties["keyPassword"] as String
+            }
         }
     }
 
@@ -46,7 +54,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 

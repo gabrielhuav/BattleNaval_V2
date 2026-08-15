@@ -3,6 +3,7 @@ package ovh.gabrielhuav.battlenaval_v2.sistemabinario
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import ovh.gabrielhuav.battlenaval_v2.enableEdgeToEdgeDark
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ovh.gabrielhuav.battlenaval_v2.R
@@ -20,6 +21,7 @@ class GamesActivity : AppCompatActivity() {
         // Aplicar tema antes de inflar la vista
         ThemeManager.applyTheme(this)
 
+        enableEdgeToEdgeDark()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_games)
         supportActionBar?.hide()
@@ -62,7 +64,7 @@ class GamesActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
             return true
         }
         return super.onOptionsItemSelected(item)

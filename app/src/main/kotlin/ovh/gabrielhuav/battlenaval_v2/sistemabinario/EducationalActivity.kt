@@ -5,6 +5,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import ovh.gabrielhuav.battlenaval_v2.enableEdgeToEdgeDayNight
 import androidx.viewpager2.widget.ViewPager2
 import ovh.gabrielhuav.battlenaval_v2.R
 import ovh.gabrielhuav.battlenaval_v2.ThemeManager
@@ -29,6 +30,7 @@ class EducationalActivity : AppCompatActivity() {
         // Aplicar tema antes de inflar la vista
         ThemeManager.applyTheme(this)
 
+        enableEdgeToEdgeDayNight()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_educational)
         supportActionBar?.hide()
@@ -55,7 +57,7 @@ class EducationalActivity : AppCompatActivity() {
 
         // Configurar botones
         btnBack.setOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
 
         btnHome.setOnClickListener {

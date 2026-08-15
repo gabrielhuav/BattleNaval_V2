@@ -38,8 +38,8 @@ La aplicación surge de la necesidad de encontrar métodos de enseñanza más at
 ## Tecnologías Utilizadas
 
 * **Lenguaje:** Kotlin
-* **Plataforma:** Android
-* **Entorno de Desarrollo:** Android Studio
+* **Plataforma:** Android (minSdk 24, targetSdk 36)
+* **Entorno de Desarrollo:** Android Studio — AGP 9.1.1, Gradle 9.3.1, JDK 17
 * **Comunicación:** Bluetooth para el modo multijugador
 
 ## Instalación
@@ -52,6 +52,22 @@ Para probar la aplicación:
     ```
 2.  Abre el proyecto en Android Studio.
 3.  Compila y ejecuta la aplicación en un emulador o dispositivo Android.
+
+> El proyecto necesita `app/google-services.json` para compilar. Para generar
+> una versión firmada hacen falta además `key.properties` y el keystore; ver
+> [docs/RELEASE-Y-FIRMA.md](docs/RELEASE-Y-FIRMA.md).
+
+## Documentación
+
+La carpeta [`docs/`](docs/README.md) reúne el contexto del proyecto:
+
+* [Contexto pedagógico](docs/CONTEXTO-PEDAGOGICO.md) — marco de la tesis MADEMS y la secuencia didáctica.
+* [Arquitectura](docs/ARQUITECTURA.md) — mapa de paquetes y su relación con los capítulos.
+* [Android 16](docs/ANDROID-16.md) — migración a API 36 y pendientes para API 37.
+* [Firma y publicación](docs/RELEASE-Y-FIRMA.md) — archivos de firma y proceso manual.
+* [CI/CD](docs/CI-CD.md) — workflows de GitHub Actions y secrets.
+
+[`AGENTS.md`](AGENTS.md) es el punto de entrada para asistentes de IA.
 
 ## Autor
 
