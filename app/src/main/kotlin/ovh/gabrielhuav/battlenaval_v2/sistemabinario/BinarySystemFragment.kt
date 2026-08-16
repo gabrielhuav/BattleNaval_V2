@@ -1,67 +1,94 @@
 package ovh.gabrielhuav.battlenaval_v2.sistemabinario
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.Switch
-import android.widget.TextView
-import androidx.fragment.app.Fragment
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import ovh.gabrielhuav.battlenaval_v2.R
+import ovh.gabrielhuav.battlenaval_v2.ui.ComposeFragment
+import ovh.gabrielhuav.battlenaval_v2.ui.components.LessonImage
+import ovh.gabrielhuav.battlenaval_v2.ui.components.LessonParagraph
+import ovh.gabrielhuav.battlenaval_v2.ui.components.LessonScreen
+import ovh.gabrielhuav.battlenaval_v2.ui.components.LessonTitle
+import ovh.gabrielhuav.battlenaval_v2.ui.theme.BitBattlesTheme
 
-class BinarySystemFragment : Fragment() {
+/**
+ * El bit como estado de encendido/apagado.
+ *
+ * Incluye el interruptor con el foco, que es la metáfora central de la lección:
+ * un bit no es un número abstracto, es un circuito con o sin corriente.
+ */
+class BinarySystemFragment : ComposeFragment() {
 
-    private lateinit var lightSwitch: Switch
-    private lateinit var lightImage: ImageView
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_binary_system, container, false)
+    @Composable
+    override fun Content() {
+        BinarySystemScreen()
     }
+}
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+@Composable
+private fun BinarySystemScreen() {
+    LessonScreen {
+        LessonTitle(stringResource(R.string.binary_system_lesson_title))
+        LessonParagraph(stringResource(R.string.binary_system_content))
+        LightBulbSwitch()
+        LessonImage(
+            drawable = R.drawable.sistema_binario,
+            contentDescription = stringResource(R.string.binary_system_image_description)
+        )
+    }
+}
 
-        val titleTextView = view.findViewById<TextView>(R.id.titleTextView)
-        val contentTextView = view.findViewById<TextView>(R.id.contentTextView)
-        val illustrationImageView = view.findViewById<ImageView>(R.id.illustrationImageView)
-        lightSwitch = view.findViewById(R.id.lightSwitch)
-        lightImage = view.findViewById(R.id.lightImage)
+/**
+ * Foco que se enciende y se apaga con el interruptor.
+ *
+ * `rememberSaveable` conserva el estado al rotar el dispositivo, que ahora es
+ * posible porque desde la versión 11 no se bloquea la orientación.
+ */
+@Composable
+private fun LightBulbSwitch(modifier: Modifier = Modifier) {
+    var isOn by rememberSaveable { mutableStateOf(false) }
 
-        titleTextView.text = "¿Qué es el sistema binario?"
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        LessonImage(
+            drawable = if (isOn) R.drawable.light_bulb_on else R.drawable.light_bulb_off,
+            contentDescription = stringResource(
+                if (isOn) R.string.binary_system_bulb_on_description
+                else R.string.binary_system_bulb_off_description
+            ),
+            height = 100.dp
+        )
 
-        contentTextView.text = """
-            El sistema binario, conocido porque es el sistema que utilizan las 
-            computadoras y el resto de dispositivos electrónicos como teléfonos o celulares, es un sistema de base 2. 
-            
-            Eso significa que es un sistema que solo utiliza dos números para representar todos 
-            sus números y en el caso del código binario estas dos números son el 0 y el 1. 
-            
-            Los ordenadores utilizan el sistema binario porque solo trabajan con dos niveles de voltaje: 
-            apagado o sin luz (0) y encendido o con luz (1).
-            
-            Prueba el interruptor de abajo para ver cómo funciona el sistema binario:
-        """.trimIndent()
+        Text(
+            text = stringResource(
+                if (isOn) R.string.binary_system_switch_on else R.string.binary_system_switch_off
+            )
+        )
 
-        // Configurar el interruptor
-        lightSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                lightImage.setImageResource(R.drawable.light_bulb_on)
-                lightSwitch.text = "1 - Encendido"
-            } else {
-                lightImage.setImageResource(R.drawable.light_bulb_off)
-                lightSwitch.text = "0 - Apagado"
-            }
-        }
+        Switch(checked = isOn, onCheckedChange = { isOn = it })
+    }
+}
 
-        // Estado inicial
-        lightSwitch.isChecked = false
-        lightSwitch.text = "0 - Apagado"
-        lightImage.setImageResource(R.drawable.light_bulb_off)
-
-        illustrationImageView.setImageResource(R.drawable.sistema_binario)
+@Preview(showBackground = true)
+@Composable
+private fun BinarySystemScreenPreview() {
+    BitBattlesTheme {
+        BinarySystemScreen()
     }
 }

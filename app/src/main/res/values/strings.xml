@@ -128,4 +128,88 @@
     <string name="intro_binary_title">Introducción al Sistema Binario</string>
     <string name="intro_binary_paragraph_1">El sistema binario es la base de toda la informática moderna. Es un sistema de numeración que utiliza solo dos dígitos: 0 y 1.</string>
     <string name="intro_binary_paragraph_2">En esta sección aprenderás por qué el sistema binario es tan importante y cómo se utiliza en los ordenadores y dispositivos electrónicos.</string>
+
+    <!-- Sistemas de numeración -->
+    <string name="numeration_title">¿Qué es un sistema de numeración?</string>
+    <string name="numeration_paragraph_1">Un sistema de numeración es como un juego especial para contar y escribir números.\n\nEl sistema decimal, que usamos todos los días, usa 10 símbolos diferentes:\n0, 1, 2, 3, 4, 5, 6, 7, 8 y 9\n\nCon estos 10 símbolos podemos escribir cualquier número, ¡incluso los más grandes!</string>
+    <string name="numeration_paragraph_2">Cada posición en un número tiene un valor especial:\n\n• Unidades: El dígito que está más a la derecha. Vale de 1 en 1.\n• Decenas: El segundo dígito de derecha a izquierda. Vale de 10 en 10.\n• Centenas: El tercer dígito de derecha a izquierda. Vale de 100 en 100.\n• Unidades de millar: El cuarto dígito. Vale de 1000 en 1000.\n\nPor ejemplo, en el número 2,345:\n• El 5 está en el lugar de las unidades (vale 5 × 1 = 5)\n• El 4 está en el lugar de las decenas (vale 4 × 10 = 40)\n• El 3 está en el lugar de las centenas (vale 3 × 100 = 300)\n• El 2 está en el lugar de las unidades de millar (vale 2 × 1000 = 2000)\n\nAl sumarlos: 2000 + 300 + 40 + 5 = 2,345\n\nEn el sistema decimal, cada posición vale 10 veces más que la posición anterior.</string>
+    <string name="numeration_image_description">Ilustración del sistema decimal y el valor posicional de sus dígitos</string>
+
+    <!-- Sistema binario -->
+    <string name="binary_system_lesson_title">¿Qué es el sistema binario?</string>
+    <string name="binary_system_content">El sistema binario, conocido porque es el sistema que utilizan las computadoras y el resto de dispositivos electrónicos como teléfonos o celulares, es un sistema de base 2.\n\nEso significa que es un sistema que solo utiliza dos números para representar todos sus números y en el caso del código binario estas dos números son el 0 y el 1.\n\nLos ordenadores utilizan el sistema binario porque solo trabajan con dos niveles de voltaje: apagado o sin luz (0) y encendido o con luz (1).\n\nPrueba el interruptor de abajo para ver cómo funciona el sistema binario:</string>
+    <string name="binary_system_switch_on">1 - Encendido</string>
+    <string name="binary_system_switch_off">0 - Apagado</string>
+    <string name="binary_system_bulb_on_description">Foco encendido, que representa el bit en 1</string>
+    <string name="binary_system_bulb_off_description">Foco apagado, que representa el bit en 0</string>
+    <string name="binary_system_image_description">Ilustración del sistema binario</string>
+
+    <!-- Conversión decimal a binario -->
+    <string name="conversion_lesson_title">Conversión entre Decimal y Binario</string>
+    <string name="conversion_lesson_subtitle">Cómo convertir de decimal a binario:</string>
+    <string name="conversion_lesson_content">Para convertir un número decimal a binario, divide repetidamente el número por 2 y anota los residuos de abajo hacia arriba.</string>
+
+    <!-- Introducción al código ASCII -->
+    <string name="ascii_intro_title">¿Qué es el Código ASCII?</string>
+    <string name="ascii_intro_paragraph_1">El código ASCII (American Standard Code for Information Interchange) es un sistema de codificación que permite a las computadoras representar caracteres (letras, números, símbolos) utilizando números. Es como una tabla de equivalencias universal para que diferentes dispositivos puedan \"entenderse\".\n\nEn esencia, ASCII asigna un valor numérico a cada carácter. Por ejemplo:\n• La letra \"A\" mayúscula corresponde al número decimal 65.\n• El dígito \"5\" está representado por el número 53.\n• El símbolo de exclamación \"!\" tiene asignado el número 33.\n\nCuando escribes algo en tu teclado, la computadora no guarda las letras directamente. En su lugar, almacena los números ASCII correspondientes, que luego utiliza para mostrar el texto en la pantalla.</string>
+    <string name="ascii_intro_paragraph_2">¿Cómo funciona el código ASCII?\n\n• Cada carácter tiene un número asignado dentro del rango de 0 a 127. Estos números se almacenan en binario (ceros y unos) dentro de la computadora.\n• Cuando la computadora necesita mostrar un texto, consulta la tabla ASCII para convertir esos números en los caracteres correspondientes.\n• Por ejemplo, para mostrar la palabra \"HOLA\", la computadora utilizaría la secuencia de números ASCII: 72 (H), 79 (O), 76 (L), 65 (A).\n\nEs importante saber que ASCII tiene sus limitaciones. Solo puede representar un número limitado de caracteres. Por eso, se desarrolló Unicode, un estándar mucho más amplio que incluye caracteres de prácticamente todos los idiomas del mundo, permitiendo una mayor compatibilidad y representación de textos diversos. Pero ASCII sentó las bases para la comunicación digital que usamos hoy en día.</string>
+    <string name="ascii_intro_image_description">Ilustración de la tabla de código ASCII</string>
+
+    <!-- Unidades de almacenamiento: introducción -->
+    <string name="storage_intro_title">¿Qué son las Unidades de Medida de Almacenamiento?</string>
+    <string name="storage_intro_content">¿Te has preguntado alguna vez cómo saber cuántas fotos, videos, juegos o aplicaciones puedes guardar en tu celular o computadora?\n\nPara eso existen las unidades de medida de almacenamiento, que son como \"medidores\" que nos ayudan a saber cuánta información cabe en nuestros dispositivos digitales.\n\nAsí como usamos:\n• Metros y kilómetros para medir distancias\n• Kilogramos para medir el peso\n• Litros para medir líquidos\n\nEn el mundo digital usamos:\n• Bytes, kilobytes, megabytes y gigabytes para medir la cantidad de información\n\nEstas unidades nos ayudan a:\n• Saber cuántos archivos podemos guardar en nuestros dispositivos\n• Entender cuánto espacio ocupa una aplicación o juego\n• Decidir qué celular o computadora comprar según nuestras necesidades\n• Saber si podemos descargar un archivo o si ocupará demasiado espacio</string>
+    <string name="storage_intro_did_you_know_header">¿SABÍAS QUE...?</string>
+    <string name="storage_intro_did_you_know_content">• Un mensaje de texto simple ocupa apenas unos bytes\n• Una foto típica de celular ocupa entre 2 y 5 megabytes\n• Un video de 1 minuto en HD puede ocupar 100 megabytes\n• Un juego para celular puede ocupar desde 50 megabytes hasta varios gigabytes\n• La memoria de un celular moderno puede ser de 64 o 128 gigabytes</string>
+    <string name="storage_intro_image_description">Ilustración de dispositivos y su capacidad de almacenamiento</string>
+
+    <!-- Unidades de almacenamiento: tipos y jerarquía -->
+    <string name="storage_types_title">Conociendo las Unidades de Almacenamiento</string>
+    <string name="storage_types_content">Las unidades de almacenamiento digital son como una escalera donde cada escalón es 1,024 veces más grande que el anterior.\n\nTodo comienza con el bit, que es la unidad más pequeña. Un bit solo puede ser 0 o 1 (como un interruptor que está apagado o encendido).\n\nA partir del bit, vamos formando unidades más grandes, ¡justo como construimos palabras con letras!\n\nAsí funciona esta \"escalera digital\":</string>
+    <string name="storage_types_footnote">Existen unidades aún mayores (Petabyte, Exabyte, Zettabyte, Yottabyte) usadas por grandes empresas como Google o Facebook</string>
+    <string name="storage_types_did_you_know_header">¿POR QUÉ ES 1,024 Y NO 1,000?</string>
+    <string name="storage_types_did_you_know_content">En el sistema decimal que usamos todos los días, cada unidad es 10 veces mayor que la anterior:\n• 10 unidades = 1 decena\n• 10 decenas = 1 centena\n• 10 centenas = 1 mil\n\nPero en el sistema binario de las computadoras, cada unidad es 2 veces mayor:\n• 2¹ = 2\n• 2² = 4\n• 2³ = 8\n• ...y así hasta 2¹⁰ = 1,024\n\nPor eso, en informática:\n• 1 Kilobyte = 1,024 bytes (no 1,000)\n• 1 Megabyte = 1,024 KB = 1,048,576 bytes\n\nEs como si contáramos de 1,024 en 1,024 en lugar de contar de 1,000 en 1,000.\n\nEn la vida diaria, las unidades que más usarás son:\n• Megabytes (MB): para aplicaciones y archivos pequeños\n• Gigabytes (GB): para juegos, películas y almacenamiento de dispositivos</string>
+    <string name="storage_types_image_description">Ilustración de la jerarquía de unidades de almacenamiento</string>
+
+    <string-array name="storage_units_table_headers">
+        <item>Unidad</item>
+        <item>Símbolo</item>
+        <item>¿Qué tan grande es?</item>
+        <item>Ejemplo</item>
+    </string-array>
+    <string-array name="storage_units_table_bit">
+        <item>Bit</item>
+        <item>b</item>
+        <item>La unidad más pequeña (0 o 1)</item>
+        <item>Un interruptor encendido/apagado</item>
+    </string-array>
+    <string-array name="storage_units_table_byte">
+        <item>Byte</item>
+        <item>B</item>
+        <item>8 bits juntos</item>
+        <item>Una letra o símbolo</item>
+    </string-array>
+    <string-array name="storage_units_table_kilobyte">
+        <item>Kilobyte</item>
+        <item>KB</item>
+        <item>1,024 bytes</item>
+        <item>Un mensaje de texto o correo breve</item>
+    </string-array>
+    <string-array name="storage_units_table_megabyte">
+        <item>Megabyte</item>
+        <item>MB</item>
+        <item>1,024 KB</item>
+        <item>Una foto o canción</item>
+    </string-array>
+    <string-array name="storage_units_table_gigabyte">
+        <item>Gigabyte</item>
+        <item>GB</item>
+        <item>1,024 MB</item>
+        <item>Una película o juego</item>
+    </string-array>
+    <string-array name="storage_units_table_terabyte">
+        <item>Terabyte</item>
+        <item>TB</item>
+        <item>1,024 GB</item>
+        <item>Todas tus fotos, videos y juegos juntos</item>
+    </string-array>
 </resources>
