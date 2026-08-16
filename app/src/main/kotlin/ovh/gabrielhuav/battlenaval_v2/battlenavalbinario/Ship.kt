@@ -1,11 +1,22 @@
 package ovh.gabrielhuav.battlenaval_v2.battlenavalbinario
 
-import android.graphics.Color
+/** Equivale a `android.graphics.Color.MAGENTA`, escrito como literal para que
+ *  esta clase no dependa de Android y se pueda probar en la JVM. */
+private const val MAGENTA = 0xFFFF00FF.toInt()
 
+/**
+ * Un barco de la flota. Sin dependencias de Android a propósito: las reglas del
+ * juego viven en código puro para que [BoardModel] y sus tests funcionen sin
+ * emulador.
+ *
+ * @param type longitud del barco en celdas; también identifica su tipo de dibujo.
+ * @param vertical orientación con la que se colocó.
+ * @param color color base; solo lo usa la capa de dibujo.
+ */
 class Ship(
-    val type: Int, // Tamaño del barco
+    val type: Int,
     val vertical: Boolean,
-    val color: Int = Color.MAGENTA // Por defecto, los barcos enemigos son transparentes
+    val color: Int = MAGENTA
 ) {
     private var health: Int = type
 

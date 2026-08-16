@@ -8,14 +8,31 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.view.View
 
+/**
+ * Celda del tablero. Dibuja; no guarda estado propio: [ship] y [wasShot] leen y
+ * escriben en el [BoardModel] del tablero, que es la única fuente de verdad.
+ */
 class Cell(
     context: Context,
     val x: Int,
     val y: Int,
     private val board: Board
 ) : View(context) {
-    var ship: Ship? = null
-    var wasShot: Boolean = false
+
+    var ship: Ship?
+        get() = board.model.shipAt(x, y)
+        set(value) {
+            board.model.setShipAt(x, y, value)
+            invalidate()
+        }
+
+    var wasShot: Boolean
+        get() = board.model.wasShot(x, y)
+        set(value) {
+            board.model.setShot(x, y, value)
+            invalidate()
+        }
+
     var text: String? = null // Nuevo: Texto para mostrar en la celda
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val rectF = RectF() // Para dibujar rectángulos con bordes redondeados
@@ -186,17 +203,11 @@ class Cell(
         }
     }
 
+    /** Dispara a esta celda. Devuelve `true` si había barco. */
     fun shoot(): Boolean {
-        wasShot = true
-        invalidate() // Redibuja la celda
-
-        return ship?.let {
-            it.hit()
-            if (!it.isAlive()) {
-                board.ships-- // Reduce la cantidad de barcos si este ya no está vivo
-            }
-            true // Devuelve true si se le atinó a un barco
-        } ?: false // Devuelve false si no hay barco
+        val hit = board.model.shoot(x, y)
+        invalidate()
+        return hit
     }
 
     /**

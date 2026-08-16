@@ -1,64 +1,52 @@
 package ovh.gabrielhuav.battlenaval_v2.battlenavalbinario
 
-import android.util.Log
 import kotlin.random.Random
 
 /**
- * Clase para manejar conversiones binarias en el juego
+ * Conversiones binarias del juego.
+ *
+ * Es lógica pura y sin dependencias de Android a propósito: así se puede
+ * probar en la JVM con tests locales, que son la red de seguridad de las
+ * reglas didácticas del juego. No introduzcas `android.util.Log` aquí; lanza
+ * «not mocked» fuera de un dispositivo y deja la clase sin tests.
  */
 class BinaryConversionHelper {
 
     companion object {
-        private val TAG = "BinaryConversionHelper"
 
-        // Convertir un carácter a su representación binaria de 8 bits
-        fun charToBinary(char: Char): String {
-            val asciiValue = char.code
-            val result = String.format("%8s", Integer.toBinaryString(asciiValue)).replace(' ', '0')
-            Log.d(TAG, "Convirtiendo caracter: $char a binario: $result")
-            return result
-        }
+        /** Carácter a binario de 8 bits vía su código ASCII. `'A'` → `"01000001"`. */
+        fun charToBinary(char: Char): String =
+            String.format("%8s", Integer.toBinaryString(char.code)).replace(' ', '0')
 
-        // Convertir un número a su representación binaria de 3 bits
-        fun numberToBinary(number: Int): String {
-            val result = String.format("%3s", Integer.toBinaryString(number)).replace(' ', '0')
-            Log.d(TAG, "Convirtiendo número: $number a binario: $result")
-            return result
-        }
+        /** Número a binario de 3 bits. `5` → `"101"`. */
+        fun numberToBinary(number: Int): String =
+            String.format("%3s", Integer.toBinaryString(number)).replace(' ', '0')
 
-        // Convertir una cadena binaria a ASCII
-        fun binaryToChar(binary: String): Char {
-            val result = binary.toInt(2).toChar()
-            Log.d(TAG, "Convirtiendo binario: $binary a caracter: $result")
-            return result
-        }
+        /** Cadena binaria a carácter ASCII. `"01000001"` → `'A'`. */
+        fun binaryToChar(binary: String): Char = binary.toInt(2).toChar()
 
-        // Convertir una cadena binaria a número decimal
-        fun binaryToNumber(binary: String): Int {
-            val result = binary.toInt(2)
-            Log.d(TAG, "Convirtiendo binario: $binary a número: $result")
-            return result
-        }
+        /** Cadena binaria a decimal. `"101"` → `5`. */
+        fun binaryToNumber(binary: String): Int = binary.toInt(2)
 
-        // Verificar si la conversión es correcta
-        // IMPORTANTE: En esta versión, invertimos los parámetros ya que las coordenadas están intercambiadas
+        /**
+         * Verifica la respuesta del jugador ante un disparo recibido.
+         *
+         * Ojo con el orden: el eje Y viaja como carácter ASCII (la fila, `A`–`G`)
+         * y el eje X como número de 3 bits (la columna, 1–7). Los parámetros de
+         * respuesta llegan cruzados respecto a sus nombres —`answerX` es la letra
+         * y `answerY` el número— porque así los usan `BinaryConversionDialog` y
+         * el modo Bluetooth. No cambies el orden sin ajustar a esos dos.
+         */
         fun checkConversion(binaryY: String, binaryX: String, answerX: Char, answerY: Int): Boolean {
-            val correctY = binaryToChar(binaryY)     // Convertimos el binario Y a carácter
-            val correctX = binaryToNumber(binaryX)   // Convertimos el binario X a número
-
-            val isCorrect = correctY == answerX && correctX == answerY
-            Log.d(TAG, "Verificando conversión (invertida): $binaryY,$binaryX => ${answerX},${answerY}, Resultado: $isCorrect")
-            Log.d(TAG, "Valores correctos: $correctY,$correctX")
-
-            return isCorrect
+            val correctY = binaryToChar(binaryY)
+            val correctX = binaryToNumber(binaryX)
+            return correctY == answerX && correctX == answerY
         }
 
-        // Generar un ejemplo para explicar la conversión
+        /** Ejemplo aleatorio para las pantallas de explicación. */
         fun generateExample(): Triple<String, String, String> {
             val randomChar = ('A'..'G').random()
             val randomNum = (1..7).random()
-
-            Log.d(TAG, "Generando ejemplo con: $randomChar, $randomNum")
 
             val binaryChar = charToBinary(randomChar)
             val binaryNum = numberToBinary(randomNum)
@@ -69,20 +57,13 @@ class BinaryConversionHelper {
             return Triple(binaryChar, binaryNum, explanation)
         }
 
-        // Generar coordenadas aleatorias para depuración
-        fun generateRandomCoordinates(): Pair<Int, Int> {
-            val x = Random.nextInt(0, 7)
-            val y = Random.nextInt(0, 7)
-            Log.d(TAG, "Generando coordenadas aleatorias: ($x, $y) => ${('A' + x)}${y+1}")
-            return Pair(x, y)
-        }
+        /** Coordenadas aleatorias dentro del tablero 7×7, en índices base 0. */
+        fun generateRandomCoordinates(): Pair<Int, Int> = Pair(Random.nextInt(0, 7), Random.nextInt(0, 7))
 
-        // Convertir coordenadas de tipo (x,y) a una representación de coordenadas del tablero (ej. "A3")
-        fun coordsToString(x: Int, y: Int): String {
-            // En la versión invertida, y se convierte en letra y x en número
-            val letter = ('A' + y)
-            val number = x + 1
-            return "$letter$number"
-        }
+        /**
+         * Índices del tablero a etiqueta legible. `(2, 0)` → `"A3"`.
+         * La fila (`y`) da la letra y la columna (`x`) el número.
+         */
+        fun coordsToString(x: Int, y: Int): String = "${'A' + y}${x + 1}"
     }
 }

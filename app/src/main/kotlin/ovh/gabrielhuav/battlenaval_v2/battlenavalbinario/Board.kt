@@ -7,15 +7,28 @@ import android.view.MotionEvent
 import android.widget.GridLayout
 import android.widget.TextView
 
+/**
+ * Vista del tablero. Solo se ocupa de dibujar: las reglas viven en [model].
+ * Ver `docs/MIGRACION-COMPOSE.md` para por qué está separado así.
+ */
 class Board(
     context: Context,
     val enemy: Boolean = false,
     private val onCellClick: (Cell) -> Unit
 ) : GridLayout(context) {
 
-    var ships = 3
-    val cells = Array(7) { y ->
-        Array(7) { x ->
+    /** Estado y reglas del tablero. Las celdas leen y escriben aquí. */
+    val model = BoardModel()
+
+    /** Barcos a flote. Delegado en [model]. */
+    var ships: Int
+        get() = model.remainingShips
+        set(value) {
+            model.remainingShips = value
+        }
+
+    val cells = Array(BOARD_SIZE) { y ->
+        Array(BOARD_SIZE) { x ->
             Cell(context, x, y, this).apply {
                 setOnClickListener { onCellClick(this) }
             }
@@ -88,26 +101,14 @@ class Board(
     }
 
     fun placeShip(ship: Ship, x: Int, y: Int): Boolean {
+        if (!model.placeShip(ship, x, y)) return false
+
+        // El modelo ya guardó el barco; aquí solo se repintan las celdas afectadas.
         val length = ship.type
         if (ship.vertical) {
-            for (i in y until y + length) {
-                if (i >= 7 || cells[i][x].ship != null) return false
-            }
+            for (i in y until y + length) cells[i][x].invalidate()
         } else {
-            for (i in x until x + length) {
-                if (i >= 7 || cells[y][i].ship != null) return false
-            }
-        }
-        if (ship.vertical) {
-            for (i in y until y + length) {
-                cells[i][x].ship = ship
-                cells[i][x].invalidate() // Fuerza redibujado de la celda
-            }
-        } else {
-            for (i in x until x + length) {
-                cells[y][i].ship = ship
-                cells[y][i].invalidate() // Fuerza redibujado de la celda
-            }
+            for (i in x until x + length) cells[y][i].invalidate()
         }
         return true
     }
@@ -120,32 +121,11 @@ class Board(
         drawBoard()
     }
 
-    fun getShipCoordinates(): List<Pair<String, String>> {
-        val coordinates = mutableListOf<Pair<String, String>>()
-
-        for (y in cells.indices) {
-            for (x in cells[y].indices) {
-                val cell = cells[y][x]
-                if (cell.ship != null) {
-                    val letter = ('A' + y).toString() // Convierte el índice de fila a letra
-                    val number = (x + 1).toString() // Convierte el índice de columna a número
-                    coordinates.add(Pair(letter, number))
-                }
-            }
-        }
-
-        return coordinates
-    }
+    fun getShipCoordinates(): List<Pair<String, String>> = model.occupiedCoordinates()
 
     fun clearShips() {
-        for (y in cells.indices) {
-            for (x in cells[y].indices) {
-                val cell = cells[y][x]
-                cell.ship = null
-                cell.invalidate() // Fuerza el redibujado de la celda
-            }
-        }
-        ships = 0 // Reinicia el contador de barcos
+        model.clearShips()
+        redrawBoard()
     }
 
     /**

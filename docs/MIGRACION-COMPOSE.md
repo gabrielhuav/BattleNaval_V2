@@ -1,10 +1,45 @@
 # Plan de migración a Jetpack Compose
 
-Documento de decisión. Estado: **propuesta, no iniciada.**
+Estado: **Fases 0 y 1 completas. Fase 2 iniciada (1 de 26 pantallas).**
+
+## Estado actual
+
+| Fase | Estado |
+| :--- | :--- |
+| 0 — Cimientos | ✅ Completa salvo R8 |
+| 1 — Preparar Compose | ✅ Completa |
+| 2 — Contenido educativo | 🔄 1 de 26 fragmentos |
+| 3 — Menús | ⬜ |
+| 4 — Minijuegos | ⬜ |
+| 5 — Tablero | ⬜ |
+| 6 — Bluetooth | ⬜ |
+
+Hecho hasta ahora:
+
+- `BinaryConversionHelper` ya no usa `android.util.Log` y es código puro.
+- `Ship` ya no depende de `android.graphics.Color`.
+- **[`BoardModel`](../app/src/main/kotlin/ovh/gabrielhuav/battlenaval_v2/battlenavalbinario/BoardModel.kt)**:
+  las reglas del tablero —colocación, disparos, conteo de flota— extraídas a
+  Kotlin puro. `Board` y `Cell` conservan su API pública pero delegan aquí, así
+  que las Activities no cambiaron ni una línea.
+- **28 tests JVM** en `app/src/test`, sustituyendo los stubs de ejemplo.
+- Compose activado: plugin del compilador, BOM y
+  [`BitBattlesTheme`](../app/src/main/kotlin/ovh/gabrielhuav/battlenaval_v2/ui/theme/Theme.kt)
+  con las paletas UNAM/IPN leídas del mismo `ThemeManager` que usan las vistas.
+- [`ComposeFragment`](../app/src/main/kotlin/ovh/gabrielhuav/battlenaval_v2/ui/ComposeFragment.kt)
+  como mecanismo de interop, y `IntroductionFragment` migrado como primera
+  pantalla.
+
+> **Los tests ya evitaron un fallo real.** La primera versión de
+> `BoardModel.occupiedCells()` usaba `buildList`, donde `size` resuelve al de la
+> lista en construcción y no al del tablero: el recorrido quedaba vacío y
+> `getShipCoordinates()` habría devuelto siempre una flota vacía, rompiendo el
+> intercambio de barcos por Bluetooth sin ningún síntoma visible. Es exactamente
+> el escenario que motivaba hacer la Fase 0 antes que nada.
 
 ## Diagnóstico del código actual
 
-Medido sobre `app/src/main` en la versión 1.0.0.11:
+Medido sobre `app/src/main` en la versión 1.0.0.11, **antes** de empezar:
 
 | Métrica | Valor |
 | :--- | ---: |
@@ -123,9 +158,21 @@ Los 26 fragmentos de `sistemabinario`, `codigoascii` y
 mayoría es contenido estático: textos, tablas, explicaciones paso a paso.
 
 Es la fase con mejor relación volumen/riesgo: si un texto queda mal, se ve al
-instante y no rompe nada más. Migrar fragmento por fragmento, dejando el
-`ViewPager2` en su sitio y sustituyendo cada fragmento por uno que solo
-contenga un `ComposeView`.
+instante y no rompe nada más.
+
+**Receta para migrar un fragmento**, ya establecida con `IntroductionFragment`:
+
+1. Hereda de `ComposeFragment` e implementa `Content()`. El `ViewPager2` y su
+   adaptador no se tocan: para ellos sigue siendo un `Fragment`.
+2. Mueve el texto del layout a `res/values/strings.xml` y léelo con
+   `stringResource()`. El contenido didáctico estaba incrustado en los XML;
+   al migrarlo se pasa a recursos, que es donde debe estar.
+3. Arma la pantalla con `LessonScreen` / `LessonTitle` / `LessonParagraph` de
+   `ui/components/Lesson.kt`, para que todas mantengan el mismo espaciado.
+   `LessonScreen` ya es desplazable, requisito desde que las actividades no
+   bloquean la orientación.
+4. Añade un `@Preview` privado.
+5. Borra el layout XML.
 
 Casos con algo más de trabajo: `AsciiTableFragment` (lista expandible → `LazyColumn`)
 y `AsciiConverterFragment` (conversión en vivo, ya es un buen candidato a

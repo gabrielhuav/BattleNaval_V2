@@ -79,9 +79,67 @@ MD5  cc6b50e5158fed61e1ff8769c182ed0a  bitbattles.jks
 > es lo primero que se pierde al reinstalar el sistema. Y guarda las contraseñas
 > en un gestor, no solo dentro de `key.properties`.
 
+## El requisito de nivel de API se evalúa sobre TODAS las pistas
+
+Play no mira solo producción: cuenta cualquier versión que un usuario todavía
+pueda instalar, en interna, cerrada y abierta incluidas.
+
+Con la v11 ya publicada en producción con `targetSdk 36`, el aviso de política
+siguió activo señalando **API 34**. El culpable era un build olvidado:
+
+```
+1 (1.0) · Prueba interna · targetSdk 34 · 30 abr 2025
+```
+
+Se encuentra desde **Estado con respecto a las políticas → Detalles del
+problema → «Ver paquetes de aplicaciones»**, que lista los bundles que
+incumplen.
+
+La solución es **promover la versión actual a esa pista** en vez de intentar
+borrar la vieja: mismo AAB, no consume otro `versionCode`, y deja la pista sin
+nada que incumpla. Al preparar cada versión anual, conviene revisar las tres
+pistas de prueba y no dejar builds antiguos activos.
+
 ## Advertencias de Play al subir el AAB
 
-Dos advertencias aparecen desde la versión 11. Ninguna bloquea la publicación.
+Dos advertencias aparecen desde la versión 11. Ninguna bloquea la publicación:
+son «acciones recomendadas», no incumplimientos de política.
+
+### «Usa APIs o parámetros obsoletos para la pantalla de borde a borde»
+
+**Se decidió aceptarla.** No es un descuido: es una contradicción entre dos
+comprobaciones de Play.
+
+En la versión 11 se quitaron los seis `android:statusBarColor` de los temas y
+no queda ninguna llamada obsoleta en el código del proyecto —verificado con
+búsqueda exhaustiva en `res/` y `kotlin/`—. Aun así el aviso persiste, porque
+Play analiza el DEX completo y ahí están estas clases:
+
+```
+androidx/activity/EdgeToEdgeApi21, 23, 26, 28, 29, 30
+```
+
+Son la implementación de `enableEdgeToEdge()`, que internamente usa
+`setStatusBarColor`, `setNavigationBarColor` y `setDecorFitsSystemWindows` para
+pintar los scrims en Android 14 y anteriores.
+
+El problema: `enableEdgeToEdge()` es justamente lo que resolvió la **otra**
+advertencia, la de «puede que no se muestre para todos los usuarios». Es decir,
+la API que Google recomienda para una comprobación es la que dispara la otra.
+Se probó subir `androidx.activity` a 1.10.1 y las referencias siguen presentes,
+así que no se arregla actualizando.
+
+Las opciones son:
+
+- **Conservar `enableEdgeToEdge()`** (lo actual): borde a borde real también en
+  Android 14 y anteriores, a cambio de que la advertencia siga.
+- **Quitarlo**: la advertencia probablemente se va, pero el borde a borde queda
+  solo en Android 15+ vía la imposición de `targetSdk 36`, y volvería el otro
+  aviso.
+
+Se eligió lo primero: la experiencia del usuario pesa más que un aviso que no
+bloquea nada. Si Google actualiza la comprobación o AndroidX reescribe esas
+clases, revisar de nuevo.
 
 **«Este App Bundle contiene código nativo y no subiste símbolos de depuración».**
 Ignorable. El único código nativo es `libandroidx.graphics.path.so` (cuatro

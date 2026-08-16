@@ -20,13 +20,21 @@ contexto que no se deduce del código.
 
 ## Hechos que ahorran tiempo
 
-- **Kotlin + vistas XML.** No hay Compose ni código nativo. Módulo único `app/`.
-  Fuentes en `app/src/main/kotlin/`. Existe una propuesta de migración a
-  Compose, pero **no ha empezado**: no escribas composables sin leer
-  [docs/MIGRACION-COMPOSE.md](docs/MIGRACION-COMPOSE.md) primero.
-- **No hay ViewModels ni tests reales.** Todo el estado vive en Activities y se
-  accede por `findViewById`. Tenlo en cuenta antes de proponer refactors
-  grandes: no hay red de seguridad.
+- **Kotlin, migración a Compose en curso.** Conviven vistas XML y Compose. Antes
+  de tocar UI lee [docs/MIGRACION-COMPOSE.md](docs/MIGRACION-COMPOSE.md), que
+  lleva el estado por fases y la receta para migrar una pantalla.
+  Módulo único `app/`, fuentes en `app/src/main/kotlin/`.
+- **Para migrar un fragmento:** hereda de `ui/ComposeFragment.kt`, usa los
+  componentes de `ui/components/Lesson.kt` y envuelve con `BitBattlesTheme`.
+- **Las reglas del juego viven en `BoardModel`**, en Kotlin puro y con tests.
+  `Board` y `Cell` solo dibujan y delegan ahí. No metas lógica de juego en las
+  vistas ni `android.*` en `BoardModel`, `Ship` o `BinaryConversionHelper`:
+  perderían la testabilidad en JVM.
+- **Hay 28 tests JVM** en `app/src/test`. Córrelos con
+  `./gradlew :app:testDebugUnitTest` antes de dar por buena cualquier cosa que
+  toque la lógica del juego.
+- **Todavía no hay ViewModels.** El estado de partida sigue en las Activities;
+  por eso el manifest usa `configChanges` en vez de dejar que se recreen.
 - **minSdk 24, targetSdk 36, compileSdk 36.** AGP 9.1.1, Gradle 9.3.1, JDK 17.
 - **La ruta local del checkout tiene un acento** (`…/Imágenes/…`) y AGP se
   niega a compilar en rutas no ASCII. Para compilar hay que copiar el proyecto

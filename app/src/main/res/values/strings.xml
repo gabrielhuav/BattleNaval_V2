@@ -122,4 +122,10 @@
     <string name="start_practice">Iniciar Práctica</string>
     <string name="binary_conversion_title">Reto Binario</string>
     <string name="binary_conversion_description">Demuestra tu rapidez mental convirtiendo números decimales a sistema binario.</string>
+
+    <!-- Contenido didáctico migrado a Compose. Al convertir un fragmento, su
+         texto se mueve del layout XML a este archivo. -->
+    <string name="intro_binary_title">Introducción al Sistema Binario</string>
+    <string name="intro_binary_paragraph_1">El sistema binario es la base de toda la informática moderna. Es un sistema de numeración que utiliza solo dos dígitos: 0 y 1.</string>
+    <string name="intro_binary_paragraph_2">En esta sección aprenderás por qué el sistema binario es tan importante y cómo se utiliza en los ordenadores y dispositivos electrónicos.</string>
 </resources>
