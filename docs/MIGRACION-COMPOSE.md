@@ -8,7 +8,7 @@ Estado: **Fases 0 y 1 completas. Fase 2 iniciada (1 de 26 pantallas).**
 | :--- | :--- |
 | 0 — Cimientos | ✅ Completa salvo R8 |
 | 1 — Preparar Compose | ✅ Completa |
-| 2 — Contenido educativo | 🔄 1 de 26 fragmentos |
+| 2 — Contenido educativo | 🔄 7 de 18 pantallas |
 | 3 — Menús | ⬜ |
 | 4 — Minijuegos | ⬜ |
 | 5 — Tablero | ⬜ |
@@ -173,6 +173,37 @@ instante y no rompe nada más.
    bloquean la orientación.
 4. Añade un `@Preview` privado.
 5. Borra el layout XML.
+
+**Componentes disponibles** en `ui/components/`:
+
+| Componente | Para qué |
+| :--- | :--- |
+| `LessonScreen` | Contenedor desplazable con el margen estándar |
+| `LessonTitle` / `LessonSubtitle` / `LessonParagraph` | Texto |
+| `LessonImage` | Ilustraciones (200 dp por defecto) |
+| `LessonExpandableCard` | Tarjetas «¿SABÍAS QUE...?» |
+| `LessonTable` | Tablas de consulta, con desplazamiento horizontal |
+
+**Ya migradas (7):** `IntroductionFragment`, `NumerationSystemFragment`,
+`BinarySystemFragment`, `ConversionFragment`, `AsciiIntroductionFragment`,
+`StorageUnitsIntroFragment`, `StorageUnitsTypesFragment`.
+
+**Pendientes (11):** `BinarySwitchesFragment`, `DecimalToBinaryFragment`,
+`DecimalToBinaryExplanationFragment`, `BinaryConversionFragment`,
+`AsciiTableFragment`, `AsciiConverterFragment`,
+`AsciiDecimalConversionFragment`, `AsciiBinaryConversionFragment`,
+`AsciiEmojiComparisonFragment`, `StorageUnitsMeasurementsFragment`,
+`StorageUnitsRelationshipFragment`. Son las que tienen estado propio
+(conversores en vivo, tablas filtrables), así que a partir de aquí toca
+introducir `ViewModel` o `remember` según el caso.
+
+**Dos trampas encontradas:**
+
+- Los nombres de recurso pueden chocar con los que ya usan otras pantallas
+  (pasó con `binary_system_title` y `conversion_title`). Comprueba antes de
+  añadir, y si hay choque renombra el nuevo, nunca el existente.
+- `Icons.Default` solo trae el set básico. `ExpandMore` obligaría a añadir
+  `material-icons-extended`, que pesa varios MB; usa `KeyboardArrowDown`.
 
 Casos con algo más de trabajo: `AsciiTableFragment` (lista expandible → `LazyColumn`)
 y `AsciiConverterFragment` (conversión en vivo, ya es un buen candidato a
